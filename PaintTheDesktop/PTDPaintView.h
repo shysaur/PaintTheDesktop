@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDPaintView : NSView
+@interface PTDPaintView : NSOpenGLView
 
 @property (nonatomic, readonly) NSGraphicsContext *graphicsContext;
 @property (nonatomic, readonly) NSRect paintRect;
