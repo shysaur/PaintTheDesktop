@@ -50,6 +50,12 @@
 }
 
 
+- (BOOL)wantsBestResolutionOpenGLSurface
+{
+  return YES;
+}
+
+
 - (void)setBackingImage:(NSBitmapImageRep *)backingImage
 {
   _backingImage = backingImage;
@@ -133,7 +139,7 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-  NSRect r = self.bounds;
+  NSRect r = [self convertRectToBacking:self.bounds];
   NSSize imgSize = _backingImage.size;
 
   GLint zero = 0;
