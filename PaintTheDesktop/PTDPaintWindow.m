@@ -32,14 +32,14 @@
 - (void)mouseDown:(NSEvent *)event
 {
   self.mouseIsDragging = YES;
-  self.lastMousePosition = NSEvent.mouseLocation;
+  self.lastMousePosition = event.locationInWindow;
 }
 
 
 - (void)mouseUp:(NSEvent *)event
 {
   if (self.mouseIsDragging) {
-    [self mouseDraggedFromPoint:self.lastMousePosition toPoint:NSEvent.mouseLocation];
+    [self mouseDraggedFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
   }
   self.mouseIsDragging = NO;
 }
@@ -47,22 +47,19 @@
 
 - (void)mouseDragged:(NSEvent *)event
 {
-  [self mouseDraggedFromPoint:self.lastMousePosition toPoint:NSEvent.mouseLocation];
-  self.lastMousePosition = NSEvent.mouseLocation;
+  [self mouseDraggedFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
+  self.lastMousePosition = event.locationInWindow;
 }
 
 
-- (void)mouseDraggedFromPoint:(NSPoint)absP1 toPoint:(NSPoint)absP2
+- (void)mouseDraggedFromPoint:(NSPoint)p1 toPoint:(NSPoint)p2
 {
-  NSPoint p1 = [self.window convertPointFromScreen:absP1];
-  NSPoint p2 = [self.window convertPointFromScreen:absP2];
   [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
   NSBezierPath *path = [NSBezierPath bezierPath];
   [[NSColor blackColor] setStroke];
   [path moveToPoint:p1];
   [path lineToPoint:p2];
   [path stroke];
-  
 
   [self.paintView setNeedsDisplay:YES];
 }
@@ -72,8 +69,8 @@
 {
   [super windowDidLoad];
   
-  //self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:0.0];
-  //self.window.opaque = NO;
+  self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:0.0];
+  self.window.opaque = NO;
   //self.window.hasShadow = NO;
   //self.window.ignoresMouseEvents = YES;
   //self.window.level = NSStatusWindowLevel;
