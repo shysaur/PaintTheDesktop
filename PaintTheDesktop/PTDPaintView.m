@@ -121,6 +121,16 @@
 }
 
 
+- (NSOpenGLPixelFormat *)pixelFormat
+{
+  NSOpenGLPixelFormatAttribute attrs[] = {
+    NSOpenGLPFAOpenGLProfile, NSOpenGLProfileVersionLegacy,
+    0
+  };
+  return [[NSOpenGLPixelFormat alloc] initWithAttributes:attrs];
+}
+
+
 - (void)drawRect:(NSRect)dirtyRect
 {
   NSRect r = self.bounds;
