@@ -14,6 +14,7 @@
 
 @property (nonatomic) NSMutableArray<PTDPaintWindow *> *paintWindowControllers;
 @property (nonatomic) NSStatusItem *statusItem;
+@property (nonatomic) BOOL active;
 
 @end
 
@@ -44,9 +45,9 @@
 - (void)_setupMenu
 {
   NSStatusBar *menuBar = [NSStatusBar systemStatusBar];
-  self.statusItem = [menuBar statusItemWithLength:18.0];
+  self.statusItem = [menuBar statusItemWithLength:20.0];
   
-  self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIcon"];
+  self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIconOff"];
   self.statusItem.button.target = self;
   self.statusItem.button.action = @selector(toggleDrawing:);
   self.statusItem.behavior = NSStatusItemBehaviorTerminationOnRemoval;
@@ -55,8 +56,14 @@
 
 - (IBAction)toggleDrawing:(id)sender
 {
+  self.active = !self.active;
   for (PTDPaintWindow *wc in self.paintWindowControllers) {
-    wc.active = !wc.active;
+    wc.active = self.active;
+  }
+  if (self.active) {
+    self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIconOn"];
+  } else {
+    self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIconOff"];
   }
 }
 
