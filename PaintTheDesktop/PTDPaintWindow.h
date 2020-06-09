@@ -12,6 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PTDPaintWindow : NSWindowController
 
+- (instancetype)initWithScreen:(NSScreen *)screen;
+
+@property (readonly, nonatomic) NSScreen *screen;
+
+@property (nonatomic) BOOL active;
+
 @end
 
 NS_ASSUME_NONNULL_END

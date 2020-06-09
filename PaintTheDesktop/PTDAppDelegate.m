@@ -12,23 +12,57 @@
 
 @interface PTDAppDelegate ()
 
-@property (nonatomic) PTDPaintWindow *paintWindow;
+@property (nonatomic) NSMutableArray<PTDPaintWindow *> *paintWindowControllers;
+@property (nonatomic) NSStatusItem *statusItem;
 
 @end
 
 
 @implementation PTDAppDelegate
 
+
+- (instancetype)init
+{
+  self = [super init];
+  _paintWindowControllers = [@[] mutableCopy];
+  return self;
+}
+
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-  self.paintWindow = [[PTDPaintWindow alloc] init];
-  [self.paintWindow.window makeKeyAndOrderFront:nil];
+  [self _setupMenu];
+
+  for (NSScreen *screen in NSScreen.screens) {
+    PTDPaintWindow *thisWindow = [[PTDPaintWindow alloc] initWithScreen:screen];
+    [self.paintWindowControllers addObject:thisWindow];
+    [thisWindow.window makeKeyAndOrderFront:nil];
+  }
+}
+
+
+- (void)_setupMenu
+{
+  NSStatusBar *menuBar = [NSStatusBar systemStatusBar];
+  self.statusItem = [menuBar statusItemWithLength:18.0];
+  
+  self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIcon"];
+  self.statusItem.button.target = self;
+  self.statusItem.button.action = @selector(toggleDrawing:);
+  self.statusItem.behavior = NSStatusItemBehaviorTerminationOnRemoval;
+}
+
+
+- (IBAction)toggleDrawing:(id)sender
+{
+  for (PTDPaintWindow *wc in self.paintWindowControllers) {
+    wc.active = !wc.active;
+  }
 }
 
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
-  // Insert code here to tear down your application
 }
 
 

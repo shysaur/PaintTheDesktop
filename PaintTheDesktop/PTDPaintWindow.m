@@ -23,6 +23,14 @@
 @implementation PTDPaintWindow
 
 
+- (instancetype)initWithScreen:(NSScreen *)screen
+{
+  self = [super init];
+  _screen = screen;
+  return self;
+}
+
+
 - (NSString *)windowNibName
 {
   return @"PTDPaintWindow";
@@ -65,15 +73,31 @@
 }
 
 
+- (void)setActive:(BOOL)active
+{
+  if (active) {
+    self.window.ignoresMouseEvents = NO;
+    [self.window makeKeyAndOrderFront:self];
+  } else {
+    self.window.ignoresMouseEvents = YES;
+  }
+  _active = active;
+}
+
+
 - (void)windowDidLoad
 {
   [super windowDidLoad];
   
+  [self.window setFrame:self.screen.frame display:YES animate:NO];
+  
   self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:0.0];
   self.window.opaque = NO;
-  //self.window.hasShadow = NO;
-  //self.window.ignoresMouseEvents = YES;
-  //self.window.level = NSStatusWindowLevel;
+  self.window.hasShadow = NO;
+  self.window.level = kCGMaximumWindowLevelKey;
+  self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary;
+  
+  self.active = NO;
   
   [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
   NSBezierPath *path = [NSBezierPath bezierPath];
