@@ -93,12 +93,15 @@
   
   NSMenu *menu = [[NSMenu alloc] init];
   
+  NSInteger i = 0;
   for (NSString *toolid in PTDToolManager.sharedManager.availableToolIdentifiers) {
     NSString *label = [PTDToolManager.sharedManager toolNameForIdentifier:toolid];
-    NSMenuItem *i = [menu addItemWithTitle:label action:@selector(changeTool:) keyEquivalent:@""];
+    NSMenuItem *item = [menu addItemWithTitle:label action:@selector(changeTool:) keyEquivalent:@""];
+    item.tag = i;
     if ([toolid isEqual:[[self.currentTool class] toolIdentifier]]) {
-      i.state = NSControlStateValueOn;
+      item.state = NSControlStateValueOn;
     }
+    i++;
   }
   
   NSMenu *toolMenu = [self.currentTool optionMenu];

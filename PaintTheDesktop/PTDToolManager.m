@@ -8,9 +8,14 @@
 
 #import "PTDToolManager.h"
 #import "PTDPencilTool.h"
+#import "PTDEraserTool.h"
 
 
 @implementation PTDToolManager
+{
+  NSDictionary *_toolNames;
+  NSDictionary *_toolClasses;
+}
 
 
 - (instancetype)init
@@ -23,9 +28,20 @@
 {
   self = [super init];
   _currentTool = [[PTDPencilTool alloc] init];
+  
   _availableToolIdentifiers = @[
-      PTDToolIdentifierPencilTool
+      PTDToolIdentifierPencilTool,
+      PTDToolIdentifierEraserTool
     ];
+  _toolNames = @{
+      PTDToolIdentifierPencilTool: @"Pencil",
+      PTDToolIdentifierEraserTool: @"Eraser"
+    };
+  _toolClasses = @{
+      PTDToolIdentifierPencilTool: [PTDPencilTool class],
+      PTDToolIdentifierEraserTool: [PTDEraserTool class],
+    };
+    
   return self;
 }
 
@@ -43,19 +59,13 @@
 
 - (NSString *)toolNameForIdentifier:(NSString *)ti
 {
-  NSDictionary * const tools = @{
-      PTDToolIdentifierPencilTool: @"Pencil"
-    };
-  return [tools objectForKey:ti];
+  return [_toolNames objectForKey:ti];
 }
 
 
 - (void)changeTool:(NSString *)newIdentifier
 {
-  NSDictionary * const tools = @{
-      PTDToolIdentifierPencilTool: [PTDPencilTool class]
-    };
-  Class toolClass = [tools objectForKey:newIdentifier];
+  Class toolClass = [_toolClasses objectForKey:newIdentifier];
   [_currentTool deactivate];
   _currentTool = [[toolClass alloc] init];
 }

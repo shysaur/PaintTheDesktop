@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		016D36B42490584E0086E96D /* PTDPencilTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 016D36B32490584E0086E96D /* PTDPencilTool.m */; };
 		016D36B724905E280086E96D /* PTDToolManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 016D36B624905E280086E96D /* PTDToolManager.m */; };
+		016D36BA249064700086E96D /* PTDEraserTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 016D36B9249064700086E96D /* PTDEraserTool.m */; };
 		01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A213DE248EE94500B5EB9D /* PTDAppDelegate.m */; };
 		01A213E1248EE94600B5EB9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01A213E0248EE94600B5EB9D /* Assets.xcassets */; };
 		01A213E4248EE94600B5EB9D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01A213E2248EE94600B5EB9D /* MainMenu.xib */; };
@@ -24,6 +25,8 @@
 		016D36B32490584E0086E96D /* PTDPencilTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPencilTool.m; sourceTree = "<group>"; };
 		016D36B524905E280086E96D /* PTDToolManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDToolManager.h; sourceTree = "<group>"; };
 		016D36B624905E280086E96D /* PTDToolManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDToolManager.m; sourceTree = "<group>"; };
+		016D36B8249064700086E96D /* PTDEraserTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDEraserTool.h; sourceTree = "<group>"; };
+		016D36B9249064700086E96D /* PTDEraserTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDEraserTool.m; sourceTree = "<group>"; };
 		01A213DA248EE94500B5EB9D /* PaintTheDesktop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PaintTheDesktop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01A213DD248EE94500B5EB9D /* PTDAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDAppDelegate.h; sourceTree = "<group>"; };
 		01A213DE248EE94500B5EB9D /* PTDAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDAppDelegate.m; sourceTree = "<group>"; };
@@ -78,6 +81,8 @@
 				01A213F3248EEA1D00B5EB9D /* PTDPaintView.h */,
 				01A213F4248EEA1D00B5EB9D /* PTDPaintView.m */,
 				016D36B1249057890086E96D /* PTDTool.h */,
+				016D36B8249064700086E96D /* PTDEraserTool.h */,
+				016D36B9249064700086E96D /* PTDEraserTool.m */,
 				016D36B22490584E0086E96D /* PTDPencilTool.h */,
 				016D36B32490584E0086E96D /* PTDPencilTool.m */,
 				01A213E5248EE94600B5EB9D /* Info.plist */,
@@ -165,6 +170,7 @@
 				01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */,
 				016D36B724905E280086E96D /* PTDToolManager.m in Sources */,
 				01A213F1248EE9F600B5EB9D /* PTDPaintWindow.m in Sources */,
+				016D36BA249064700086E96D /* PTDEraserTool.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
