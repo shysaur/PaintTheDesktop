@@ -43,13 +43,32 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 {
   [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositingOperationClear];
 
+  [[NSColor colorWithWhite:1.0 alpha:0.0] setFill];
+  
+  NSRect origRect = NSMakeRect(prevPoint.x-_size/2, prevPoint.y-_size/2, _size, _size);
+  NSRect destRect = NSMakeRect(nextPoint.x-_size/2, nextPoint.y-_size/2, _size, _size);
+  NSPoint joinP1, joinP2, joinP3, joinP4;
+  if ((nextPoint.x - prevPoint.x) * (nextPoint.y - prevPoint.y) > 0) {
+    joinP1 = NSMakePoint(NSMinX(origRect), NSMaxY(origRect));
+    joinP2 = NSMakePoint(NSMinX(destRect), NSMaxY(destRect));
+    joinP3 = NSMakePoint(NSMaxX(destRect), NSMinY(destRect));
+    joinP4 = NSMakePoint(NSMaxX(origRect), NSMinY(origRect));
+  } else {
+    joinP1 = NSMakePoint(NSMinX(origRect), NSMinY(origRect));
+    joinP2 = NSMakePoint(NSMinX(destRect), NSMinY(destRect));
+    joinP3 = NSMakePoint(NSMaxX(destRect), NSMaxY(destRect));
+    joinP4 = NSMakePoint(NSMaxX(origRect), NSMaxY(origRect));
+  }
+  
+  NSRectFill(origRect);
+  NSRectFill(destRect);
   NSBezierPath *path = [NSBezierPath bezierPath];
-  [path setLineCapStyle:NSLineCapStyleSquare];
-  [path setLineWidth:self.size];
-  [[NSColor colorWithWhite:1.0 alpha:0.0] setStroke];
-  [path moveToPoint:prevPoint];
-  [path lineToPoint:nextPoint];
-  [path stroke];
+  [path moveToPoint:joinP1];
+  [path lineToPoint:joinP2];
+  [path lineToPoint:joinP3];
+  [path lineToPoint:joinP4];
+  [path closePath];
+  [path fill];
 }
 
 
