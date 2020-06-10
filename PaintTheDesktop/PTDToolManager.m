@@ -7,6 +7,7 @@
 //
 
 #import "PTDToolManager.h"
+#import "PTDTool.h"
 #import "PTDPencilTool.h"
 #import "PTDEraserTool.h"
 

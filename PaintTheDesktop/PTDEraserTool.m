@@ -37,11 +37,6 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 }
 
 
-- (void)dragDidStartAtPoint:(NSPoint)point
-{
-}
-
-
 - (void)dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint
 {
   [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositingOperationClear];
@@ -53,16 +48,6 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
   [path moveToPoint:prevPoint];
   [path lineToPoint:nextPoint];
   [path stroke];
-}
-
-
-- (void)dragDidEndAtPoint:(NSPoint)point
-{
-}
-
-
-- (void)deactivate
-{
 }
 
 

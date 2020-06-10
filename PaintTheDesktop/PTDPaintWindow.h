@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol PTDTool;
+@protocol PTDToolInterface;
 
 @interface PTDPaintWindow : NSWindowController
 

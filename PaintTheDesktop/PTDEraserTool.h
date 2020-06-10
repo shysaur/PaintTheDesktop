@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 extern NSString * const PTDToolIdentifierEraserTool;
 
-@interface PTDEraserTool : NSObject <PTDTool>
+@interface PTDEraserTool : PTDTool
 
 @end
 

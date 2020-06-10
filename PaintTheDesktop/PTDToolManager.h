@@ -7,15 +7,16 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "PTDTool.h"
 
 NS_ASSUME_NONNULL_BEGIN
+
+@class PTDTool;
 
 @interface PTDToolManager : NSObject
 
 @property (class, nonatomic, readonly) PTDToolManager *sharedManager;
 
-@property (nonatomic, readonly) id <PTDTool> currentTool;
+@property (nonatomic, readonly) PTDTool *currentTool;
 
 @property (nonatomic, readonly) NSArray <NSString *> *availableToolIdentifiers;
 - (NSString *)toolNameForIdentifier:(NSString *)ti;

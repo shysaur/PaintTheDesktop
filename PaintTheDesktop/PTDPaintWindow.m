@@ -19,7 +19,7 @@
 @property (nonatomic) BOOL mouseIsDragging;
 @property (nonatomic) NSPoint lastMousePosition;
 
-@property (nonatomic, nullable, readonly) id <PTDTool> currentTool;
+@property (nonatomic, nullable, readonly) PTDTool *currentTool;
 
 @end
 
@@ -57,7 +57,7 @@
 }
 
 
-- (id <PTDTool>)currentTool
+- (PTDTool *)currentTool
 {
   return PTDToolManager.sharedManager.currentTool;
 }
