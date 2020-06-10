@@ -120,7 +120,29 @@
 {
   if (event.clickCount != 1)
     return;
+  [self openContextMenuWithEvent:event];
+}
+
+
+- (void)mouseDragged:(NSEvent *)event
+{
+  [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
+  [self.currentTool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
+  [self updateCursorAtPoint:event.locationInWindow];
+  [self.paintView setNeedsDisplay:YES];
   
+  self.lastMousePosition = event.locationInWindow;
+}
+
+
+- (void)mouseMoved:(NSEvent *)event
+{
+  [self updateCursorAtPoint:event.locationInWindow];
+}
+
+
+- (void)openContextMenuWithEvent:(NSEvent *)event
+{
   NSMenu *menu = [[NSMenu alloc] init];
   
   NSInteger i = 0;
@@ -149,23 +171,6 @@
   exitItm.target = NSApp;
   
   [NSMenu popUpContextMenu:menu withEvent:event forView:self.paintView];
-}
-
-
-- (void)mouseDragged:(NSEvent *)event
-{
-  [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
-  [self.currentTool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
-  [self updateCursorAtPoint:event.locationInWindow];
-  [self.paintView setNeedsDisplay:YES];
-  
-  self.lastMousePosition = event.locationInWindow;
-}
-
-
-- (void)mouseMoved:(NSEvent *)event
-{
-  [self updateCursorAtPoint:event.locationInWindow];
 }
 
 
