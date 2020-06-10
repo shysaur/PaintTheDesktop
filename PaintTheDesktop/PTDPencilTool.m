@@ -30,11 +30,7 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
   self = [super init];
   _size = 2.0;
   _color = [NSColor blackColor];
-  
-  PTDCursor *c = [[PTDCursor alloc] init];
-  c.image = [NSImage imageNamed:@"PTDMenuIconOff"];
-  c.hotspot = NSMakePoint(4, 0);
-  self.cursor = c;
+  [self updateCursor];
   return self;
 }
 
@@ -67,6 +63,12 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
     mi.target = self;
     mi.tag = i;
   }
+  for (int i=10; i<25; i += 5) {
+    NSString *title = [NSString stringWithFormat:@"Size %d", i];
+    NSMenuItem *mi = [res addItemWithTitle:title action:@selector(changeSize:) keyEquivalent:@""];
+    mi.target = self;
+    mi.tag = i;
+  }
   
   [res addItem:[NSMenuItem separatorItem]];
   
@@ -88,6 +90,7 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 - (void)changeSize:(id)sender
 {
   self.size = [(NSMenuItem *)sender tag];
+  [self updateCursor];
 }
 
 
@@ -98,6 +101,28 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
     [NSColor systemBlueColor], [NSColor systemYellowColor], [NSColor whiteColor]
   ];
   self.color = colors[[(NSMenuItem *)sender tag]];
+  [self updateCursor];
+}
+
+
+- (void)updateCursor
+{
+  CGFloat size = self.size;
+  NSColor *color = self.color;
+  PTDCursor *cursor = [[PTDCursor alloc] init];
+  
+  cursor.image = [NSImage
+      imageWithSize:NSMakeSize(size, size)
+      flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+    NSRect circleRect = NSMakeRect(0.5, 0.5, size-1.0, size-1.0);
+    [color setStroke];
+    NSBezierPath *circle = [NSBezierPath bezierPathWithOvalInRect:circleRect];
+    [circle stroke];
+    return YES;
+  }];
+  cursor.hotspot = NSMakePoint(size/2, size/2);
+  
+  self.cursor = cursor;
 }
 
 
