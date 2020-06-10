@@ -11,6 +11,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class PTDPaintView;
+@class PTDCursor;
+
+extern NSString * const PTDToolCursorDidChangeNotification;
 
 @interface PTDTool : NSObject
 
@@ -25,6 +28,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)dragDidEndAtPoint:(NSPoint)point;
 
 - (void)mouseClickedAtPoint:(NSPoint)point;
+
+@property (nonatomic, nullable) PTDCursor *cursor;
 
 - (void)activate;
 - (void)deactivate;

@@ -93,6 +93,8 @@
     [_currentTool deactivate];
     _currentTool = newTool;
     [newTool activate];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:PTDToolCursorDidChangeNotification object:newTool]];
   }
 }
 

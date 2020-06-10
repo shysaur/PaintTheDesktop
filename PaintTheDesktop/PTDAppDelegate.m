@@ -37,7 +37,7 @@
   for (NSScreen *screen in NSScreen.screens) {
     PTDPaintWindow *thisWindow = [[PTDPaintWindow alloc] initWithScreen:screen];
     [self.paintWindowControllers addObject:thisWindow];
-    [thisWindow.window makeKeyAndOrderFront:nil];
+    thisWindow.active = NO;
   }
 }
 

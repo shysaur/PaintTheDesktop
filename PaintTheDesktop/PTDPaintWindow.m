@@ -10,6 +10,7 @@
 #import "PTDPaintView.h"
 #import "PTDTool.h"
 #import "PTDToolManager.h"
+#import "PTDCursor.h"
 
 
 @interface PTDPaintWindow ()
@@ -31,7 +32,16 @@
 {
   self = [super init];
   _screen = screen;
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cursorDidChange:) name:PTDToolCursorDidChangeNotification object:nil];
+  
   return self;
+}
+
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
@@ -53,6 +63,14 @@
   self.window.level = kCGMaximumWindowLevelKey;
   self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary;
   
+  NSTrackingAreaOptions options = NSTrackingActiveAlways |
+    NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited |
+    NSTrackingMouseMoved;
+  NSTrackingArea *area = [[NSTrackingArea alloc]
+    initWithRect:self.paintView.frame
+    options:options owner:self userInfo:nil];
+  [self.paintView addTrackingArea:area];
+  
   self.active = NO;
 }
 
@@ -72,6 +90,7 @@
   
   [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
   [self.currentTool dragDidStartAtPoint:self.lastMousePosition];
+  [self updateCursorAtPoint:event.locationInWindow];
   [self.paintView setNeedsDisplay:YES];
 }
 
@@ -82,15 +101,16 @@
     [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
     [self.currentTool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
     [self.currentTool dragDidEndAtPoint:event.locationInWindow];
-    [self.paintView setNeedsDisplay:YES];
     
   }
   
   if (event.clickCount == 1) {
     [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
     [self.currentTool mouseClickedAtPoint:event.locationInWindow];
-    [self.paintView setNeedsDisplay:YES];
   }
+  
+  [self updateCursorAtPoint:event.locationInWindow];
+  [self.paintView setNeedsDisplay:YES];
   
   self.mouseIsDragging = NO;
 }
@@ -132,9 +152,23 @@
 {
   [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
   [self.currentTool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
+  [self updateCursorAtPoint:event.locationInWindow];
   [self.paintView setNeedsDisplay:YES];
   
   self.lastMousePosition = event.locationInWindow;
+}
+
+
+- (void)mouseMoved:(NSEvent *)event
+{
+  [self updateCursorAtPoint:event.locationInWindow];
+}
+
+
+- (void)updateCursorAtPoint:(NSPoint)point
+{
+  NSPoint hotspot = self.currentTool.cursor.hotspot;
+  self.paintView.cursorPosition = NSMakePoint(point.x - hotspot.x, point.y - hotspot.y);
 }
 
 
@@ -143,8 +177,10 @@
   if (active) {
     self.window.ignoresMouseEvents = NO;
     [self.window makeKeyAndOrderFront:self];
+    self.paintView.cursorImage = self.currentTool.cursor.image;
   } else {
     self.window.ignoresMouseEvents = YES;
+    self.paintView.cursorImage = nil;
   }
   _active = active;
 }
@@ -155,6 +191,13 @@
   NSArray *tools = PTDToolManager.sharedManager.availableToolIdentifiers;
   NSString *tool = [tools objectAtIndex:[(NSMenuItem *)sender tag]];
   [PTDToolManager.sharedManager changeTool:tool];
+}
+
+
+- (void)cursorDidChange:(NSNotification *)notification
+{
+  PTDTool *newTool = notification.object;
+  self.paintView.cursorImage = newTool.cursor.image;
 }
 
 

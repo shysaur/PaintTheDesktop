@@ -8,6 +8,7 @@
 
 #import "PTDPencilTool.h"
 #import "PTDTool.h"
+#import "PTDCursor.h"
 
 
 NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
@@ -29,6 +30,11 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
   self = [super init];
   _size = 2.0;
   _color = [NSColor blackColor];
+  
+  PTDCursor *c = [[PTDCursor alloc] init];
+  c.image = [NSImage imageNamed:@"PTDMenuIconOff"];
+  c.hotspot = NSMakePoint(4, 0);
+  self.cursor = c;
   return self;
 }
 
@@ -36,11 +42,6 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 + (NSString *)toolIdentifier
 {
   return PTDToolIdentifierPencilTool;
-}
-
-
-- (void)dragDidStartAtPoint:(NSPoint)point
-{
 }
 
 
@@ -53,16 +54,6 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
   [path moveToPoint:prevPoint];
   [path lineToPoint:nextPoint];
   [path stroke];
-}
-
-
-- (void)dragDidEndAtPoint:(NSPoint)point
-{
-}
-
-
-- (void)deactivate
-{
 }
 
 

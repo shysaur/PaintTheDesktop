@@ -15,6 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSGraphicsContext *graphicsContext;
 @property (nonatomic, readonly) NSRect paintRect;
 
+@property (nonatomic, nullable) NSImage *cursorImage;
+@property (nonatomic) NSPoint cursorPosition;
+
 @end
 
 NS_ASSUME_NONNULL_END

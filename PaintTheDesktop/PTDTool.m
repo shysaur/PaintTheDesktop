@@ -7,6 +7,10 @@
 //
 
 #import "PTDTool.h"
+#import "PTDCursor.h"
+
+
+NSString * const PTDToolCursorDidChangeNotification = @"PTDToolCursorDidChangeNotification";
 
 
 @implementation PTDTool
@@ -43,6 +47,13 @@
 
 - (void)mouseClickedAtPoint:(NSPoint)point
 {
+}
+
+
+- (void)setCursor:(PTDCursor *)cursor
+{
+  _cursor = cursor;
+  [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:PTDToolCursorDidChangeNotification object:self]];
 }
 
 
