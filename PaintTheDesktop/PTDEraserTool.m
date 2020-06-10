@@ -8,6 +8,7 @@
 
 #import "PTDEraserTool.h"
 #import "PTDTool.h"
+#import "PTDCursor.h"
 
 
 NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
@@ -27,6 +28,7 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 {
   self = [super init];
   _size = 20.0;
+  [self updateCursor];
   return self;
 }
 
@@ -69,6 +71,29 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 - (void)changeSize:(id)sender
 {
   self.size = [(NSMenuItem *)sender tag];
+  [self updateCursor];
+}
+
+
+- (void)updateCursor
+{
+  CGFloat size = self.size;
+  PTDCursor *cursor = [[PTDCursor alloc] init];
+  
+  cursor.image = [NSImage
+      imageWithSize:NSMakeSize(size, size)
+      flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+    NSRect squareRect = NSMakeRect(0.5, 0.5, size-1.0, size-1.0);
+    NSBezierPath *bp = [NSBezierPath bezierPathWithRect:squareRect];
+    [[NSColor whiteColor] setFill];
+    [bp fill];
+    [[NSColor blackColor] setStroke];
+    [bp stroke];
+    return YES;
+  }];
+  cursor.hotspot = NSMakePoint(size/2, size/2);
+  
+  self.cursor = cursor;
 }
 
 
