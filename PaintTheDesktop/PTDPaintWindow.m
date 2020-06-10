@@ -8,6 +8,8 @@
 
 #import "PTDPaintWindow.h"
 #import "PTDPaintView.h"
+#import "PTDTool.h"
+#import "PTDPencilTool.h"
 
 
 @interface PTDPaintWindow ()
@@ -27,6 +29,7 @@
 {
   self = [super init];
   _screen = screen;
+  _currentTool = [[PTDPencilTool alloc] init];
   return self;
 }
 
@@ -41,13 +44,20 @@
 {
   self.mouseIsDragging = YES;
   self.lastMousePosition = event.locationInWindow;
+  
+  [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
+  [self.currentTool dragDidStartAtPoint:self.lastMousePosition];
+  [self.paintView setNeedsDisplay:YES];
 }
 
 
 - (void)mouseUp:(NSEvent *)event
 {
   if (self.mouseIsDragging) {
-    [self mouseDraggedFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
+    [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
+    [self.currentTool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
+    [self.currentTool dragDidEndAtPoint:event.locationInWindow];
+    [self.paintView setNeedsDisplay:YES];
   }
   self.mouseIsDragging = NO;
 }
@@ -55,21 +65,11 @@
 
 - (void)mouseDragged:(NSEvent *)event
 {
-  [self mouseDraggedFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
-  self.lastMousePosition = event.locationInWindow;
-}
-
-
-- (void)mouseDraggedFromPoint:(NSPoint)p1 toPoint:(NSPoint)p2
-{
   [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
-  NSBezierPath *path = [NSBezierPath bezierPath];
-  [[NSColor blackColor] setStroke];
-  [path moveToPoint:p1];
-  [path lineToPoint:p2];
-  [path stroke];
-
+  [self.currentTool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
   [self.paintView setNeedsDisplay:YES];
+  
+  self.lastMousePosition = event.locationInWindow;
 }
 
 
@@ -98,17 +98,6 @@
   self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary;
   
   self.active = NO;
-  
-  [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
-  NSBezierPath *path = [NSBezierPath bezierPath];
-  NSRect rect = self.paintView.paintRect;
-  [path moveToPoint:NSMakePoint(rect.origin.x, rect.origin.y)];
-  [path lineToPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
-  [path moveToPoint:NSMakePoint(NSMaxX(rect), rect.origin.y)];
-  [path lineToPoint:NSMakePoint(rect.origin.x, NSMaxY(rect))];
-  [[NSColor blackColor] setStroke];
-  [path stroke];
-  [self.paintView setNeedsDisplay:YES];
 }
 
 

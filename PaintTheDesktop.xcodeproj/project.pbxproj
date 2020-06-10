@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		016D36B42490584E0086E96D /* PTDPencilTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 016D36B32490584E0086E96D /* PTDPencilTool.m */; };
 		01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A213DE248EE94500B5EB9D /* PTDAppDelegate.m */; };
 		01A213E1248EE94600B5EB9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01A213E0248EE94600B5EB9D /* Assets.xcassets */; };
 		01A213E4248EE94600B5EB9D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01A213E2248EE94600B5EB9D /* MainMenu.xib */; };
@@ -17,6 +18,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		016D36B1249057890086E96D /* PTDTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDTool.h; sourceTree = "<group>"; };
+		016D36B22490584E0086E96D /* PTDPencilTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDPencilTool.h; sourceTree = "<group>"; };
+		016D36B32490584E0086E96D /* PTDPencilTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPencilTool.m; sourceTree = "<group>"; };
 		01A213DA248EE94500B5EB9D /* PaintTheDesktop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PaintTheDesktop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01A213DD248EE94500B5EB9D /* PTDAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDAppDelegate.h; sourceTree = "<group>"; };
 		01A213DE248EE94500B5EB9D /* PTDAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDAppDelegate.m; sourceTree = "<group>"; };
@@ -70,6 +74,9 @@
 				01A213E2248EE94600B5EB9D /* MainMenu.xib */,
 				01A213F3248EEA1D00B5EB9D /* PTDPaintView.h */,
 				01A213F4248EEA1D00B5EB9D /* PTDPaintView.m */,
+				016D36B1249057890086E96D /* PTDTool.h */,
+				016D36B22490584E0086E96D /* PTDPencilTool.h */,
+				016D36B32490584E0086E96D /* PTDPencilTool.m */,
 				01A213E5248EE94600B5EB9D /* Info.plist */,
 				01A213E6248EE94600B5EB9D /* main.m */,
 			);
@@ -148,6 +155,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01A213F5248EEA1D00B5EB9D /* PTDPaintView.m in Sources */,
+				016D36B42490584E0086E96D /* PTDPencilTool.m in Sources */,
 				01A213E7248EE94600B5EB9D /* main.m in Sources */,
 				01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */,
 				01A213F1248EE9F600B5EB9D /* PTDPaintWindow.m in Sources */,

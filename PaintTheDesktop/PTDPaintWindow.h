@@ -10,6 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol PTDTool;
+
 @interface PTDPaintWindow : NSWindowController
 
 - (instancetype)initWithScreen:(NSScreen *)screen;
@@ -17,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic) NSScreen *screen;
 
 @property (nonatomic) BOOL active;
+
+@property (nonatomic, nullable) id <PTDTool> currentTool;
 
 @end
 
