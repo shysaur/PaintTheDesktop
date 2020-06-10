@@ -59,7 +59,45 @@
 
 - (nullable NSMenu *)optionMenu
 {
-  return nil;
+  NSMenu *res = [[NSMenu alloc] init];
+  
+  for (int i=2; i<10; i += 2) {
+    NSString *title = [NSString stringWithFormat:@"Size %d", i];
+    NSMenuItem *mi = [res addItemWithTitle:title action:@selector(changeSize:) keyEquivalent:@""];
+    mi.target = self;
+    mi.tag = i;
+  }
+  
+  [res addItem:[NSMenuItem separatorItem]];
+  
+  NSArray *colors = @[
+    @"Black", @"Red", @"Green", @"Blue", @"Yellow", @"White"
+  ];
+  int i = 0;
+  for (NSString *color in colors) {
+    NSMenuItem *mi = [res addItemWithTitle:color action:@selector(changeColor:) keyEquivalent:@""];
+    mi.target = self;
+    mi.tag = i;
+    i++;
+  }
+  
+  return res;
+}
+
+
+- (void)changeSize:(id)sender
+{
+  self.size = [(NSMenuItem *)sender tag];
+}
+
+
+- (void)changeColor:(id)sender
+{
+  NSArray *colors = @[
+    [NSColor blackColor], [NSColor systemRedColor], [NSColor systemGreenColor],
+    [NSColor systemBlueColor], [NSColor systemYellowColor], [NSColor whiteColor]
+  ];
+  self.color = colors[[(NSMenuItem *)sender tag]];
 }
 
 

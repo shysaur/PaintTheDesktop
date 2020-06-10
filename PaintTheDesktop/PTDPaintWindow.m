@@ -63,6 +63,17 @@
 }
 
 
+- (void)rightMouseUp:(NSEvent *)event
+{
+  if (event.clickCount != 1)
+    return;
+  NSMenu *menu = [self.currentTool optionMenu];
+  if (!menu)
+    return;
+  [NSMenu popUpContextMenu:menu withEvent:event forView:self.paintView];
+}
+
+
 - (void)mouseDragged:(NSEvent *)event
 {
   [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
