@@ -24,6 +24,7 @@
 {
   NSDictionary *_toolNames;
   NSDictionary *_toolClasses;
+  NSMutableDictionary *_lastToolForIdentifier;
 }
 
 
@@ -40,16 +41,20 @@
   
   _availableToolIdentifiers = @[
       PTDToolIdentifierPencilTool,
-      PTDToolIdentifierEraserTool
+      PTDToolIdentifierEraserTool,
+      PTDToolIdentifierResetTool,
     ];
   _toolNames = @{
       PTDToolIdentifierPencilTool: @"Pencil",
-      PTDToolIdentifierEraserTool: @"Eraser"
+      PTDToolIdentifierEraserTool: @"Eraser",
+      PTDToolIdentifierResetTool: @"Reset"
     };
   _toolClasses = @{
       PTDToolIdentifierPencilTool: [PTDPencilTool class],
       PTDToolIdentifierEraserTool: [PTDEraserTool class],
+      PTDToolIdentifierResetTool: [PTDResetTool class]
     };
+  _lastToolForIdentifier = [@{} mutableCopy];
     
   return self;
 }
