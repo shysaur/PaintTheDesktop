@@ -144,6 +144,10 @@
     }
   }
   
+  [menu addItem:[NSMenuItem separatorItem]];
+  NSMenuItem *exitItm = [menu addItemWithTitle:@"Quit" action:@selector(terminate:) keyEquivalent:@""];
+  exitItm.target = NSApp;
+  
   [NSMenu popUpContextMenu:menu withEvent:event forView:self.paintView];
 }
 
