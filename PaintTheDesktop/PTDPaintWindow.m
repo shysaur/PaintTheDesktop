@@ -59,7 +59,9 @@
 
 - (PTDTool *)currentTool
 {
-  return PTDToolManager.sharedManager.currentTool;
+  PTDTool *tool = PTDToolManager.sharedManager.currentTool;
+  tool.currentPaintView = self.paintView;
+  return tool;
 }
 
 
@@ -81,7 +83,15 @@
     [self.currentTool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
     [self.currentTool dragDidEndAtPoint:event.locationInWindow];
     [self.paintView setNeedsDisplay:YES];
+    
   }
+  
+  if (event.clickCount == 1) {
+    [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
+    [self.currentTool mouseClickedAtPoint:event.locationInWindow];
+    [self.paintView setNeedsDisplay:YES];
+  }
+  
   self.mouseIsDragging = NO;
 }
 

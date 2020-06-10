@@ -10,6 +10,14 @@
 #import "PTDTool.h"
 #import "PTDPencilTool.h"
 #import "PTDEraserTool.h"
+#import "PTDResetTool.h"
+
+
+@interface PTDToolManager ()
+
+@property (nonatomic, nullable) NSString *previousToolIdentifier;
+
+@end
 
 
 @implementation PTDToolManager
@@ -66,9 +74,21 @@
 
 - (void)changeTool:(NSString *)newIdentifier
 {
-  Class toolClass = [_toolClasses objectForKey:newIdentifier];
-  [_currentTool deactivate];
-  _currentTool = [[toolClass alloc] init];
+  NSString *prevId = [[_currentTool class] toolIdentifier];
+  self.previousToolIdentifier = prevId;
+  [_lastToolForIdentifier setObject:_currentTool forKey:prevId];
+  
+  PTDTool *newTool = [_lastToolForIdentifier objectForKey:newIdentifier];
+  if (!newTool) {
+    Class toolClass = [_toolClasses objectForKey:newIdentifier];
+    newTool = [[toolClass alloc] init];
+  }
+  
+  if (_currentTool != newTool) {
+    [_currentTool deactivate];
+    _currentTool = newTool;
+    [newTool activate];
+  }
 }
 
 

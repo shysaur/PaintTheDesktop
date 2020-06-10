@@ -10,16 +10,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class PTDPaintView;
+
 @interface PTDTool : NSObject
 
 - (instancetype)init NS_DESIGNATED_INITIALIZER;
 
-@property (class, readonly) NSString *toolIdentifier;
+@property (class, readonly, nonatomic) NSString *toolIdentifier;
+
+@property (nonatomic, weak) PTDPaintView *currentPaintView;
 
 - (void)dragDidStartAtPoint:(NSPoint)point;
 - (void)dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint;
 - (void)dragDidEndAtPoint:(NSPoint)point;
 
+- (void)mouseClickedAtPoint:(NSPoint)point;
+
+- (void)activate;
 - (void)deactivate;
 
 - (nullable NSMenu *)optionMenu;

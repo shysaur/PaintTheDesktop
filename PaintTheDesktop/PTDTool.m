@@ -41,6 +41,16 @@
 }
 
 
+- (void)mouseClickedAtPoint:(NSPoint)point
+{
+}
+
+
+- (void)activate
+{
+}
+
+
 - (void)deactivate
 {
 }

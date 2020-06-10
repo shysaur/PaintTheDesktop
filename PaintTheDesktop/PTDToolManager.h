@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (class, nonatomic, readonly) PTDToolManager *sharedManager;
 
 @property (nonatomic, readonly) PTDTool *currentTool;
+@property (nonatomic, readonly, nullable) NSString *previousToolIdentifier;
 
 @property (nonatomic, readonly) NSArray <NSString *> *availableToolIdentifiers;
 - (NSString *)toolNameForIdentifier:(NSString *)ti;
