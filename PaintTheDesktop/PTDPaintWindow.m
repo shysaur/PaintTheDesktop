@@ -35,6 +35,9 @@
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cursorDidChange:) name:PTDToolCursorDidChangeNotification object:nil];
   
+  /* If we don't do this, Cocoa will muck around with our window positioning */
+  self.shouldCascadeWindows = NO;
+  
   return self;
 }
 
@@ -55,13 +58,15 @@
 {
   [super windowDidLoad];
   
-  [self.window setFrame:self.screen.frame display:YES animate:NO];
-  
   self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:0.0];
   self.window.opaque = NO;
   self.window.hasShadow = NO;
   self.window.level = kCGMaximumWindowLevelKey;
   self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary;
+  self.window.movable = NO;
+  
+  [self.window setFrame:self.screen.frame display:NO];
+  [self.window orderFrontRegardless];
   
   NSTrackingAreaOptions options = NSTrackingActiveAlways |
     NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited |
@@ -185,8 +190,8 @@
 {
   if (active) {
     self.window.ignoresMouseEvents = NO;
-    [self.window makeKeyAndOrderFront:self];
     self.paintView.cursorImage = self.currentTool.cursor.image;
+    [self.window makeKeyAndOrderFront:nil];
   } else {
     self.window.ignoresMouseEvents = YES;
     self.paintView.cursorImage = nil;

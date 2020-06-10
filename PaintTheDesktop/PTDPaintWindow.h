@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol PTDToolInterface;
 
-@interface PTDPaintWindow : NSWindowController
+@interface PTDPaintWindow : NSWindowController <NSWindowDelegate>
 
 - (instancetype)initWithScreen:(NSScreen *)screen;
 
