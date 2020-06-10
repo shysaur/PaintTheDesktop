@@ -11,6 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+extern NSString * const PTDToolIdentifierPencilTool;
+
 @interface PTDPencilTool : NSObject <PTDTool>
 
 @end

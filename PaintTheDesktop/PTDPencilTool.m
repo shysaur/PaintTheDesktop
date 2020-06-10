@@ -10,6 +10,9 @@
 #import "PTDTool.h"
 
 
+NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
+
+
 @interface PTDPencilTool ()
 
 @property (nonatomic) CGFloat size;
@@ -27,6 +30,12 @@
   _size = 2.0;
   _color = [NSColor blackColor];
   return self;
+}
+
+
++ (NSString *)toolIdentifier
+{
+  return PTDToolIdentifierPencilTool;
 }
 
 

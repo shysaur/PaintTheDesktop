@@ -20,8 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) BOOL active;
 
-@property (nonatomic, nullable) id <PTDTool> currentTool;
-
 @end
 
 NS_ASSUME_NONNULL_END

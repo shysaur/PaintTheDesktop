@@ -9,7 +9,7 @@
 #import "PTDPaintWindow.h"
 #import "PTDPaintView.h"
 #import "PTDTool.h"
-#import "PTDPencilTool.h"
+#import "PTDToolManager.h"
 
 
 @interface PTDPaintWindow ()
@@ -18,6 +18,8 @@
 
 @property (nonatomic) BOOL mouseIsDragging;
 @property (nonatomic) NSPoint lastMousePosition;
+
+@property (nonatomic, nullable, readonly) id <PTDTool> currentTool;
 
 @end
 
@@ -29,7 +31,6 @@
 {
   self = [super init];
   _screen = screen;
-  _currentTool = [[PTDPencilTool alloc] init];
   return self;
 }
 
@@ -37,6 +38,28 @@
 - (NSString *)windowNibName
 {
   return @"PTDPaintWindow";
+}
+
+
+- (void)windowDidLoad
+{
+  [super windowDidLoad];
+  
+  [self.window setFrame:self.screen.frame display:YES animate:NO];
+  
+  self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:0.0];
+  self.window.opaque = NO;
+  self.window.hasShadow = NO;
+  self.window.level = kCGMaximumWindowLevelKey;
+  self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary;
+  
+  self.active = NO;
+}
+
+
+- (id <PTDTool>)currentTool
+{
+  return PTDToolManager.sharedManager.currentTool;
 }
 
 
@@ -67,9 +90,27 @@
 {
   if (event.clickCount != 1)
     return;
-  NSMenu *menu = [self.currentTool optionMenu];
-  if (!menu)
-    return;
+  
+  NSMenu *menu = [[NSMenu alloc] init];
+  
+  for (NSString *toolid in PTDToolManager.sharedManager.availableToolIdentifiers) {
+    NSString *label = [PTDToolManager.sharedManager toolNameForIdentifier:toolid];
+    NSMenuItem *i = [menu addItemWithTitle:label action:@selector(changeTool:) keyEquivalent:@""];
+    if ([toolid isEqual:[[self.currentTool class] toolIdentifier]]) {
+      i.state = NSControlStateValueOn;
+    }
+  }
+  
+  NSMenu *toolMenu = [self.currentTool optionMenu];
+  if (toolMenu) {
+    [menu addItem:[NSMenuItem separatorItem]];
+    NSArray *itemArray = toolMenu.itemArray;
+    [toolMenu removeAllItems];
+    for (NSMenuItem *item in itemArray) {
+      [menu addItem:item];
+    }
+  }
+  
   [NSMenu popUpContextMenu:menu withEvent:event forView:self.paintView];
 }
 
@@ -96,19 +137,11 @@
 }
 
 
-- (void)windowDidLoad
+- (void)changeTool:(id)sender
 {
-  [super windowDidLoad];
-  
-  [self.window setFrame:self.screen.frame display:YES animate:NO];
-  
-  self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:0.0];
-  self.window.opaque = NO;
-  self.window.hasShadow = NO;
-  self.window.level = kCGMaximumWindowLevelKey;
-  self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary;
-  
-  self.active = NO;
+  NSArray *tools = PTDToolManager.sharedManager.availableToolIdentifiers;
+  NSString *tool = [tools objectAtIndex:[(NSMenuItem *)sender tag]];
+  [PTDToolManager.sharedManager changeTool:tool];
 }
 
 

@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol PTDTool <NSObject>
 
+@property (class, readonly) NSString *toolIdentifier;
+
 - (void)dragDidStartAtPoint:(NSPoint)point;
 - (void)dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint;
 - (void)dragDidEndAtPoint:(NSPoint)point;
