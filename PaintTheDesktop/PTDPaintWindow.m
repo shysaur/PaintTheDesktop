@@ -99,6 +99,7 @@
 - (void)setDisplay:(CGDirectDisplayID)display
 {
   CGRect dispFrame = CGDisplayBounds(display);
+  
   if (CGDisplayIsActive(display) && (dispFrame.size.width > 0) && (dispFrame.size.height > 0)) {
     /* translate from CG reference coords to NS ones */
     dispFrame.origin.y += dispFrame.size.height;
@@ -107,6 +108,9 @@
     
     self.window.isVisible = YES;
     [self.window setFrame:dispFrame display:NO];
+    
+    CGFloat scale = self.window.screen.backingScaleFactor;
+    self.paintView.backingScaleFactor = NSMakeSize(scale, scale);
   } else {
     self.window.isVisible = NO;
   }

@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PTDPaintView : NSOpenGLView
 
+@property (nonatomic) NSSize backingScaleFactor;
+
 @property (nonatomic, readonly) NSGraphicsContext *graphicsContext;
 @property (nonatomic, readonly) NSRect paintRect;
 

@@ -81,6 +81,7 @@
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
   self = [super initWithFrame:frameRect];
+  _backingScaleFactor = NSMakeSize(1.0, 1.0);
   [self updateBackingImage];
   [self updateCursor];
   return self;
@@ -90,6 +91,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
   self = [super initWithCoder:coder];
+  _backingScaleFactor = NSMakeSize(1.0, 1.0);
   [self updateBackingImage];
   [self updateCursor];
   return self;
@@ -134,6 +136,13 @@
 }
 
 
+- (void)setBackingScaleFactor:(NSSize)backingScaleFactor
+{
+  _backingScaleFactor = backingScaleFactor;
+  [self updateBackingImage];
+}
+
+
 - (NSRect)paintRect
 {
   return self.bounds;
@@ -163,21 +172,21 @@
 {
   NSBitmapImageRep *imageRep = [self bufferAsImageRep];
   NSGraphicsContext *ctxt = [NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep];
-  NSPoint oneVector = NSMakePoint(1.0, 1.0);
-  NSPoint backingOneVector = [self convertPointToBacking:oneVector];
-  CGContextScaleCTM(ctxt.CGContext, backingOneVector.x, backingOneVector.y);
+  CGContextScaleCTM(ctxt.CGContext, _backingScaleFactor.width, _backingScaleFactor.height);
   return ctxt;
 }
 
 
 - (void)updateBackingImage
 {
+  NSSize newSize = self.bounds.size;
+  NSSize newPxSize = NSMakeSize(newSize.width * _backingScaleFactor.width, newSize.height * _backingScaleFactor.height);
+  if (newPxSize.width == _width && newPxSize.height == _height)
+    return;
+
   @autoreleasepool {
     NSBitmapImageRep *oldImage = [self bufferAsImageRep];
     GLuint oldBuffer = _mainTexBufId;
-    
-    NSSize newSize = self.bounds.size;
-    NSSize newPxSize = [self convertSizeToBacking:newSize];
     
     [self.openGLContext makeCurrentContext];
     GLuint newBuffer;
