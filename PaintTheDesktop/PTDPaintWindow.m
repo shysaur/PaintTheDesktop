@@ -11,6 +11,7 @@
 #import "PTDTool.h"
 #import "PTDToolManager.h"
 #import "PTDCursor.h"
+#import "NSScreen+PTD.h"
 
 
 @interface PTDPaintWindow ()
@@ -32,12 +33,13 @@
 @implementation PTDPaintWindow
 
 
-- (instancetype)initWithScreen:(NSScreen *)screen
+- (instancetype)initWithDisplay:(CGDirectDisplayID)display;
 {
   self = [super init];
-  _screen = screen;
+  _display = display;
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cursorDidChange:) name:PTDToolCursorDidChangeNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenConfigurationDidChange:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
   
   /* If we don't do this, Cocoa will muck around with our window positioning */
   self.shouldCascadeWindows = NO;
@@ -70,7 +72,6 @@
   self.window.level = kCGMaximumWindowLevelKey;
   self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary;
   
-  [self.window setFrame:self.screen.frame display:NO];
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"debug"]) {
     self.window.movable = YES;
     self.window.styleMask = self.window.styleMask | NSWindowStyleMaskTitled;
@@ -78,6 +79,7 @@
     self.window.movable = NO;
   }
   
+  self.display = _display;
   [self.window orderFrontRegardless];
   
   NSTrackingAreaOptions options = NSTrackingActiveAlways |
@@ -91,6 +93,31 @@
   self.currentCursor = self.currentTool.cursor;
   
   self.active = NO;
+}
+
+
+- (void)setDisplay:(CGDirectDisplayID)display
+{
+  CGRect dispFrame = CGDisplayBounds(display);
+  if (CGDisplayIsActive(display) && (dispFrame.size.width > 0) && (dispFrame.size.height > 0)) {
+    /* translate from CG reference coords to NS ones */
+    dispFrame.origin.y += dispFrame.size.height;
+    CGRect zeroScreenRect = CGDisplayBounds(CGMainDisplayID());
+    dispFrame.origin.y = -dispFrame.origin.y + zeroScreenRect.size.height;
+    
+    self.window.isVisible = YES;
+    [self.window setFrame:dispFrame display:NO];
+  } else {
+    self.window.isVisible = NO;
+  }
+  
+  _display = display;
+}
+
+
+- (void)screenConfigurationDidChange:(NSNotification *)notification
+{
+  self.display = _display;
 }
 
 

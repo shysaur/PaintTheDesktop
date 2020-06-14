@@ -69,8 +69,6 @@
 
 
 @implementation PTDPaintView {
-  CGFloat _scaleFactor;
-  
   GLuint _mainTexBufId;
   GLuint _width, _height;
   __weak PTDOpenGLBufferWrapperImageRep *_lastImageRepWrapper;
@@ -83,7 +81,6 @@
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
   self = [super initWithFrame:frameRect];
-  _scaleFactor = 1.0;
   [self updateBackingImage];
   [self updateCursor];
   return self;
@@ -93,7 +90,6 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
   self = [super initWithCoder:coder];
-  _scaleFactor = 1.0;
   [self updateBackingImage];
   [self updateCursor];
   return self;
@@ -134,7 +130,6 @@
 
 - (void)viewDidChangeBackingProperties
 {
-  _scaleFactor = [[[self window] screen] backingScaleFactor];
   [self updateBackingImage];
 }
 
@@ -168,7 +163,9 @@
 {
   NSBitmapImageRep *imageRep = [self bufferAsImageRep];
   NSGraphicsContext *ctxt = [NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep];
-  CGContextScaleCTM(ctxt.CGContext, _scaleFactor, _scaleFactor);
+  NSPoint oneVector = NSMakePoint(1.0, 1.0);
+  NSPoint backingOneVector = [self convertPointToBacking:oneVector];
+  CGContextScaleCTM(ctxt.CGContext, backingOneVector.x, backingOneVector.y);
   return ctxt;
 }
 
@@ -284,8 +281,6 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-  NSRect r = [self convertRectToBacking:self.bounds];
-
   GLint zero = 0;
   [self.openGLContext setValues:&zero forParameter:NSOpenGLCPSurfaceOpacity];
   
@@ -300,7 +295,6 @@
   glDepthMask(GL_FALSE);
   glStencilMask(0);
 
-  glViewport(0, 0, r.size.width, r.size.height);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   //glOrtho(0, r.size.width, 0, r.size.height, -1, 1);
@@ -348,6 +342,7 @@
   
   if (_cursorBackingImage) {
     NSPoint cursorPos = [self convertPointToBacking:self.cursorPosition];
+    NSRect r = [self convertRectToBacking:self.bounds];
     GLfloat scrCurLeft = cursorPos.x / r.size.width * 2 - 1;
     GLfloat scrCurBtm = cursorPos.y / r.size.height * 2 - 1;
     GLfloat scrCurRight = curSize.width / r.size.width * 2 + scrCurLeft;

@@ -8,6 +8,7 @@
 
 #import "PTDAppDelegate.h"
 #import "PTDPaintWindow.h"
+#import "NSScreen+PTD.h"
 
 
 @interface PTDAppDelegate ()
@@ -26,6 +27,7 @@
 {
   self = [super init];
   _paintWindowControllers = [@[] mutableCopy];
+  _active = NO;
   return self;
 }
 
@@ -35,9 +37,31 @@
   [self _setupMenu];
 
   for (NSScreen *screen in NSScreen.screens) {
-    PTDPaintWindow *thisWindow = [[PTDPaintWindow alloc] initWithScreen:screen];
+    PTDPaintWindow *thisWindow = [[PTDPaintWindow alloc] initWithDisplay:[screen ptd_displayID]];
     [self.paintWindowControllers addObject:thisWindow];
-    thisWindow.active = NO;
+    thisWindow.active = self.active;
+  }
+}
+
+
+- (void)applicationDidChangeScreenParameters:(NSNotification *)notification
+{
+  for (NSScreen *screen in NSScreen.screens) {
+    CGDirectDisplayID dispId = [screen ptd_displayID];
+    
+    BOOL alreadyHandled = NO;
+    for (PTDPaintWindow *window in self.paintWindowControllers) {
+      if (dispId == window.display) {
+        alreadyHandled = YES;
+        break;
+      }
+    }
+    
+    if (!alreadyHandled) {
+      PTDPaintWindow *thisWindow = [[PTDPaintWindow alloc] initWithDisplay:dispId];
+      [self.paintWindowControllers addObject:thisWindow];
+      thisWindow.active = self.active;
+    }
   }
 }
 
