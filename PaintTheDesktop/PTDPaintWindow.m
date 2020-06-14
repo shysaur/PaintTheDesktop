@@ -65,9 +65,15 @@
   self.window.hasShadow = NO;
   self.window.level = kCGMaximumWindowLevelKey;
   self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary;
-  self.window.movable = NO;
   
   [self.window setFrame:self.screen.frame display:NO];
+  if ([[NSUserDefaults standardUserDefaults] boolForKey:@"debug"]) {
+    self.window.movable = YES;
+    self.window.styleMask = self.window.styleMask | NSWindowStyleMaskTitled;
+  } else {
+    self.window.movable = NO;
+  }
+  
   [self.window orderFrontRegardless];
   
   NSTrackingAreaOptions options = NSTrackingActiveAlways |
