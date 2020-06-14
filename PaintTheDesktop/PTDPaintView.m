@@ -7,73 +7,15 @@
 //
 
 #import "PTDPaintView.h"
+#import "PTDOpenGLBufferedTexture.h"
 #include <OpenGL/gl.h>
 
 
 #define ALIGN_OFFS(n, a) ((((int64_t)(n) + ((a)-1)) / (a)) * (a))
 
 
-@interface PTDOpenGLBufferWrapperImageRep: NSBitmapImageRep
-
-@end
-
-
-@implementation PTDOpenGLBufferWrapperImageRep {
-  GLuint _glBuffer;
-  NSOpenGLContext *_glContext;
-}
-
-
-- (instancetype)initWithOpenGLContext:(NSOpenGLContext *)glcontext
-    buffer:(GLuint)buffer
-    pixelsWide:(NSInteger)width
-    pixelsHigh:(NSInteger)height
-    bitsPerSample:(NSInteger)bps
-    samplesPerPixel:(NSInteger)spp
-    hasAlpha:(BOOL)alpha
-    colorSpaceName:(NSColorSpaceName)colorSpaceName
-    bytesPerRow:(NSInteger)rBytes
-    bitsPerPixel:(NSInteger)pBits
-{
-  [glcontext makeCurrentContext];
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffer);
-  void *bufptr = glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_READ_WRITE);
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-  
-  self = [super
-      initWithBitmapDataPlanes:(unsigned char**)&bufptr
-      pixelsWide:width pixelsHigh:height
-      bitsPerSample:bps samplesPerPixel:spp hasAlpha:alpha isPlanar:NO
-      colorSpaceName:colorSpaceName
-      bytesPerRow:rBytes bitsPerPixel:pBits];
-      
-  _glBuffer = buffer;
-  _glContext = glcontext;
-  NSLog(@"new ptd image %p gl ctxt %p glbuf %d bufptr %p imgbufptr %p", self, glcontext, buffer, bufptr, self.bitmapData);
-  return self;
-}
-
-
-- (void)dealloc
-{
-  [_glContext makeCurrentContext];
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, _glBuffer);
-  glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-  NSLog(@"free ptd image %p", self);
-}
-
-
-@end
-
-
-
 @implementation PTDPaintView {
-  GLuint _mainTexBufId;
-  GLuint _width, _height;
-  __weak PTDOpenGLBufferWrapperImageRep *_lastImageRepWrapper;
-  GLuint _mainTexId;
-  
+  PTDOpenGLBufferedTexture *_mainBuffer;
   NSBitmapImageRep *_cursorBackingImage;
 }
 
@@ -149,28 +91,9 @@
 }
 
 
-- (NSBitmapImageRep *)bufferAsImageRep
-{
-  if (_lastImageRepWrapper)
-    return _lastImageRepWrapper;
-  if (_mainTexBufId == 0)
-    return nil;
-  NSInteger bytePerRow = ALIGN_OFFS(4 * _width, 4);
-  PTDOpenGLBufferWrapperImageRep *imageRep = [[PTDOpenGLBufferWrapperImageRep alloc]
-      initWithOpenGLContext:self.openGLContext
-      buffer:_mainTexBufId
-      pixelsWide:_width pixelsHigh:_height
-      bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES
-      colorSpaceName:NSCalibratedRGBColorSpace
-      bytesPerRow:bytePerRow bitsPerPixel:0];
-  _lastImageRepWrapper = imageRep;
-  return imageRep;
-}
-
-
 - (NSGraphicsContext *)graphicsContext
 {
-  NSBitmapImageRep *imageRep = [self bufferAsImageRep];
+  NSBitmapImageRep *imageRep = _mainBuffer.bufferAsImageRep;
   NSGraphicsContext *ctxt = [NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep];
   CGContextScaleCTM(ctxt.CGContext, _backingScaleFactor.width, _backingScaleFactor.height);
   return ctxt;
@@ -181,25 +104,14 @@
 {
   NSSize newSize = self.bounds.size;
   NSSize newPxSize = NSMakeSize(newSize.width * _backingScaleFactor.width, newSize.height * _backingScaleFactor.height);
-  if (newPxSize.width == _width && newPxSize.height == _height)
+  if (newPxSize.width == _mainBuffer.pixelWidth && newPxSize.height == _mainBuffer.pixelHeight)
     return;
 
   @autoreleasepool {
-    NSBitmapImageRep *oldImage = [self bufferAsImageRep];
-    GLuint oldBuffer = _mainTexBufId;
-    
-    [self.openGLContext makeCurrentContext];
-    GLuint newBuffer;
-    GLuint newWidth = newPxSize.width, newHeight = newPxSize.height;
-    NSInteger newBytePerRow = ALIGN_OFFS(4 * newWidth, 4);
-    glGenBuffers(1, &newBuffer);
-    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, newBuffer);
-    glBufferData(GL_PIXEL_UNPACK_BUFFER, newBytePerRow * newHeight, NULL, GL_DYNAMIC_DRAW);
-    
-    _lastImageRepWrapper = nil;
-    _mainTexBufId = newBuffer;
-    _width = newWidth;
-    _height = newHeight;
+    NSBitmapImageRep *oldImage = _mainBuffer.bufferAsImageRep;
+    _mainBuffer = [[PTDOpenGLBufferedTexture alloc]
+        initWithOpenGLContext:self.openGLContext
+        width:newPxSize.width height:newPxSize.height];
   
     [NSGraphicsContext setCurrentContext:self.graphicsContext];
     if (oldImage) {
@@ -212,23 +124,8 @@
       [[NSColor colorWithDeviceWhite:1.0 alpha:0.0] setFill];
       NSRectFill((NSRect){NSMakePoint(0, 0), newPxSize});
     }
-    
-    oldImage = nil;
-    if (oldBuffer)
-      glDeleteBuffers(1, &oldBuffer);
     [NSGraphicsContext setCurrentContext:nil];
   }
-  
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-  
-  if (_mainTexId)
-    glDeleteTextures(1, &_mainTexId);
-  glGenTextures(1, &_mainTexId);
-  glBindTexture(GL_TEXTURE_2D, _mainTexId);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glBindTexture(GL_TEXTURE_2D, 0);
   
   [self setNeedsDisplay:YES];
 }
@@ -314,13 +211,6 @@
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT);
   
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, _mainTexBufId);
-  glBindTexture(GL_TEXTURE_2D, _mainTexId);
-  
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width, _height, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
-  
   
   GLuint cursorTexId = -1;
   NSSize curSize;
@@ -339,8 +229,9 @@
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   
-  glBindTexture(GL_TEXTURE_2D, _mainTexId);
-  glEnable(GL_TEXTURE_2D);
+  [_mainBuffer bindTextureAndBuffer];
+  
+  glEnable(_mainBuffer.texUnit);
   glBegin(GL_QUADS);
   glNormal3f(0.0, 0.0, 1.0);
   glTexCoord2d(0, 1); glVertex3f(-1.0, -1.0, 0.0);
@@ -348,6 +239,10 @@
   glTexCoord2d(1, 0); glVertex3f(1.0, 1.0, 0.0);
   glTexCoord2d(1, 1); glVertex3f(1.0, -1.0, 0.0);
   glEnd();
+  
+  glBindTexture(_mainBuffer.texUnit, 0);
+  glBindBuffer(_mainBuffer.bufferUnit, 0);
+  
   
   if (_cursorBackingImage) {
     NSPoint cursorPos = [self convertPointToBacking:self.cursorPosition];
