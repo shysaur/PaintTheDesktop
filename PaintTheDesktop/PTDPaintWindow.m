@@ -108,8 +108,11 @@
   self.mouseIsDragging = YES;
   self.lastMousePosition = event.locationInWindow;
   
-  [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
-  [self.currentTool dragDidStartAtPoint:self.lastMousePosition];
+  @autoreleasepool {
+    [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
+    [self.currentTool dragDidStartAtPoint:self.lastMousePosition];
+    [NSGraphicsContext setCurrentContext:nil];
+  }
   [self updateCursorAtPoint:event.locationInWindow];
   [self.paintView setNeedsDisplay:YES];
 }
@@ -120,14 +123,20 @@
   self.mouseInWindow = YES;
   
   if (self.mouseIsDragging) {
-    [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
-    [self.currentTool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
-    [self.currentTool dragDidEndAtPoint:event.locationInWindow];
+    @autoreleasepool {
+      [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
+      [self.currentTool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
+      [self.currentTool dragDidEndAtPoint:event.locationInWindow];
+      [NSGraphicsContext setCurrentContext:nil];
+    }
   }
   
   if (event.clickCount == 1) {
-    [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
-    [self.currentTool mouseClickedAtPoint:event.locationInWindow];
+    @autoreleasepool {
+      [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
+      [self.currentTool mouseClickedAtPoint:event.locationInWindow];
+      [NSGraphicsContext setCurrentContext:nil];
+    }
   }
   
   [self updateCursorAtPoint:event.locationInWindow];
@@ -151,8 +160,11 @@
 {
   self.mouseInWindow = YES;
   
-  [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
-  [self.currentTool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
+  @autoreleasepool {
+    [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
+    [self.currentTool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
+    [NSGraphicsContext setCurrentContext:nil];
+  }
   [self updateCursorAtPoint:event.locationInWindow];
   [self.paintView setNeedsDisplay:YES];
   

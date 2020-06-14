@@ -13,16 +13,69 @@
 #define ALIGN_OFFS(n, a) ((((int64_t)(n) + ((a)-1)) / (a)) * (a))
 
 
-@interface PTDPaintView ()
-
-@property (nonatomic) NSBitmapImageRep *backingImage;
+@interface PTDOpenGLBufferWrapperImageRep: NSBitmapImageRep
 
 @end
 
 
+@implementation PTDOpenGLBufferWrapperImageRep {
+  GLuint _glBuffer;
+  NSOpenGLContext *_glContext;
+}
+
+
+- (instancetype)initWithOpenGLContext:(NSOpenGLContext *)glcontext
+    buffer:(GLuint)buffer
+    pixelsWide:(NSInteger)width
+    pixelsHigh:(NSInteger)height
+    bitsPerSample:(NSInteger)bps
+    samplesPerPixel:(NSInteger)spp
+    hasAlpha:(BOOL)alpha
+    colorSpaceName:(NSColorSpaceName)colorSpaceName
+    bytesPerRow:(NSInteger)rBytes
+    bitsPerPixel:(NSInteger)pBits
+{
+  [glcontext makeCurrentContext];
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffer);
+  void *bufptr = glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_READ_WRITE);
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+  
+  self = [super
+      initWithBitmapDataPlanes:(unsigned char**)&bufptr
+      pixelsWide:width pixelsHigh:height
+      bitsPerSample:bps samplesPerPixel:spp hasAlpha:alpha isPlanar:NO
+      colorSpaceName:colorSpaceName
+      bytesPerRow:rBytes bitsPerPixel:pBits];
+      
+  _glBuffer = buffer;
+  _glContext = glcontext;
+  NSLog(@"new ptd image %p gl ctxt %p glbuf %d bufptr %p imgbufptr %p", self, glcontext, buffer, bufptr, self.bitmapData);
+  return self;
+}
+
+
+- (void)dealloc
+{
+  [_glContext makeCurrentContext];
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, _glBuffer);
+  glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+  NSLog(@"free ptd image %p", self);
+}
+
+
+@end
+
+
+
 @implementation PTDPaintView {
   CGFloat _scaleFactor;
-  NSBitmapImageRep *_previousBackingImage;
+  
+  GLuint _mainTexBufId;
+  GLuint _width, _height;
+  __weak PTDOpenGLBufferWrapperImageRep *_lastImageRepWrapper;
+  GLuint _mainTexId;
+  
   NSBitmapImageRep *_cursorBackingImage;
 }
 
@@ -65,12 +118,6 @@
 }
 
 
-- (void)setBackingImage:(NSBitmapImageRep *)backingImage
-{
-  _backingImage = backingImage;
-}
-
-
 - (void)setFrame:(NSRect)frame
 {
   [super setFrame:frame];
@@ -98,9 +145,29 @@
 }
 
 
+- (NSBitmapImageRep *)bufferAsImageRep
+{
+  if (_lastImageRepWrapper)
+    return _lastImageRepWrapper;
+  if (_mainTexBufId == 0)
+    return nil;
+  NSInteger bytePerRow = ALIGN_OFFS(4 * _width, 4);
+  PTDOpenGLBufferWrapperImageRep *imageRep = [[PTDOpenGLBufferWrapperImageRep alloc]
+      initWithOpenGLContext:self.openGLContext
+      buffer:_mainTexBufId
+      pixelsWide:_width pixelsHigh:_height
+      bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES
+      colorSpaceName:NSCalibratedRGBColorSpace
+      bytesPerRow:bytePerRow bitsPerPixel:0];
+  _lastImageRepWrapper = imageRep;
+  return imageRep;
+}
+
+
 - (NSGraphicsContext *)graphicsContext
 {
-  NSGraphicsContext *ctxt = [NSGraphicsContext graphicsContextWithBitmapImageRep:_backingImage];
+  NSBitmapImageRep *imageRep = [self bufferAsImageRep];
+  NSGraphicsContext *ctxt = [NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep];
   CGContextScaleCTM(ctxt.CGContext, _scaleFactor, _scaleFactor);
   return ctxt;
 }
@@ -108,29 +175,54 @@
 
 - (void)updateBackingImage
 {
-  NSBitmapImageRep *oldImage = self.backingImage;
+  @autoreleasepool {
+    NSBitmapImageRep *oldImage = [self bufferAsImageRep];
+    GLuint oldBuffer = _mainTexBufId;
+    
+    NSSize newSize = self.bounds.size;
+    NSSize newPxSize = [self convertSizeToBacking:newSize];
+    
+    [self.openGLContext makeCurrentContext];
+    GLuint newBuffer;
+    GLuint newWidth = newPxSize.width, newHeight = newPxSize.height;
+    NSInteger newBytePerRow = ALIGN_OFFS(4 * newWidth, 4);
+    glGenBuffers(1, &newBuffer);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, newBuffer);
+    glBufferData(GL_PIXEL_UNPACK_BUFFER, newBytePerRow * newHeight, NULL, GL_DYNAMIC_DRAW);
+    
+    _lastImageRepWrapper = nil;
+    _mainTexBufId = newBuffer;
+    _width = newWidth;
+    _height = newHeight;
   
-  NSSize newSize = self.bounds.size;
-  NSSize newPxSize = [self convertSizeToBacking:newSize];
-  
-  NSInteger bytePerRow = ALIGN_OFFS(4 * newPxSize.width, 4);
-  self.backingImage = [[NSBitmapImageRep alloc]
-      initWithBitmapDataPlanes:NULL
-      pixelsWide:newPxSize.width pixelsHigh:newPxSize.height
-      bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO
-      colorSpaceName:NSCalibratedRGBColorSpace bytesPerRow:bytePerRow bitsPerPixel:0];
-  
-  [NSGraphicsContext setCurrentContext:self.graphicsContext];
-  if (oldImage) {
-    [oldImage
-        drawInRect:(NSRect){NSMakePoint(0, 0), newSize}
-        fromRect:(NSRect){NSMakePoint(0, 0), oldImage.size}
-        operation:NSCompositingOperationCopy fraction:1.0 respectFlipped:YES
-        hints:@{NSImageHintInterpolation: @(NSImageInterpolationHigh)}];
-  } else {
-    [[NSColor colorWithDeviceWhite:1.0 alpha:0.0] setFill];
-    NSRectFill((NSRect){NSMakePoint(0, 0), self.backingImage.size});
+    [NSGraphicsContext setCurrentContext:self.graphicsContext];
+    if (oldImage) {
+      [oldImage
+          drawInRect:(NSRect){NSMakePoint(0, 0), newSize}
+          fromRect:(NSRect){NSMakePoint(0, 0), oldImage.size}
+          operation:NSCompositingOperationCopy fraction:1.0 respectFlipped:YES
+          hints:@{NSImageHintInterpolation: @(NSImageInterpolationHigh)}];
+    } else {
+      [[NSColor colorWithDeviceWhite:1.0 alpha:0.0] setFill];
+      NSRectFill((NSRect){NSMakePoint(0, 0), newPxSize});
+    }
+    
+    oldImage = nil;
+    if (oldBuffer)
+      glDeleteBuffers(1, &oldBuffer);
+    [NSGraphicsContext setCurrentContext:nil];
   }
+  
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+  
+  if (_mainTexId)
+    glDeleteTextures(1, &_mainTexId);
+  glGenTextures(1, &_mainTexId);
+  glBindTexture(GL_TEXTURE_2D, _mainTexId);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glBindTexture(GL_TEXTURE_2D, 0);
   
   [self setNeedsDisplay:YES];
 }
@@ -219,16 +311,12 @@
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT);
   
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, _mainTexBufId);
+  glBindTexture(GL_TEXTURE_2D, _mainTexId);
   
-  GLuint texId;
-  glGenTextures(1, &texId);
-  glBindTexture(GL_TEXTURE_2D, texId);
-  
-  NSSize imgSize = _backingImage.size;
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgSize.width, imgSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, _backingImage.bitmapData);
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width, _height, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
   
   
   GLuint cursorTexId = -1;
@@ -248,7 +336,7 @@
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   
-  glBindTexture(GL_TEXTURE_2D, texId);
+  glBindTexture(GL_TEXTURE_2D, _mainTexId);
   glEnable(GL_TEXTURE_2D);
   glBegin(GL_QUADS);
   glNormal3f(0.0, 0.0, 1.0);
@@ -279,7 +367,6 @@
   glDisable(GL_TEXTURE_2D);
   glPopAttrib();
   
-  glDeleteTextures(1, &texId);
   if (_cursorBackingImage) {
     glDeleteTextures(1, &cursorTexId);
   }
