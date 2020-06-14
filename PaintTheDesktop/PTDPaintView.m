@@ -11,12 +11,9 @@
 #include <OpenGL/gl.h>
 
 
-#define ALIGN_OFFS(n, a) ((((int64_t)(n) + ((a)-1)) / (a)) * (a))
-
-
 @implementation PTDPaintView {
   PTDOpenGLBufferedTexture *_mainBuffer;
-  NSBitmapImageRep *_cursorBackingImage;
+  PTDOpenGLBufferedTexture *_cursorBuffer;
 }
 
 
@@ -25,7 +22,6 @@
   self = [super initWithFrame:frameRect];
   _backingScaleFactor = NSMakeSize(1.0, 1.0);
   [self updateBackingImage];
-  [self updateCursor];
   return self;
 }
 
@@ -35,7 +31,6 @@
   self = [super initWithCoder:coder];
   _backingScaleFactor = NSMakeSize(1.0, 1.0);
   [self updateBackingImage];
-  [self updateCursor];
   return self;
 }
 
@@ -134,43 +129,22 @@
 - (void)setCursorImage:(NSImage *)cursorImage
 {
   _cursorImage = cursorImage;
-  [self updateCursor];
+  
+  if (!_cursorImage) {
+    _cursorBuffer = nil;
+  } else {
+    _cursorBuffer = [[PTDOpenGLBufferedTexture alloc]
+        initWithOpenGLContext:self.openGLContext
+        image:_cursorImage backingScaleFactor:self.backingScaleFactor];
+  }
+  
+  [self setNeedsDisplay:YES];
 }
 
 
 - (void)setCursorPosition:(NSPoint)cursorPosition
 {
   _cursorPosition = cursorPosition;
-  [self setNeedsDisplay:YES];
-}
-
-
-- (void)updateCursor
-{
-  if (!_cursorImage) {
-    _cursorBackingImage = nil;
-    [self setNeedsDisplay:YES];
-    return;
-  }
-  
-  NSRect cursorRect = NSZeroRect;
-  cursorRect.size = self.cursorImage.size;
-  NSRect backingRect = [self convertRectToBacking:cursorRect];
-  
-  NSImageRep *rep = [self.cursorImage bestRepresentationForRect:cursorRect context:self.graphicsContext hints:nil];
-  NSInteger bytePerRow = ALIGN_OFFS(4 * backingRect.size.width, 4);
-  _cursorBackingImage = [[NSBitmapImageRep alloc]
-      initWithBitmapDataPlanes:NULL
-      pixelsWide:backingRect.size.width pixelsHigh:backingRect.size.height
-      bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO
-      colorSpaceName:NSCalibratedRGBColorSpace bytesPerRow:bytePerRow bitsPerPixel:0];
-  
-  [NSGraphicsContext saveGraphicsState];
-  NSGraphicsContext *tmpGc = [NSGraphicsContext graphicsContextWithBitmapImageRep:_cursorBackingImage];
-  [NSGraphicsContext setCurrentContext:tmpGc];
-  [rep drawInRect:backingRect];
-  [NSGraphicsContext restoreGraphicsState];
-  
   [self setNeedsDisplay:YES];
 }
 
@@ -212,20 +186,6 @@
   glClear(GL_COLOR_BUFFER_BIT);
   
   
-  GLuint cursorTexId = -1;
-  NSSize curSize;
-  if (_cursorBackingImage) {
-    glGenTextures(1, &cursorTexId);
-    glBindTexture(GL_TEXTURE_2D, cursorTexId);
-    
-    curSize = _cursorBackingImage.size;
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, curSize.width, curSize.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, _cursorBackingImage.bitmapData);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  }
-  
-  
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   
@@ -244,15 +204,18 @@
   glBindBuffer(_mainBuffer.bufferUnit, 0);
   
   
-  if (_cursorBackingImage) {
-    NSPoint cursorPos = [self convertPointToBacking:self.cursorPosition];
-    NSRect r = [self convertRectToBacking:self.bounds];
+  if (_cursorBuffer) {
+    NSPoint cursorPos = NSMakePoint(
+        self.cursorPosition.x * self.backingScaleFactor.width,
+        self.cursorPosition.y * self.backingScaleFactor.height);
+    NSRect r = (NSRect){NSZeroPoint, _mainBuffer.pixelSize};
     GLfloat scrCurLeft = cursorPos.x / r.size.width * 2 - 1;
     GLfloat scrCurBtm = cursorPos.y / r.size.height * 2 - 1;
-    GLfloat scrCurRight = curSize.width / r.size.width * 2 + scrCurLeft;
-    GLfloat scrCurTop = curSize.height / r.size.height * 2 + scrCurBtm;
+    GLfloat scrCurRight = _cursorBuffer.pixelWidth / r.size.width * 2 + scrCurLeft;
+    GLfloat scrCurTop = _cursorBuffer.pixelHeight / r.size.height * 2 + scrCurBtm;
 
-    glBindTexture(GL_TEXTURE_2D, cursorTexId);
+    [_cursorBuffer bindTextureAndBuffer];
+    
     glEnable(GL_TEXTURE_2D);
     glBegin(GL_QUADS);
     glNormal3f(0.0, 0.0, 1.0);
@@ -261,14 +224,13 @@
     glTexCoord2d(1, 0); glVertex3f(scrCurRight, scrCurTop, 0.0);
     glTexCoord2d(1, 1); glVertex3f(scrCurRight, scrCurBtm, 0.0);
     glEnd();
+    
+    glBindTexture(_cursorBuffer.texUnit, 0);
+    glBindBuffer(_cursorBuffer.bufferUnit, 0);
   }
   
   glDisable(GL_TEXTURE_2D);
   glPopAttrib();
-  
-  if (_cursorBackingImage) {
-    glDeleteTextures(1, &cursorTexId);
-  }
   
   glFlush();
 }
