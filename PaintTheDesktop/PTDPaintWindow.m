@@ -21,6 +21,8 @@
 @property (nonatomic) BOOL mouseIsDragging;
 @property (nonatomic) NSPoint lastMousePosition;
 
+@property (nonatomic) BOOL systemCursorVisibility;
+
 @property (nonatomic, nullable, readonly) PTDTool *currentTool;
 @property (nonatomic, nullable, readonly) PTDCursor *currentCursor;
 
@@ -39,6 +41,8 @@
   
   /* If we don't do this, Cocoa will muck around with our window positioning */
   self.shouldCascadeWindows = NO;
+  
+  _systemCursorVisibility = YES;
   
   return self;
 }
@@ -206,6 +210,7 @@
   NSMenuItem *exitItm = [menu addItemWithTitle:@"Quit" action:@selector(terminate:) keyEquivalent:@""];
   exitItm.target = NSApp;
   
+  self.systemCursorVisibility = YES;
   [NSMenu popUpContextMenu:menu withEvent:event forView:self.paintView];
 }
 
@@ -230,6 +235,14 @@
       self.paintView.cursorPosition = NSMakePoint(outX, outY);
     }
   }
+  self.systemCursorVisibility = [self computeNextCursorVisibility];
+}
+
+
+- (void)setMouseInWindow:(BOOL)mouseInWindow
+{
+  self.systemCursorVisibility = [self computeNextCursorVisibility];
+  _mouseInWindow = mouseInWindow;
 }
 
 
@@ -243,6 +256,29 @@
   }
   _active = active;
   [self updateCursorAtPoint:self.lastMousePosition];
+}
+
+
+- (BOOL)computeNextCursorVisibility
+{
+  if (!self.active)
+    return YES;
+  if (!self.currentCursor)
+    return YES;
+  return !self.mouseInWindow;
+}
+
+
+- (void)setSystemCursorVisibility:(BOOL)systemCursorVisibility
+{
+  if (_systemCursorVisibility != systemCursorVisibility) {
+    if (systemCursorVisibility) {
+      [NSCursor unhide];
+    } else {
+      [NSCursor hide];
+    }
+  }
+  _systemCursorVisibility = systemCursorVisibility;
 }
 
 
