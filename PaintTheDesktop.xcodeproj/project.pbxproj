@@ -10,6 +10,7 @@
 		011426B424968916005363E8 /* PTDOpenGLBufferedTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */; };
 		016AD9A524978132004E3749 /* NSView+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 016AD9A424978132004E3749 /* NSView+PTD.m */; };
 		016AD9A8249790B3004E3749 /* PTDDrawingSurface.m in Sources */ = {isa = PBXBuildFile; fileRef = 016AD9A7249790B3004E3749 /* PTDDrawingSurface.m */; };
+		016AD9AB2497A902004E3749 /* PTDRectangleTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 016AD9AA2497A902004E3749 /* PTDRectangleTool.m */; };
 		016D36B42490584E0086E96D /* PTDPencilTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 016D36B32490584E0086E96D /* PTDPencilTool.m */; };
 		016D36B724905E280086E96D /* PTDToolManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 016D36B624905E280086E96D /* PTDToolManager.m */; };
 		016D36BA249064700086E96D /* PTDEraserTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 016D36B9249064700086E96D /* PTDEraserTool.m */; };
@@ -33,6 +34,8 @@
 		016AD9A424978132004E3749 /* NSView+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+PTD.m"; sourceTree = "<group>"; };
 		016AD9A6249790B3004E3749 /* PTDDrawingSurface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDDrawingSurface.h; sourceTree = "<group>"; };
 		016AD9A7249790B3004E3749 /* PTDDrawingSurface.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDDrawingSurface.m; sourceTree = "<group>"; };
+		016AD9A92497A902004E3749 /* PTDRectangleTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRectangleTool.h; sourceTree = "<group>"; };
+		016AD9AA2497A902004E3749 /* PTDRectangleTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRectangleTool.m; sourceTree = "<group>"; };
 		016D36B22490584E0086E96D /* PTDPencilTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDPencilTool.h; sourceTree = "<group>"; };
 		016D36B32490584E0086E96D /* PTDPencilTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPencilTool.m; sourceTree = "<group>"; };
 		016D36B524905E280086E96D /* PTDToolManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDToolManager.h; sourceTree = "<group>"; };
@@ -85,6 +88,8 @@
 				016D36B9249064700086E96D /* PTDEraserTool.m */,
 				016D36B22490584E0086E96D /* PTDPencilTool.h */,
 				016D36B32490584E0086E96D /* PTDPencilTool.m */,
+				016AD9A92497A902004E3749 /* PTDRectangleTool.h */,
+				016AD9AA2497A902004E3749 /* PTDRectangleTool.m */,
 				016D36BE249068F40086E96D /* PTDResetTool.h */,
 				016D36BF249068F40086E96D /* PTDResetTool.m */,
 			);
@@ -223,6 +228,7 @@
 			files = (
 				016D36C0249068F40086E96D /* PTDResetTool.m in Sources */,
 				01A213F5248EEA1D00B5EB9D /* PTDPaintView.m in Sources */,
+				016AD9AB2497A902004E3749 /* PTDRectangleTool.m in Sources */,
 				016AD9A524978132004E3749 /* NSView+PTD.m in Sources */,
 				011426B424968916005363E8 /* PTDOpenGLBufferedTexture.m in Sources */,
 				016D36C324907BBB0086E96D /* PTDCursor.m in Sources */,
