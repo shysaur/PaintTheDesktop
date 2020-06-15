@@ -159,9 +159,11 @@
 }
 
 
-- (void)drawRect:(NSRect)dirtyRect
+- (void)prepareOpenGL
 {
-  GLint zero = 0;
+  [super prepareOpenGL];
+  
+  static const GLint zero = 0;
   [self.openGLContext setValues:&zero forParameter:NSOpenGLCPSurfaceOpacity];
   
   glEnable(GL_ALPHA_TEST);
@@ -177,18 +179,25 @@
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  //glOrtho(0, r.size.width, 0, r.size.height, -1, 1);
   
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   
   glClearColor(0, 0, 0, 0);
-  glClear(GL_COLOR_BUFFER_BIT);
-  
-  
+}
+
+
+- (void)drawRect:(NSRect)dirtyRect
+{
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  
+  [self drawBackdrop];
+  [self drawCursor];
+  glFlush();
+}
+
+
+- (void)drawBackdrop
+{
   [_mainBuffer bindTextureAndBuffer];
   
   glEnable(_mainBuffer.texUnit);
@@ -199,40 +208,41 @@
   glTexCoord2d(1, 0); glVertex3f(1.0, 1.0, 0.0);
   glTexCoord2d(1, 1); glVertex3f(1.0, -1.0, 0.0);
   glEnd();
+  glDisable(_mainBuffer.texUnit);
   
   glBindTexture(_mainBuffer.texUnit, 0);
   glBindBuffer(_mainBuffer.bufferUnit, 0);
-  
-  
-  if (_cursorBuffer) {
-    NSPoint cursorPos = NSMakePoint(
-        self.cursorPosition.x * self.backingScaleFactor.width,
-        self.cursorPosition.y * self.backingScaleFactor.height);
-    NSRect r = (NSRect){NSZeroPoint, _mainBuffer.pixelSize};
-    GLfloat scrCurLeft = cursorPos.x / r.size.width * 2 - 1;
-    GLfloat scrCurBtm = cursorPos.y / r.size.height * 2 - 1;
-    GLfloat scrCurRight = _cursorBuffer.pixelWidth / r.size.width * 2 + scrCurLeft;
-    GLfloat scrCurTop = _cursorBuffer.pixelHeight / r.size.height * 2 + scrCurBtm;
+}
 
-    [_cursorBuffer bindTextureAndBuffer];
+
+- (void)drawCursor
+{
+  if (!_cursorBuffer)
+    return;
     
-    glEnable(GL_TEXTURE_2D);
-    glBegin(GL_QUADS);
-    glNormal3f(0.0, 0.0, 1.0);
-    glTexCoord2d(0, 1); glVertex3f(scrCurLeft, scrCurBtm, 0.0);
-    glTexCoord2d(0, 0); glVertex3f(scrCurLeft, scrCurTop, 0.0);
-    glTexCoord2d(1, 0); glVertex3f(scrCurRight, scrCurTop, 0.0);
-    glTexCoord2d(1, 1); glVertex3f(scrCurRight, scrCurBtm, 0.0);
-    glEnd();
-    
-    glBindTexture(_cursorBuffer.texUnit, 0);
-    glBindBuffer(_cursorBuffer.bufferUnit, 0);
-  }
+  NSPoint cursorPos = NSMakePoint(
+      self.cursorPosition.x * self.backingScaleFactor.width,
+      self.cursorPosition.y * self.backingScaleFactor.height);
+  NSRect r = (NSRect){NSZeroPoint, _mainBuffer.pixelSize};
+  GLfloat scrCurLeft = cursorPos.x / r.size.width * 2 - 1;
+  GLfloat scrCurBtm = cursorPos.y / r.size.height * 2 - 1;
+  GLfloat scrCurRight = _cursorBuffer.pixelWidth / r.size.width * 2 + scrCurLeft;
+  GLfloat scrCurTop = _cursorBuffer.pixelHeight / r.size.height * 2 + scrCurBtm;
+
+  [_cursorBuffer bindTextureAndBuffer];
   
-  glDisable(GL_TEXTURE_2D);
-  glPopAttrib();
+  glEnable(_cursorBuffer.texUnit);
+  glBegin(GL_QUADS);
+  glNormal3f(0.0, 0.0, 1.0);
+  glTexCoord2d(0, 1); glVertex3f(scrCurLeft, scrCurBtm, 0.0);
+  glTexCoord2d(0, 0); glVertex3f(scrCurLeft, scrCurTop, 0.0);
+  glTexCoord2d(1, 0); glVertex3f(scrCurRight, scrCurTop, 0.0);
+  glTexCoord2d(1, 1); glVertex3f(scrCurRight, scrCurBtm, 0.0);
+  glEnd();
+  glDisable(_cursorBuffer.texUnit);
   
-  glFlush();
+  glBindTexture(_cursorBuffer.texUnit, 0);
+  glBindBuffer(_cursorBuffer.bufferUnit, 0);
 }
 
 
