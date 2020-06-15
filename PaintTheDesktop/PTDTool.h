@@ -23,6 +23,8 @@ extern NSString * const PTDToolCursorDidChangeNotification;
 
 @property (nonatomic, weak) PTDDrawingSurface *currentDrawingSurface;
 
+- (void)brushDidChange;
+
 - (void)dragDidStartAtPoint:(NSPoint)point;
 - (void)dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint;
 - (void)dragDidEndAtPoint:(NSPoint)point;
@@ -34,7 +36,7 @@ extern NSString * const PTDToolCursorDidChangeNotification;
 - (void)activate;
 - (void)deactivate;
 
-- (nullable NSMenu *)optionMenu;
+- (nullable NSArray <NSMenuItem *> *)optionMenu;
 
 @end
 

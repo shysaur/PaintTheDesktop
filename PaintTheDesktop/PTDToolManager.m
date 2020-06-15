@@ -8,6 +8,7 @@
 
 #import "PTDToolManager.h"
 #import "PTDTool.h"
+#import "PTDBrush.h"
 #import "PTDPencilTool.h"
 #import "PTDEraserTool.h"
 #import "PTDResetTool.h"
@@ -37,6 +38,7 @@
 - (instancetype)_init
 {
   self = [super init];
+  _currentBrush = [[PTDBrush alloc] init];
   _currentTool = [[PTDPencilTool alloc] init];
   
   _availableToolIdentifiers = @[
@@ -99,6 +101,13 @@
     
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:PTDToolCursorDidChangeNotification object:newTool]];
   }
+}
+
+
+- (void)setCurrentBrush:(PTDBrush *)currentBrush
+{
+  _currentBrush = currentBrush;
+  [self.currentTool brushDidChange];
 }
 
 

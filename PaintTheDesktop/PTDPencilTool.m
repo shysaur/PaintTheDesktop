@@ -6,6 +6,8 @@
 //  Copyright © 2020 danielecattaneo. All rights reserved.
 //
 
+#import "PTDToolManager.h"
+#import "PTDBrush.h"
 #import "PTDPencilTool.h"
 #import "PTDDrawingSurface.h"
 #import "PTDTool.h"
@@ -15,25 +17,7 @@
 NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 
 
-@interface PTDPencilTool ()
-
-@property (nonatomic) CGFloat size;
-@property (nonatomic) NSColor *color;
-
-@end
-
-
 @implementation PTDPencilTool
-
-
-- (instancetype)init
-{
-  self = [super init];
-  _size = 2.0;
-  _color = [NSColor blackColor];
-  [self updateCursor];
-  return self;
-}
 
 
 + (NSString *)toolIdentifier
@@ -42,75 +26,41 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 }
 
 
+- (void)activate
+{
+  [self updateCursor];
+}
+
+
 - (void)dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint
 {
   [self.currentDrawingSurface beginCanvasDrawing];
   NSBezierPath *path = [NSBezierPath bezierPath];
   [path setLineCapStyle:NSLineCapStyleRound];
-  [path setLineWidth:self.size];
-  [self.color setStroke];
+  [path setLineWidth:PTDToolManager.sharedManager.currentBrush.size];
+  [PTDToolManager.sharedManager.currentBrush.color setStroke];
   [path moveToPoint:prevPoint];
   [path lineToPoint:nextPoint];
   [path stroke];
 }
 
 
-- (nullable NSMenu *)optionMenu
+- (NSArray <NSMenuItem *> *)optionMenu
 {
-  NSMenu *res = [[NSMenu alloc] init];
-  
-  for (int i=2; i<10; i += 2) {
-    NSString *title = [NSString stringWithFormat:@"Size %d", i];
-    NSMenuItem *mi = [res addItemWithTitle:title action:@selector(changeSize:) keyEquivalent:@""];
-    mi.target = self;
-    mi.tag = i;
-  }
-  for (int i=10; i<25; i += 5) {
-    NSString *title = [NSString stringWithFormat:@"Size %d", i];
-    NSMenuItem *mi = [res addItemWithTitle:title action:@selector(changeSize:) keyEquivalent:@""];
-    mi.target = self;
-    mi.tag = i;
-  }
-  
-  [res addItem:[NSMenuItem separatorItem]];
-  
-  NSArray *colors = @[
-    @"Black", @"Red", @"Green", @"Blue", @"Yellow", @"White"
-  ];
-  int i = 0;
-  for (NSString *color in colors) {
-    NSMenuItem *mi = [res addItemWithTitle:color action:@selector(changeColor:) keyEquivalent:@""];
-    mi.target = self;
-    mi.tag = i;
-    i++;
-  }
-  
-  return res;
+  return [PTDToolManager.sharedManager.currentBrush menuOptions];
 }
 
 
-- (void)changeSize:(id)sender
+- (void)brushDidChange
 {
-  self.size = [(NSMenuItem *)sender tag];
-  [self updateCursor];
-}
-
-
-- (void)changeColor:(id)sender
-{
-  NSArray *colors = @[
-    [NSColor blackColor], [NSColor systemRedColor], [NSColor systemGreenColor],
-    [NSColor systemBlueColor], [NSColor systemYellowColor], [NSColor whiteColor]
-  ];
-  self.color = colors[[(NSMenuItem *)sender tag]];
   [self updateCursor];
 }
 
 
 - (void)updateCursor
 {
-  CGFloat size = self.size;
-  NSColor *color = self.color;
+  CGFloat size = PTDToolManager.sharedManager.currentBrush.size;
+  NSColor *color = PTDToolManager.sharedManager.currentBrush.color;
   PTDCursor *cursor = [[PTDCursor alloc] init];
   
   cursor.image = [NSImage

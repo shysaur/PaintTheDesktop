@@ -242,12 +242,10 @@
     i++;
   }
   
-  NSMenu *toolMenu = [PTDToolManager.sharedManager.currentTool optionMenu];
+  NSArray *toolMenu = [PTDToolManager.sharedManager.currentTool optionMenu];
   if (toolMenu) {
     [menu addItem:[NSMenuItem separatorItem]];
-    NSArray *itemArray = toolMenu.itemArray;
-    [toolMenu removeAllItems];
-    for (NSMenuItem *item in itemArray) {
+    for (NSMenuItem *item in toolMenu) {
       [menu addItem:item];
     }
   }

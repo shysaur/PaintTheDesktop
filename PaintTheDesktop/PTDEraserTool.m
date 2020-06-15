@@ -29,7 +29,6 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 {
   self = [super init];
   _size = 20.0;
-  [self updateCursor];
   return self;
 }
 
@@ -37,6 +36,12 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 + (NSString *)toolIdentifier
 {
   return PTDToolIdentifierEraserTool;
+}
+
+
+- (void)activate
+{
+  [self updateCursor];
 }
 
 
@@ -74,15 +79,16 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 }
 
 
-- (nullable NSMenu *)optionMenu
+- (NSArray <NSMenuItem *> *)optionMenu
 {
-  NSMenu *res = [[NSMenu alloc] init];
+  NSMutableArray *res = [@[] mutableCopy];
   
   for (int i=20; i<200; i += 50) {
     NSString *title = [NSString stringWithFormat:@"Size %d", i];
-    NSMenuItem *mi = [res addItemWithTitle:title action:@selector(changeSize:) keyEquivalent:@""];
+    NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle:title action:@selector(changeSize:) keyEquivalent:@""];
     mi.target = self;
     mi.tag = i;
+    [res addObject:mi];
   }
   
   return res;

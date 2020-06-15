@@ -30,6 +30,11 @@ NSString * const PTDToolCursorDidChangeNotification = @"PTDToolCursorDidChangeNo
 }
 
 
+- (void)brushDidChange
+{
+}
+
+
 - (void)dragDidStartAtPoint:(NSPoint)point
 {
 }
