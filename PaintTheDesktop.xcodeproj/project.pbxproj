@@ -66,6 +66,48 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		016AD99D249755ED004E3749 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				016D36B524905E280086E96D /* PTDToolManager.h */,
+				016D36B624905E280086E96D /* PTDToolManager.m */,
+				016D36BB249067300086E96D /* PTDTool.h */,
+				016D36BC249067300086E96D /* PTDTool.m */,
+				016D36B8249064700086E96D /* PTDEraserTool.h */,
+				016D36B9249064700086E96D /* PTDEraserTool.m */,
+				016D36B22490584E0086E96D /* PTDPencilTool.h */,
+				016D36B32490584E0086E96D /* PTDPencilTool.m */,
+				016D36BE249068F40086E96D /* PTDResetTool.h */,
+				016D36BF249068F40086E96D /* PTDResetTool.m */,
+			);
+			name = Tools;
+			sourceTree = "<group>";
+		};
+		016AD99E24975619004E3749 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				01C0D68A2492ED7100AECEAB /* NSScreen+PTD.h */,
+				01C0D68B2492ED7100AECEAB /* NSScreen+PTD.m */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
+		016AD99F2497564A004E3749 /* Paint Window */ = {
+			isa = PBXGroup;
+			children = (
+				01A213EE248EE9F600B5EB9D /* PTDPaintWindow.h */,
+				01A213EF248EE9F600B5EB9D /* PTDPaintWindow.m */,
+				01A213F0248EE9F600B5EB9D /* PTDPaintWindow.xib */,
+				01A213F3248EEA1D00B5EB9D /* PTDPaintView.h */,
+				01A213F4248EEA1D00B5EB9D /* PTDPaintView.m */,
+				011426B224968916005363E8 /* PTDOpenGLBufferedTexture.h */,
+				011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */,
+				016D36C124907BBB0086E96D /* PTDCursor.h */,
+				016D36C224907BBB0086E96D /* PTDCursor.m */,
+			);
+			name = "Paint Window";
+			sourceTree = "<group>";
+		};
 		01A213D1248EE94400B5EB9D = {
 			isa = PBXGroup;
 			children = (
@@ -85,33 +127,15 @@
 		01A213DC248EE94500B5EB9D /* PaintTheDesktop */ = {
 			isa = PBXGroup;
 			children = (
-				01C0D68A2492ED7100AECEAB /* NSScreen+PTD.h */,
-				01C0D68B2492ED7100AECEAB /* NSScreen+PTD.m */,
 				01A213DD248EE94500B5EB9D /* PTDAppDelegate.h */,
 				01A213DE248EE94500B5EB9D /* PTDAppDelegate.m */,
-				01A213EE248EE9F600B5EB9D /* PTDPaintWindow.h */,
-				01A213EF248EE9F600B5EB9D /* PTDPaintWindow.m */,
-				01A213F0248EE9F600B5EB9D /* PTDPaintWindow.xib */,
-				01A213E0248EE94600B5EB9D /* Assets.xcassets */,
 				01A213E2248EE94600B5EB9D /* MainMenu.xib */,
-				011426B224968916005363E8 /* PTDOpenGLBufferedTexture.h */,
-				011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */,
-				01A213F3248EEA1D00B5EB9D /* PTDPaintView.h */,
-				01A213F4248EEA1D00B5EB9D /* PTDPaintView.m */,
-				016D36C124907BBB0086E96D /* PTDCursor.h */,
-				016D36C224907BBB0086E96D /* PTDCursor.m */,
-				016D36BB249067300086E96D /* PTDTool.h */,
-				016D36BC249067300086E96D /* PTDTool.m */,
-				016D36B8249064700086E96D /* PTDEraserTool.h */,
-				016D36B9249064700086E96D /* PTDEraserTool.m */,
-				016D36B22490584E0086E96D /* PTDPencilTool.h */,
-				016D36B32490584E0086E96D /* PTDPencilTool.m */,
-				01A213E5248EE94600B5EB9D /* Info.plist */,
+				016AD99F2497564A004E3749 /* Paint Window */,
+				016AD99D249755ED004E3749 /* Tools */,
+				016AD99E24975619004E3749 /* Utilities */,
 				01A213E6248EE94600B5EB9D /* main.m */,
-				016D36B524905E280086E96D /* PTDToolManager.h */,
-				016D36B624905E280086E96D /* PTDToolManager.m */,
-				016D36BE249068F40086E96D /* PTDResetTool.h */,
-				016D36BF249068F40086E96D /* PTDResetTool.m */,
+				01A213E0248EE94600B5EB9D /* Assets.xcassets */,
+				01A213E5248EE94600B5EB9D /* Info.plist */,
 			);
 			path = PaintTheDesktop;
 			sourceTree = "<group>";
