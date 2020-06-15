@@ -6,6 +6,7 @@
 //  Copyright © 2020 danielecattaneo. All rights reserved.
 //
 
+#import "PTDDrawingSurface.h"
 #import "PTDPencilTool.h"
 #import "PTDTool.h"
 #import "PTDCursor.h"
@@ -43,6 +44,7 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 
 - (void)dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint
 {
+  [self.currentDrawingSurface beginCanvasDrawing];
   NSBezierPath *path = [NSBezierPath bezierPath];
   [path setLineCapStyle:NSLineCapStyleRound];
   [path setLineWidth:self.size];

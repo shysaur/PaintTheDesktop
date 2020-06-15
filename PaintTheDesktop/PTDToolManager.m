@@ -20,8 +20,7 @@
 @end
 
 
-@implementation PTDToolManager
-{
+@implementation PTDToolManager {
   NSDictionary *_toolNames;
   NSDictionary *_toolClasses;
   NSMutableDictionary *_lastToolForIdentifier;

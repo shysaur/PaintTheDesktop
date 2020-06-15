@@ -8,6 +8,7 @@
 
 #import "PTDPaintWindow.h"
 #import "PTDPaintView.h"
+#import "PTDDrawingSurface.h"
 #import "PTDTool.h"
 #import "PTDToolManager.h"
 #import "PTDCursor.h"
@@ -24,7 +25,6 @@
 
 @property (nonatomic) BOOL systemCursorVisibility;
 
-@property (nonatomic, nullable, readonly) PTDTool *currentTool;
 @property (nonatomic, nullable, readonly) PTDCursor *currentCursor;
 
 @end
@@ -90,7 +90,7 @@
     options:options owner:self userInfo:nil];
   [self.paintView addTrackingArea:area];
   
-  self.currentCursor = self.currentTool.cursor;
+  self.currentCursor = PTDToolManager.sharedManager.currentTool.cursor;
   
   self.active = NO;
 }
@@ -125,10 +125,16 @@
 }
 
 
-- (PTDTool *)currentTool
+- (PTDDrawingSurface *)drawingSurface
+{
+  return [[PTDDrawingSurface alloc] initWithPaintView:self.paintView];
+}
+
+
+- (PTDTool *)initializeToolWithSurface:(PTDDrawingSurface *)drawingSurface
 {
   PTDTool *tool = PTDToolManager.sharedManager.currentTool;
-  tool.currentPaintView = self.paintView;
+  tool.currentDrawingSurface = drawingSurface;
   return tool;
 }
 
@@ -140,12 +146,11 @@
   self.lastMousePosition = event.locationInWindow;
   
   @autoreleasepool {
-    [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
-    [self.currentTool dragDidStartAtPoint:self.lastMousePosition];
-    [NSGraphicsContext setCurrentContext:nil];
+    PTDDrawingSurface *surf = [self drawingSurface];
+    PTDTool *tool = [self initializeToolWithSurface:surf];
+    [tool dragDidStartAtPoint:self.lastMousePosition];
   }
   [self updateCursorAtPoint:event.locationInWindow];
-  [self.paintView setNeedsDisplay:YES];
 }
 
 
@@ -155,23 +160,22 @@
   
   if (self.mouseIsDragging) {
     @autoreleasepool {
-      [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
-      [self.currentTool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
-      [self.currentTool dragDidEndAtPoint:event.locationInWindow];
-      [NSGraphicsContext setCurrentContext:nil];
+      PTDDrawingSurface *surf = [self drawingSurface];
+      PTDTool *tool = [self initializeToolWithSurface:surf];
+      [tool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
+      [tool dragDidEndAtPoint:event.locationInWindow];
     }
   }
   
   if (event.clickCount == 1) {
     @autoreleasepool {
-      [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
-      [self.currentTool mouseClickedAtPoint:event.locationInWindow];
-      [NSGraphicsContext setCurrentContext:nil];
+      PTDDrawingSurface *surf = [self drawingSurface];
+      PTDTool *tool = [self initializeToolWithSurface:surf];
+      [tool mouseClickedAtPoint:event.locationInWindow];
     }
   }
   
   [self updateCursorAtPoint:event.locationInWindow];
-  [self.paintView setNeedsDisplay:YES];
   
   self.mouseIsDragging = NO;
 }
@@ -192,12 +196,11 @@
   self.mouseInWindow = YES;
   
   @autoreleasepool {
-    [NSGraphicsContext setCurrentContext:self.paintView.graphicsContext];
-    [self.currentTool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
-    [NSGraphicsContext setCurrentContext:nil];
+    PTDDrawingSurface *surf = [self drawingSurface];
+    PTDTool *tool = [self initializeToolWithSurface:surf];
+    [tool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
   }
   [self updateCursorAtPoint:event.locationInWindow];
-  [self.paintView setNeedsDisplay:YES];
   
   self.lastMousePosition = event.locationInWindow;
 }
@@ -233,13 +236,13 @@
     NSString *label = [PTDToolManager.sharedManager toolNameForIdentifier:toolid];
     NSMenuItem *item = [menu addItemWithTitle:label action:@selector(changeTool:) keyEquivalent:@""];
     item.tag = i;
-    if ([toolid isEqual:[[self.currentTool class] toolIdentifier]]) {
+    if ([toolid isEqual:[[PTDToolManager.sharedManager.currentTool class] toolIdentifier]]) {
       item.state = NSControlStateValueOn;
     }
     i++;
   }
   
-  NSMenu *toolMenu = [self.currentTool optionMenu];
+  NSMenu *toolMenu = [PTDToolManager.sharedManager.currentTool optionMenu];
   if (toolMenu) {
     [menu addItem:[NSMenuItem separatorItem]];
     NSArray *itemArray = toolMenu.itemArray;

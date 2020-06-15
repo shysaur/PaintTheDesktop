@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class PTDPaintView;
+@class PTDDrawingSurface;
 @class PTDCursor;
 
 extern NSString * const PTDToolCursorDidChangeNotification;
@@ -21,7 +21,7 @@ extern NSString * const PTDToolCursorDidChangeNotification;
 
 @property (class, readonly, nonatomic) NSString *toolIdentifier;
 
-@property (nonatomic, weak) PTDPaintView *currentPaintView;
+@property (nonatomic, weak) PTDDrawingSurface *currentDrawingSurface;
 
 - (void)dragDidStartAtPoint:(NSPoint)point;
 - (void)dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint;
