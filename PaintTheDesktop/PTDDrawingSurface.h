@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithPaintView:(PTDPaintView *)paintView;
 
 - (void)beginCanvasDrawing;
+- (void)beginOverlayDrawing;
 
 - (NSRect)bounds;
 

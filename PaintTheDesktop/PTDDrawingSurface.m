@@ -31,6 +31,13 @@
 }
 
 
+- (void)beginOverlayDrawing
+{
+  _touchedPaintView = YES;
+  [NSGraphicsContext setCurrentContext:_paintView.overlayGraphicsContext];
+}
+
+
 - (NSRect)bounds
 {
   return _paintView.paintRect;

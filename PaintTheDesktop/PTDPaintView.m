@@ -6,6 +6,8 @@
 //  Copyright © 2020 danielecattaneo. All rights reserved.
 //
 
+#import <Quartz/Quartz.h>
+#import "NSView+PTD.h"
 #import "PTDPaintView.h"
 #import "PTDOpenGLBufferedTexture.h"
 #include <OpenGL/gl.h>
@@ -13,6 +15,7 @@
 
 @implementation PTDPaintView {
   PTDOpenGLBufferedTexture *_mainBuffer;
+  PTDOpenGLBufferedTexture *_overlayBuffer;
   CALayer *_cursorLayer;
 }
 
@@ -21,7 +24,7 @@
 {
   self = [super initWithFrame:frameRect];
   _backingScaleFactor = NSMakeSize(1.0, 1.0);
-  [self updateBackingImage];
+  [self updateBackingImages];
   return self;
 }
 
@@ -30,7 +33,7 @@
 {
   self = [super initWithCoder:coder];
   _backingScaleFactor = NSMakeSize(1.0, 1.0);
-  [self updateBackingImage];
+  [self updateBackingImages];
   return self;
 }
 
@@ -56,27 +59,27 @@
 - (void)setFrame:(NSRect)frame
 {
   [super setFrame:frame];
-  [self updateBackingImage];
+  [self updateBackingImages];
 }
 
 
 - (void)setBounds:(NSRect)frame
 {
   [super setBounds:frame];
-  [self updateBackingImage];
+  [self updateBackingImages];
 }
 
 
 - (void)viewDidChangeBackingProperties
 {
-  [self updateBackingImage];
+  [self updateBackingImages];
 }
 
 
 - (void)setBackingScaleFactor:(NSSize)backingScaleFactor
 {
   _backingScaleFactor = backingScaleFactor;
-  [self updateBackingImage];
+  [self updateBackingImages];
 }
 
 
@@ -95,7 +98,21 @@
 }
 
 
-- (void)updateBackingImage
+- (NSGraphicsContext *)overlayGraphicsContext
+{
+  if (!_overlayBuffer) {
+    _overlayBuffer = [[PTDOpenGLBufferedTexture alloc]
+        initWithOpenGLContext:self.openGLContext
+        width:_mainBuffer.pixelWidth height:_mainBuffer.pixelHeight];
+  }
+  NSBitmapImageRep *imageRep = _overlayBuffer.bufferAsImageRep;
+  NSGraphicsContext *ctxt = [NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep];
+  CGContextScaleCTM(ctxt.CGContext, _backingScaleFactor.width, _backingScaleFactor.height);
+  return ctxt;
+}
+
+
+- (void)updateBackingImages
 {
   NSSize newSize = self.bounds.size;
   NSSize newPxSize = NSMakeSize(newSize.width * _backingScaleFactor.width, newSize.height * _backingScaleFactor.height);
@@ -120,6 +137,8 @@
       NSRectFill((NSRect){NSMakePoint(0, 0), newPxSize});
     }
     [NSGraphicsContext setCurrentContext:nil];
+    
+    _overlayBuffer = nil;
   }
   
   [self setNeedsDisplay:YES];
@@ -195,6 +214,7 @@
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   [self drawBackdrop];
+  [self drawOverlay];
   glFlush();
 }
 
@@ -215,6 +235,28 @@
   
   glBindTexture(_mainBuffer.texUnit, 0);
   glBindBuffer(_mainBuffer.bufferUnit, 0);
+}
+
+
+- (void)drawOverlay
+{
+  if (!_overlayBuffer)
+    return;
+    
+  [_overlayBuffer bindTextureAndBuffer];
+  
+  glEnable(_overlayBuffer.texUnit);
+  glBegin(GL_QUADS);
+  glNormal3f(0.0, 0.0, 1.0);
+  glTexCoord2d(0, 1); glVertex3f(-1.0, -1.0, 0.0);
+  glTexCoord2d(0, 0); glVertex3f(-1.0, 1.0, 0.0);
+  glTexCoord2d(1, 0); glVertex3f(1.0, 1.0, 0.0);
+  glTexCoord2d(1, 1); glVertex3f(1.0, -1.0, 0.0);
+  glEnd();
+  glDisable(_overlayBuffer.texUnit);
+  
+  glBindTexture(_overlayBuffer.texUnit, 0);
+  glBindBuffer(_overlayBuffer.bufferUnit, 0);
 }
 
 
