@@ -59,11 +59,12 @@ NSString * const PTDToolIdentifierRectangleTool = @"PTDToolIdentifierRectangleTo
 - (void)dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint
 {
   [self.currentDrawingSurface beginOverlayDrawing];
+  [NSGraphicsContext.currentContext setShouldAntialias:NO];
   
   [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositingOperationClear];
   
   NSBezierPath *path = [NSBezierPath bezierPathWithRect:[self normalizedCurrentRect]];
-  [path setLineWidth:PTDToolManager.sharedManager.currentBrush.size+1.0];
+  [path setLineWidth:PTDToolManager.sharedManager.currentBrush.size+2.0];
   [[NSColor colorWithWhite:0.0 alpha:0.0] setStroke];
   [path stroke];
   
@@ -83,11 +84,12 @@ NSString * const PTDToolIdentifierRectangleTool = @"PTDToolIdentifierRectangleTo
 - (void)dragDidEndAtPoint:(NSPoint)point
 {
   [self.currentDrawingSurface beginOverlayDrawing];
+  [NSGraphicsContext.currentContext setShouldAntialias:NO];
   
   [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositingOperationClear];
   
   NSBezierPath *path = [NSBezierPath bezierPathWithRect:[self normalizedCurrentRect]];
-  [path setLineWidth:PTDToolManager.sharedManager.currentBrush.size+1.0];
+  [path setLineWidth:PTDToolManager.sharedManager.currentBrush.size+2.0];
   [[NSColor colorWithWhite:0.0 alpha:0.0] setStroke];
   [path stroke];
   
@@ -96,6 +98,7 @@ NSString * const PTDToolIdentifierRectangleTool = @"PTDToolIdentifierRectangleTo
       point.y - _currentRect.origin.y);
   
   [self.currentDrawingSurface beginCanvasDrawing];
+  [NSGraphicsContext.currentContext setShouldAntialias:YES];
   
   path = [NSBezierPath bezierPathWithRect:[self normalizedCurrentRect]];
   [path setLineWidth:PTDToolManager.sharedManager.currentBrush.size];
