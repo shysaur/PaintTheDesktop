@@ -13,7 +13,7 @@
 
 @implementation PTDPaintView {
   PTDOpenGLBufferedTexture *_mainBuffer;
-  PTDOpenGLBufferedTexture *_cursorBuffer;
+  CALayer *_cursorLayer;
 }
 
 
@@ -129,23 +129,27 @@
 - (void)setCursorImage:(NSImage *)cursorImage
 {
   _cursorImage = cursorImage;
+  if (_cursorLayer)
+    [_cursorLayer removeFromSuperlayer];
+    
+  _cursorLayer = [CALayer layer];
+  [self.layer addSublayer:_cursorLayer];
+  _cursorLayer.contents = cursorImage;
+  _cursorLayer.anchorPoint = NSZeroPoint;
   
-  if (!_cursorImage) {
-    _cursorBuffer = nil;
-  } else {
-    _cursorBuffer = [[PTDOpenGLBufferedTexture alloc]
-        initWithOpenGLContext:self.openGLContext
-        image:_cursorImage backingScaleFactor:self.backingScaleFactor];
-  }
-  
-  [self setNeedsDisplay:YES];
+  _cursorLayer.frame = (NSRect){
+      [self ptd_backingAlignedPoint:self.cursorPosition],
+      cursorImage.size};
 }
 
 
 - (void)setCursorPosition:(NSPoint)cursorPosition
 {
   _cursorPosition = cursorPosition;
-  [self setNeedsDisplay:YES];
+  [CATransaction begin];
+  [CATransaction setDisableActions:YES];
+  _cursorLayer.position = [self ptd_backingAlignedPoint:_cursorPosition];
+  [CATransaction commit];
 }
 
 
@@ -191,7 +195,6 @@
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   [self drawBackdrop];
-  [self drawCursor];
   glFlush();
 }
 
@@ -212,37 +215,6 @@
   
   glBindTexture(_mainBuffer.texUnit, 0);
   glBindBuffer(_mainBuffer.bufferUnit, 0);
-}
-
-
-- (void)drawCursor
-{
-  if (!_cursorBuffer)
-    return;
-    
-  NSPoint cursorPos = NSMakePoint(
-      self.cursorPosition.x * self.backingScaleFactor.width,
-      self.cursorPosition.y * self.backingScaleFactor.height);
-  NSRect r = (NSRect){NSZeroPoint, _mainBuffer.pixelSize};
-  GLfloat scrCurLeft = cursorPos.x / r.size.width * 2 - 1;
-  GLfloat scrCurBtm = cursorPos.y / r.size.height * 2 - 1;
-  GLfloat scrCurRight = _cursorBuffer.pixelWidth / r.size.width * 2 + scrCurLeft;
-  GLfloat scrCurTop = _cursorBuffer.pixelHeight / r.size.height * 2 + scrCurBtm;
-
-  [_cursorBuffer bindTextureAndBuffer];
-  
-  glEnable(_cursorBuffer.texUnit);
-  glBegin(GL_QUADS);
-  glNormal3f(0.0, 0.0, 1.0);
-  glTexCoord2d(0, 1); glVertex3f(scrCurLeft, scrCurBtm, 0.0);
-  glTexCoord2d(0, 0); glVertex3f(scrCurLeft, scrCurTop, 0.0);
-  glTexCoord2d(1, 0); glVertex3f(scrCurRight, scrCurTop, 0.0);
-  glTexCoord2d(1, 1); glVertex3f(scrCurRight, scrCurBtm, 0.0);
-  glEnd();
-  glDisable(_cursorBuffer.texUnit);
-  
-  glBindTexture(_cursorBuffer.texUnit, 0);
-  glBindBuffer(_cursorBuffer.bufferUnit, 0);
 }
 
 
