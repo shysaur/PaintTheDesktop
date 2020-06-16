@@ -8,7 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PTDPaintWindow">
             <connections>
-                <outlet property="paintView" destination="pHK-vD-gqS" id="1J1-tI-uUN"/>
+                <outlet property="paintView" destination="se5-gp-TjO" id="t2Z-U0-Av8"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -20,15 +20,9 @@
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="240" width="539" height="388"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
-            <view key="contentView" id="se5-gp-TjO">
+            <view key="contentView" id="se5-gp-TjO" customClass="PTDPaintView">
                 <rect key="frame" x="0.0" y="0.0" width="539" height="388"/>
                 <autoresizingMask key="autoresizingMask"/>
-                <subviews>
-                    <customView id="pHK-vD-gqS" customClass="PTDPaintView">
-                        <rect key="frame" x="0.0" y="0.0" width="539" height="388"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    </customView>
-                </subviews>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-AYu"/>
