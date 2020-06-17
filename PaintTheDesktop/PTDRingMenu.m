@@ -123,11 +123,11 @@ typedef struct {
 
 - (void)popUpMenuWithEvent:(NSEvent *)event forView:(NSView *)view
 {
-  [self popUpMenuAtLocation:event.locationInWindow inWindow:view.window];
+  [self popUpMenuAtLocation:event.locationInWindow inWindow:view.window event:event];
 }
 
 
-- (void)popUpMenuAtLocation:(NSPoint)location inWindow:(NSWindow *)window
+- (void)popUpMenuAtLocation:(NSPoint)location inWindow:(NSWindow *)window event:(NSEvent *)event
 {
   NSPoint scrPos = location;
   if (window)
@@ -136,7 +136,7 @@ typedef struct {
   PTDRingMenuWindow *wc = [[PTDRingMenuWindow alloc] initWithRingMenu:self];
   [window addChildWindow:wc.window ordered:NSWindowAbove];
   [wc positionCenter:scrPos];
-  [wc openMenu];
+  [wc openMenuWithInitialEvent:event];
 }
 
 

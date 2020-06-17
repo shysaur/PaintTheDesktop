@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithRingMenu:(PTDRingMenu *)menu;
 
 - (void)positionCenter:(NSPoint)center;
-- (void)openMenu;
+- (void)openMenuWithInitialEvent:(nullable NSEvent *)evt;
 
 @end
 

@@ -133,7 +133,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   CALayer *_selectionLayer;
   
   PTDRingMenuWindowItemLayout *_dragStartItem;
-  BOOL _endOfLife, _lifeEnded;
+  BOOL _endOfLife, _lifeEnded, _draggingMode;
 }
 
 
@@ -179,10 +179,10 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 }
 
 
-- (void)openMenu
+- (void)openMenuWithInitialEvent:(NSEvent *)evt
 {
   [self.window makeKeyAndOrderFront:nil];
-  [self _trackModally];
+  [self _trackModallyWithInitialEvent:evt];
 }
 
 
@@ -226,9 +226,10 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 }
 
 
-- (NSEvent *)_trackModally
+- (NSEvent *)_trackModallyWithInitialEvent:(NSEvent *)initialEvent
 {
   NSEvent *postEvent, *event;
+  BOOL inInitialSetup = !!initialEvent;
   
   while (!_lifeEnded) {
     @autoreleasepool {
@@ -239,18 +240,40 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
       
       NSEventType type = [event type];
       switch (type) {
-        case NSEventTypeLeftMouseUp:
         case NSEventTypeLeftMouseDown:
-        case NSEventTypeRightMouseUp:
         case NSEventTypeRightMouseDown:
-        case NSEventTypeOtherMouseUp:
         case NSEventTypeOtherMouseDown:
+          inInitialSetup = NO;
           if (event.window != self.window) {
             [self _fadeOutAndClose];
             _lifeEnded = YES;
           } else
             postEvent = event;
           break;
+          
+        case NSEventTypeLeftMouseDragged:
+        case NSEventTypeRightMouseDragged:
+        case NSEventTypeOtherMouseDragged:
+        case NSEventTypeMouseMoved:
+          if (inInitialSetup) {
+            _draggingMode = YES;
+            [self absorbInitialEvent:event];
+          } else {
+            postEvent = event;
+          }
+          break;
+          
+        case NSEventTypeLeftMouseUp:
+        case NSEventTypeRightMouseUp:
+        case NSEventTypeOtherMouseUp:
+          if (inInitialSetup && _draggingMode && event.clickCount == 0) {
+            [self absorbInitialEvent:event];
+          } else {
+            postEvent = event;
+          }
+          inInitialSetup = NO;
+          break;
+          
         default:
           postEvent = event;
       }
@@ -262,6 +285,49 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   
   [NSApp discardEventsMatchingMask:NSEventMaskAny beforeEvent:event];
   return postEvent;
+}
+
+
+- (void)absorbInitialEvent:(NSEvent *)event
+{
+  NSPoint absPos = [event.window convertPointToScreen:event.locationInWindow];
+  NSPoint myPos = [self.window convertPointFromScreen:absPos];
+  NSEvent *newEvent = [NSEvent
+      mouseEventWithType:event.type
+      location:myPos
+      modifierFlags:event.modifierFlags
+      timestamp:event.timestamp
+      windowNumber:self.window.windowNumber
+      context:nil
+      eventNumber:event.eventNumber
+      clickCount:event.clickCount
+      pressure:event.pressure];
+      
+  switch (newEvent.type) {
+    case NSEventTypeLeftMouseDown:
+      [self mouseDown:newEvent];
+      break;
+    case NSEventTypeRightMouseDown:
+      [self rightMouseDown:newEvent];
+      break;
+    case NSEventTypeLeftMouseDragged:
+      [self mouseDragged:newEvent];
+      break;
+    case NSEventTypeRightMouseDragged:
+      [self rightMouseDragged:newEvent];
+      break;
+    case NSEventTypeMouseMoved:
+      [self mouseMoved:newEvent];
+      break;
+    case NSEventTypeLeftMouseUp:
+      [self mouseUp:newEvent];
+      break;
+    case NSEventTypeRightMouseUp:
+      [self rightMouseUp:newEvent];
+      break;
+    default:
+      break;
+  }
 }
 
 
@@ -289,12 +355,30 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 - (void)mouseUp:(NSEvent *)event
 {
   PTDRingMenuWindowItemLayout *found = [self _hitTestAtPoint:event.locationInWindow];
-  if (found == _dragStartItem && _dragStartItem.action && !_endOfLife) {
-    [NSApp sendAction:_dragStartItem.action to:_dragStartItem.target from:nil];
+  if ((found == _dragStartItem || _draggingMode) && found.action && !_endOfLife) {
+    [NSApp sendAction:found.action to:found.target from:nil];
   } else if (!found) {
     [self _fadeOutAndClose];
   }
   [self _updateSelectionLayerForItem:found clicked:YES];
+}
+
+
+- (void)rightMouseDown:(NSEvent *)event
+{
+  [self mouseDown:event];
+}
+
+
+- (void)rightMouseDragged:(NSEvent *)event
+{
+  [self mouseDragged:event];
+}
+
+
+- (void)rightMouseUp:(NSEvent *)event
+{
+  [self mouseUp:event];
 }
 
 
