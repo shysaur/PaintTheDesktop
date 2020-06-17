@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		011426B424968916005363E8 /* PTDOpenGLBufferedTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */; };
+		0162BC91249A0CAE00DFECC9 /* PTDRingMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC90249A0CAE00DFECC9 /* PTDRingMenu.m */; };
+		0162BC94249A0CC400DFECC9 /* PTDRingMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC93249A0CC400DFECC9 /* PTDRingMenuItem.m */; };
+		0162BC97249A0DDA00DFECC9 /* PTDRingMenuSpring.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC96249A0DDA00DFECC9 /* PTDRingMenuSpring.m */; };
+		016A928C24993FFD006C9678 /* PTDRingMenuWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 016A928A24993FFD006C9678 /* PTDRingMenuWindow.m */; };
+		016A928D24993FFD006C9678 /* PTDRingMenuWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 016A928B24993FFD006C9678 /* PTDRingMenuWindow.xib */; };
 		016AD9A524978132004E3749 /* NSView+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 016AD9A424978132004E3749 /* NSView+PTD.m */; };
 		016AD9A8249790B3004E3749 /* PTDDrawingSurface.m in Sources */ = {isa = PBXBuildFile; fileRef = 016AD9A7249790B3004E3749 /* PTDDrawingSurface.m */; };
 		016AD9AB2497A902004E3749 /* PTDRectangleTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 016AD9AA2497A902004E3749 /* PTDRectangleTool.m */; };
@@ -31,6 +36,15 @@
 /* Begin PBXFileReference section */
 		011426B224968916005363E8 /* PTDOpenGLBufferedTexture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDOpenGLBufferedTexture.h; sourceTree = "<group>"; };
 		011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDOpenGLBufferedTexture.m; sourceTree = "<group>"; };
+		0162BC8F249A0CAD00DFECC9 /* PTDRingMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenu.h; sourceTree = "<group>"; };
+		0162BC90249A0CAE00DFECC9 /* PTDRingMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRingMenu.m; sourceTree = "<group>"; };
+		0162BC92249A0CC400DFECC9 /* PTDRingMenuItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenuItem.h; sourceTree = "<group>"; };
+		0162BC93249A0CC400DFECC9 /* PTDRingMenuItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRingMenuItem.m; sourceTree = "<group>"; };
+		0162BC95249A0DDA00DFECC9 /* PTDRingMenuSpring.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenuSpring.h; sourceTree = "<group>"; };
+		0162BC96249A0DDA00DFECC9 /* PTDRingMenuSpring.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRingMenuSpring.m; sourceTree = "<group>"; };
+		016A928924993FFD006C9678 /* PTDRingMenuWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenuWindow.h; sourceTree = "<group>"; };
+		016A928A24993FFD006C9678 /* PTDRingMenuWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRingMenuWindow.m; sourceTree = "<group>"; };
+		016A928B24993FFD006C9678 /* PTDRingMenuWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PTDRingMenuWindow.xib; sourceTree = "<group>"; };
 		016AD9A324978132004E3749 /* NSView+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSView+PTD.h"; sourceTree = "<group>"; };
 		016AD9A424978132004E3749 /* NSView+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSView+PTD.m"; sourceTree = "<group>"; };
 		016AD9A6249790B3004E3749 /* PTDDrawingSurface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDDrawingSurface.h; sourceTree = "<group>"; };
@@ -78,6 +92,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		016A928824993FC4006C9678 /* Ring Menu */ = {
+			isa = PBXGroup;
+			children = (
+				0162BC8F249A0CAD00DFECC9 /* PTDRingMenu.h */,
+				0162BC90249A0CAE00DFECC9 /* PTDRingMenu.m */,
+				0162BC92249A0CC400DFECC9 /* PTDRingMenuItem.h */,
+				0162BC93249A0CC400DFECC9 /* PTDRingMenuItem.m */,
+				0162BC95249A0DDA00DFECC9 /* PTDRingMenuSpring.h */,
+				0162BC96249A0DDA00DFECC9 /* PTDRingMenuSpring.m */,
+				016A928924993FFD006C9678 /* PTDRingMenuWindow.h */,
+				016A928A24993FFD006C9678 /* PTDRingMenuWindow.m */,
+				016A928B24993FFD006C9678 /* PTDRingMenuWindow.xib */,
+			);
+			name = "Ring Menu";
+			sourceTree = "<group>";
+		};
 		016AD99D249755ED004E3749 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
@@ -151,6 +181,7 @@
 				01A213DE248EE94500B5EB9D /* PTDAppDelegate.m */,
 				01A213E2248EE94600B5EB9D /* MainMenu.xib */,
 				016AD99F2497564A004E3749 /* Paint Window */,
+				016A928824993FC4006C9678 /* Ring Menu */,
 				016AD99D249755ED004E3749 /* Tools */,
 				016AD99E24975619004E3749 /* Utilities */,
 				01A213E6248EE94600B5EB9D /* main.m */,
@@ -219,6 +250,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01A213E1248EE94600B5EB9D /* Assets.xcassets in Resources */,
+				016A928D24993FFD006C9678 /* PTDRingMenuWindow.xib in Resources */,
 				01A213E4248EE94600B5EB9D /* MainMenu.xib in Resources */,
 				01A213F2248EE9F600B5EB9D /* PTDPaintWindow.xib in Resources */,
 			);
@@ -233,12 +265,16 @@
 			files = (
 				016D36C0249068F40086E96D /* PTDResetTool.m in Sources */,
 				016AD9AE2497D599004E3749 /* PTDBrush.m in Sources */,
+				0162BC97249A0DDA00DFECC9 /* PTDRingMenuSpring.m in Sources */,
 				01A213F5248EEA1D00B5EB9D /* PTDPaintView.m in Sources */,
 				016AD9AB2497A902004E3749 /* PTDRectangleTool.m in Sources */,
 				016AD9A524978132004E3749 /* NSView+PTD.m in Sources */,
+				016A928C24993FFD006C9678 /* PTDRingMenuWindow.m in Sources */,
 				011426B424968916005363E8 /* PTDOpenGLBufferedTexture.m in Sources */,
 				016D36C324907BBB0086E96D /* PTDCursor.m in Sources */,
+				0162BC94249A0CC400DFECC9 /* PTDRingMenuItem.m in Sources */,
 				01C0D68C2492ED7100AECEAB /* NSScreen+PTD.m in Sources */,
+				0162BC91249A0CAE00DFECC9 /* PTDRingMenu.m in Sources */,
 				016AD9A8249790B3004E3749 /* PTDDrawingSurface.m in Sources */,
 				016D36B42490584E0086E96D /* PTDPencilTool.m in Sources */,
 				016D36BD249067300086E96D /* PTDTool.m in Sources */,
