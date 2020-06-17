@@ -181,12 +181,9 @@
 }
 
 
-- (void)rightMouseUp:(NSEvent *)event
+- (void)rightMouseDown:(NSEvent *)event
 {
   self.mouseInWindow = YES;
-  
-  if (event.clickCount != 1)
-    return;
   [self openContextMenuWithEvent:event];
 }
 

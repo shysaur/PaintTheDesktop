@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		011426B424968916005363E8 /* PTDOpenGLBufferedTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */; };
+		013C9A03249AD17E0033120A /* PTDPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 013C9A02249AD17E0033120A /* PTDPanel.m */; };
 		0162BC91249A0CAE00DFECC9 /* PTDRingMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC90249A0CAE00DFECC9 /* PTDRingMenu.m */; };
 		0162BC94249A0CC400DFECC9 /* PTDRingMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC93249A0CC400DFECC9 /* PTDRingMenuItem.m */; };
 		0162BC97249A0DDA00DFECC9 /* PTDRingMenuSpring.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC96249A0DDA00DFECC9 /* PTDRingMenuSpring.m */; };
@@ -37,6 +38,8 @@
 /* Begin PBXFileReference section */
 		011426B224968916005363E8 /* PTDOpenGLBufferedTexture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDOpenGLBufferedTexture.h; sourceTree = "<group>"; };
 		011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDOpenGLBufferedTexture.m; sourceTree = "<group>"; };
+		013C9A01249AD17E0033120A /* PTDPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDPanel.h; sourceTree = "<group>"; };
+		013C9A02249AD17E0033120A /* PTDPanel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPanel.m; sourceTree = "<group>"; };
 		0162BC8F249A0CAD00DFECC9 /* PTDRingMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenu.h; sourceTree = "<group>"; };
 		0162BC90249A0CAE00DFECC9 /* PTDRingMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRingMenu.m; sourceTree = "<group>"; };
 		0162BC92249A0CC400DFECC9 /* PTDRingMenuItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenuItem.h; sourceTree = "<group>"; };
@@ -143,6 +146,8 @@
 				016AD9A424978132004E3749 /* NSView+PTD.m */,
 				0162BC9E249A9BC000DFECC9 /* NSColor+PTD.h */,
 				0162BC9F249A9BC000DFECC9 /* NSColor+PTD.m */,
+				013C9A01249AD17E0033120A /* PTDPanel.h */,
+				013C9A02249AD17E0033120A /* PTDPanel.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -285,6 +290,7 @@
 				016D36B42490584E0086E96D /* PTDPencilTool.m in Sources */,
 				016D36BD249067300086E96D /* PTDTool.m in Sources */,
 				01A213E7248EE94600B5EB9D /* main.m in Sources */,
+				013C9A03249AD17E0033120A /* PTDPanel.m in Sources */,
 				01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */,
 				016D36B724905E280086E96D /* PTDToolManager.m in Sources */,
 				01A213F1248EE9F600B5EB9D /* PTDPaintWindow.m in Sources */,
