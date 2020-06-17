@@ -476,11 +476,24 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 - (NSImage *)_selectionBackdropForItem:(PTDRingMenuWindowItemLayout *)item
 {
-  NSSize thisSize = item.contents.size;
-  thisSize.height += thisSize.height * 2.0 * (M_SQRT1_2 - 0.5);
-  thisSize.width += thisSize.width * 2.0 * (M_SQRT1_2 - 0.5);
+  NSSize thisSize = item.image.size;
+  CGFloat r1 = thisSize.height * (M_SQRT1_2 - 0.5);
+  CGFloat r2 = thisSize.width * (M_SQRT1_2 - 0.5);
+  
+  NSBezierPath *bp;
+  if (fabs(r1 - r2) < FLT_EPSILON) {
+    thisSize.height += r1 * 2.0;
+    thisSize.width += r2 * 2.0;
+    bp = [NSBezierPath bezierPathWithOvalInRect:(NSRect){NSZeroPoint, thisSize}];
+  } else {
+    CGFloat r = MIN(r1, r2);
+    thisSize.height += r * 1.5;
+    thisSize.width += r * 1.5;
+    CGFloat rr = MIN(thisSize.height / 4.0, thisSize.width / 4.0);
+    bp = [NSBezierPath bezierPathWithRoundedRect:(NSRect){NSZeroPoint, thisSize} xRadius:rr yRadius:rr];
+  }
+  
   NSImage *image = [NSImage imageWithSize:thisSize flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-    NSBezierPath *bp = [NSBezierPath bezierPathWithOvalInRect:(NSRect){NSZeroPoint, thisSize}];
     [[NSColor ptd_controlAccentColor] setFill];
     [bp fill];
     return YES;
