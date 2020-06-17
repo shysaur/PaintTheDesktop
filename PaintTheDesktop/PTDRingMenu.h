@@ -28,6 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSArray *)itemArray;
 - (NSArray *)itemArrayForRing:(NSInteger)ring;
 
+- (void)popUpMenuWithEvent:(NSEvent *)event forView:(nullable NSView *)view;
+- (void)popUpMenuAtLocation:(NSPoint)location inWindow:(nullable NSWindow *)window;
+
 @end
 
 NS_ASSUME_NONNULL_END

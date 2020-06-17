@@ -14,6 +14,9 @@
 #import "PTDRingMenuSpring.h"
 
 
+static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
+
+
 @interface PTDRingMenuWindowItemLayout: PTDRingMenuItem
 
 - (instancetype)initWithRingMenuItem:(PTDRingMenuItem *)item;
@@ -27,6 +30,9 @@
 
 - (void)updateLayerWithCenter:(CGPoint)center;
 
+- (void)select;
+- (void)deselect;
+
 @end
 
 
@@ -36,15 +42,16 @@
 - (instancetype)initWithRingMenuItem:(PTDRingMenuItem *)item
 {
   self = [super init];
-  self.contents = item.contents;
+  self.image = item.image;
+  self.selectedImage = item.selectedImage;
   self.target = item.target;
   self.action = item.action;
   
   _layer = [[CALayer alloc] init];
-  _layer.contents = self.contents;
+  _layer.contents = self.image;
   _layer.anchorPoint = CGPointMake(0.5, 0.5);
   _layer.zPosition = 1.0;
-  _layer.frame = (NSRect){NSZeroPoint, self.contents.size};
+  _layer.frame = (NSRect){NSZeroPoint, self.image.size};
   
   return self;
 }
@@ -64,6 +71,22 @@
 }
 
 
+- (void)select
+{
+  if (self.selectedImage) {
+    self.layer.contents = self.selectedImage;
+  }
+}
+
+
+- (void)deselect
+{
+  if (self.selectedImage) {
+    self.layer.contents = self.image;
+  }
+}
+
+
 - (CGFloat)maximumExtensionRadius
 {
   CGFloat sinv = sin(_angleOnRing), cosv = cos(_angleOnRing);
@@ -71,7 +94,7 @@
       cosv * _distanceFromCenter,
       sinv * _distanceFromCenter);
       
-  NSSize diagonal = self.contents.size;
+  NSSize diagonal = self.image.size;
   diagonal.width /= 2.0;
   diagonal.height /= 2.0;
   if (cosv < 0)
@@ -110,14 +133,20 @@
   CALayer *_selectionLayer;
   
   PTDRingMenuWindowItemLayout *_dragStartItem;
-  BOOL _endOfLife;
+  BOOL _endOfLife, _lifeEnded;
 }
 
 
 - (instancetype)initWithRingMenu:(PTDRingMenu *)menu
 {
   self = [super init];
+  
   [self _layoutMenu:menu];
+  [PTDRingMenuWindow addMenuWindow:self];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationStatusDidChange:) name:NSApplicationDidResignActiveNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationStatusDidChange:) name:NSApplicationDidHideNotification object:nil];
+  
   return self;
 }
 
@@ -125,6 +154,60 @@
 - (NSString *)windowNibName
 {
   return @"PTDRingMenuWindow";
+}
+
+
+- (void)close
+{
+  [super close];
+  [PTDRingMenuWindow removeMenuWindow:self];
+}
+
+
+- (void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+
+- (void)positionCenter:(NSPoint)center
+{
+  NSRect frame = self.window.frame;
+  center.x -= frame.size.width / 2;
+  center.y -= frame.size.height / 2;
+  [self.window setFrameOrigin:center];
+}
+
+
+- (void)openMenu
+{
+  [self.window makeKeyAndOrderFront:nil];
+  [self _trackModally];
+}
+
+
+#pragma mark - Global Menu List
+
+
++ (NSMutableSet *)currentlyOpenMenus
+{
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    currentlyOpenMenus = [NSMutableSet set];
+  });
+  return currentlyOpenMenus;
+}
+
+
++ (void)addMenuWindow:(PTDRingMenuWindow *)menu
+{
+  [PTDRingMenuWindow.currentlyOpenMenus addObject:menu];
+}
+
+
++ (void)removeMenuWindow:(PTDRingMenuWindow *)menu
+{
+  [PTDRingMenuWindow.currentlyOpenMenus removeObject:menu];
 }
 
 
@@ -140,6 +223,45 @@
     initWithRect:_mainView.frame
     options:options owner:self userInfo:nil];
   [_mainView addTrackingArea:area];
+}
+
+
+- (NSEvent *)_trackModally
+{
+  NSEvent *postEvent, *event;
+  
+  while (!_lifeEnded) {
+    @autoreleasepool {
+      event = [NSApp
+          nextEventMatchingMask:NSEventMaskAny
+          untilDate:[NSDate distantFuture]
+          inMode:NSDefaultRunLoopMode dequeue:YES];
+      
+      NSEventType type = [event type];
+      switch (type) {
+        case NSEventTypeLeftMouseUp:
+        case NSEventTypeLeftMouseDown:
+        case NSEventTypeRightMouseUp:
+        case NSEventTypeRightMouseDown:
+        case NSEventTypeOtherMouseUp:
+        case NSEventTypeOtherMouseDown:
+          if (event.window != self.window) {
+            [self _fadeOutAndClose];
+            _lifeEnded = YES;
+          } else
+            postEvent = event;
+          break;
+        default:
+          postEvent = event;
+      }
+      
+      if (postEvent)
+        [NSApp sendEvent:postEvent];
+    }
+  }
+  
+  [NSApp discardEventsMatchingMask:NSEventMaskAny beforeEvent:event];
+  return postEvent;
 }
 
 
@@ -169,6 +291,8 @@
   PTDRingMenuWindowItemLayout *found = [self _hitTestAtPoint:event.locationInWindow];
   if (found == _dragStartItem && _dragStartItem.action && !_endOfLife) {
     [NSApp sendAction:_dragStartItem.action to:_dragStartItem.target from:nil];
+  } else if (!found) {
+    [self _fadeOutAndClose];
   }
   [self _updateSelectionLayerForItem:found clicked:YES];
 }
@@ -185,6 +309,15 @@
 }
 
 
+- (void)applicationStatusDidChange:(NSNotification *)notification
+{
+  if (![NSApp isActive] || [NSApp isHidden]) {
+    [self close];
+    _endOfLife = _lifeEnded = YES;
+  }
+}
+
+
 #pragma mark - Layout & Setup
 
 
@@ -192,6 +325,7 @@
 {
   [super windowDidLoad];
   
+  self.window.level = NSSubmenuWindowLevel;
   self.window.backgroundColor = [NSColor clearColor];
   self.window.opaque = NO;
   
@@ -360,6 +494,10 @@
   if (_endOfLife)
     return;
     
+  for (PTDRingMenuWindowItemLayout *itm in _layout) {
+    [itm deselect];
+  }
+    
   if (!item) {
     if (_selectionLayer)
       _selectionLayer.opacity = 0.0;
@@ -377,6 +515,7 @@
   _selectionLayer.frame = (NSRect){NSZeroPoint, backdrop.size};
   _selectionLayer.position = item.layer.position;
   _selectionLayer.zPosition = 0.5;
+  [item select];
   
   if (click) {
     /* Why can't this be done with Core Animation? */
@@ -399,6 +538,8 @@
 
 - (void)_fadeOutAndClose
 {
+  _endOfLife = YES;
+  _lifeEnded = YES;
   [CATransaction begin];
   [CATransaction setCompletionBlock:^{
     [self close];

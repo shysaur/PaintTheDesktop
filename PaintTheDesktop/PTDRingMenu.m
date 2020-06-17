@@ -6,6 +6,7 @@
 //  Copyright © 2020 danielecattaneo. All rights reserved.
 //
 
+#import "PTDRingMenuWindow.h"
 #import "PTDRingMenu.h"
 
 
@@ -117,6 +118,25 @@ typedef struct {
 - (NSArray *)itemArrayForRing:(NSInteger)ring
 {
   return [[_rings objectAtIndex:ring] copy];
+}
+
+
+- (void)popUpMenuWithEvent:(NSEvent *)event forView:(NSView *)view
+{
+  [self popUpMenuAtLocation:event.locationInWindow inWindow:view.window];
+}
+
+
+- (void)popUpMenuAtLocation:(NSPoint)location inWindow:(NSWindow *)window
+{
+  NSPoint scrPos = location;
+  if (window)
+    scrPos = [window convertPointToScreen:location];
+    
+  PTDRingMenuWindow *wc = [[PTDRingMenuWindow alloc] initWithRingMenu:self];
+  [window addChildWindow:wc.window ordered:NSWindowAbove];
+  [wc positionCenter:scrPos];
+  [wc openMenu];
 }
 
 
