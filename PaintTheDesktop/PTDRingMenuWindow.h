@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class PTDRingMenu;
 
-@interface PTDRingMenuWindow : NSWindowController
+@interface PTDRingMenuWindow : NSWindowController <NSWindowDelegate>
 
 - (instancetype)initWithRingMenu:(PTDRingMenu *)menu;
 

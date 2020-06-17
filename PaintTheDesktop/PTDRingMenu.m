@@ -17,7 +17,7 @@ typedef struct {
 
 @implementation PTDRingMenu {
   NSMutableArray <NSMutableArray *> *_rings;
-  NSMutableArray <NSValue *> *_gravities;
+  NSMutableArray *_gravities;
 }
 
 

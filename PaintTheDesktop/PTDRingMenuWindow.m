@@ -6,6 +6,8 @@
 //  Copyright © 2020 danielecattaneo. All rights reserved.
 //
 
+#import <Quartz/Quartz.h>
+#import "NSColor+PTD.h"
 #import "PTDRingMenuWindow.h"
 #import "PTDRingMenu.h"
 #import "PTDRingMenuItem.h"
@@ -41,6 +43,7 @@
   _layer = [[CALayer alloc] init];
   _layer.contents = self.contents;
   _layer.anchorPoint = CGPointMake(0.5, 0.5);
+  _layer.zPosition = 1.0;
   _layer.frame = (NSRect){NSZeroPoint, self.contents.size};
   
   return self;
@@ -100,8 +103,14 @@
 
 
 @implementation PTDRingMenuWindow {
+  IBOutlet NSView *_mainView;
+  
   NSMutableArray <PTDRingMenuWindowItemLayout *> *_layout;
   NSMutableArray <PTDRingMenuWindowRingInfo *> *_rings;
+  CALayer *_selectionLayer;
+  
+  PTDRingMenuWindowItemLayout *_dragStartItem;
+  BOOL _endOfLife;
 }
 
 
@@ -119,23 +128,94 @@
 }
 
 
+#pragma mark - Event Handling
+
+
+- (void)_createTrackingAreas
+{
+  NSTrackingAreaOptions options = NSTrackingActiveAlways |
+    NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited |
+    NSTrackingMouseMoved;
+  NSTrackingArea *area = [[NSTrackingArea alloc]
+    initWithRect:_mainView.frame
+    options:options owner:self userInfo:nil];
+  [_mainView addTrackingArea:area];
+}
+
+
+- (void)mouseMoved:(NSEvent *)event
+{
+  PTDRingMenuWindowItemLayout *found = [self _hitTestAtPoint:event.locationInWindow];
+  [self _updateSelectionLayerForItem:found clicked:NO];
+}
+
+
+- (void)mouseDown:(NSEvent *)event
+{
+  _dragStartItem = [self _hitTestAtPoint:event.locationInWindow];
+  [self _updateSelectionLayerForItem:_dragStartItem clicked:NO];
+}
+
+
+- (void)mouseDragged:(NSEvent *)event
+{
+  PTDRingMenuWindowItemLayout *found = [self _hitTestAtPoint:event.locationInWindow];
+  [self _updateSelectionLayerForItem:found clicked:NO];
+}
+
+
+- (void)mouseUp:(NSEvent *)event
+{
+  PTDRingMenuWindowItemLayout *found = [self _hitTestAtPoint:event.locationInWindow];
+  if (found == _dragStartItem && _dragStartItem.action && !_endOfLife) {
+    [NSApp sendAction:_dragStartItem.action to:_dragStartItem.target from:nil];
+  }
+  [self _updateSelectionLayerForItem:found clicked:YES];
+}
+
+
+- (PTDRingMenuWindowItemLayout *)_hitTestAtPoint:(NSPoint)point
+{
+  PTDRingMenuWindowItemLayout *res;
+  for (PTDRingMenuWindowItemLayout *item in _layout) {
+    if (NSPointInRect(point, item.layer.frame))
+      return item;
+  }
+  return res;
+}
+
+
+#pragma mark - Layout & Setup
+
+
 - (void)windowDidLoad
 {
   [super windowDidLoad];
-  NSView *contentView = self.window.contentView;
-  contentView.wantsLayer = YES;
-  CALayer *rootLayer = contentView.layer;
+  
+  self.window.backgroundColor = [NSColor clearColor];
+  self.window.opaque = NO;
+  
+  _mainView.wantsLayer = YES;
+  CALayer *rootLayer = [[CALayer alloc] init];
+  rootLayer.backgroundColor = [[NSColor clearColor] CGColor];
   
   CGPoint center = CGPointMake(
-      contentView.bounds.size.width / 2.0,
-      contentView.bounds.size.height / 2.0);
+      _mainView.bounds.size.width / 2.0,
+      _mainView.bounds.size.height / 2.0);
   for (PTDRingMenuWindowItemLayout *li in _layout) {
     [li updateLayerWithCenter:center];
     [rootLayer addSublayer:li.layer];
   }
   
-  rootLayer.contents = [self _backdrop];
-  rootLayer.frame = contentView.bounds;
+  CALayer *backdropLyr = [[CALayer alloc] init];
+  backdropLyr.contents = [self _backdrop];
+  backdropLyr.frame = (CGRect){CGPointZero, _mainView.bounds.size};
+  [rootLayer addSublayer:backdropLyr];
+    
+  rootLayer.frame = _mainView.bounds;
+  _mainView.layer = rootLayer;
+  
+  [self _createTrackingAreas];
   
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"debug"]) {
     CALayer *dbgCenterLyr = [[CALayer alloc] init];
@@ -151,17 +231,17 @@
 {
   NSArray <PTDRingMenuWindowRingInfo *> *rings = [_rings copy];
   CGPoint center = CGPointMake(
-      self.window.contentView.bounds.size.width / 2.0,
-      self.window.contentView.bounds.size.height / 2.0);
+      _mainView.bounds.size.width / 2.0,
+      _mainView.bounds.size.height / 2.0);
 
   NSImage *res = [NSImage
-      imageWithSize:self.window.contentView.bounds.size
+      imageWithSize:_mainView.bounds.size
       flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+    [[NSColor windowBackgroundColor] setStroke];
     for (PTDRingMenuWindowRingInfo *ring in rings) {
       CGFloat rad = ring.radius;
       NSRect ovalRect = NSMakeRect(center.x - rad, center.y - rad, rad * 2.0, rad * 2.0);
       NSBezierPath *bp = [NSBezierPath bezierPathWithOvalInRect:ovalRect];
-      [[NSColor colorWithWhite:0.0 alpha:0.25] setStroke];
       [bp setLineWidth:ring.width];
       [bp stroke];
     }
@@ -257,6 +337,75 @@
   rinfo.radius = rad;
   rinfo.width = (padding - rad) * 2.0;
   [_rings addObject:rinfo];
+}
+
+
+- (NSImage *)_selectionBackdropForItem:(PTDRingMenuWindowItemLayout *)item
+{
+  NSSize thisSize = item.contents.size;
+  thisSize.height += thisSize.height * 2.0 * (M_SQRT1_2 - 0.5);
+  thisSize.width += thisSize.width * 2.0 * (M_SQRT1_2 - 0.5);
+  NSImage *image = [NSImage imageWithSize:thisSize flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+    NSBezierPath *bp = [NSBezierPath bezierPathWithOvalInRect:(NSRect){NSZeroPoint, thisSize}];
+    [[NSColor ptd_controlAccentColor] setFill];
+    [bp fill];
+    return YES;
+  }];
+  return image;
+}
+
+
+- (void)_updateSelectionLayerForItem:(PTDRingMenuWindowItemLayout *)item clicked:(BOOL)click
+{
+  if (_endOfLife)
+    return;
+    
+  if (!item) {
+    if (_selectionLayer)
+      _selectionLayer.opacity = 0.0;
+    return;
+  }
+  
+  if (!_selectionLayer) {
+    _selectionLayer = [[CALayer alloc] init];
+    [_mainView.layer addSublayer:_selectionLayer];
+    CATransaction.disableActions = YES;
+  }
+  
+  NSImage *backdrop = [self _selectionBackdropForItem:item];
+  _selectionLayer.contents = backdrop;
+  _selectionLayer.frame = (NSRect){NSZeroPoint, backdrop.size};
+  _selectionLayer.position = item.layer.position;
+  _selectionLayer.zPosition = 0.5;
+  
+  if (click) {
+    /* Why can't this be done with Core Animation? */
+    CATransaction.disableActions = YES;
+    _selectionLayer.opacity = 0.0;
+    _endOfLife = YES;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.075 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      CATransaction.disableActions = YES;
+      self->_selectionLayer.opacity = 1.0;
+      CATransaction.disableActions = NO;
+      [self _fadeOutAndClose];
+    });
+    
+  } else {
+    _selectionLayer.speed = 3.0;
+    _selectionLayer.opacity = 1.0;
+  }
+}
+
+
+- (void)_fadeOutAndClose
+{
+  [CATransaction begin];
+  [CATransaction setCompletionBlock:^{
+    [self close];
+  }];
+  CATransaction.animationDuration = 0.4;
+  [self.window.animator setAlphaValue:0.0];
+  [CATransaction commit];
 }
 
 
