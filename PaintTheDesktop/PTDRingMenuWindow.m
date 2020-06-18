@@ -76,6 +76,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 - (void)select
 {
   if (self.selectedImage) {
+    CATransaction.disableActions = YES;
     self.layer.contents = self.selectedImage;
   }
 }
@@ -84,6 +85,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 - (void)deselect
 {
   if (self.selectedImage) {
+    CATransaction.disableActions = YES;
     self.layer.contents = self.image;
   }
 }
@@ -609,6 +611,8 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
     CATransaction.disableActions = YES;
   }
   
+  CATransaction.disableActions = YES;
+  
   NSImage *backdrop = [self _selectionBackdropForItem:item];
   _selectionLayer.contents = backdrop;
   _selectionLayer.frame = (NSRect){NSZeroPoint, backdrop.size};
@@ -630,7 +634,6 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
     });
     
   } else {
-    _selectionLayer.speed = 3.0;
     _selectionLayer.opacity = 1.0;
   }
 }
