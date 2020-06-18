@@ -19,8 +19,10 @@
     NSForegroundColorAttributeName: [NSColor labelColor]
   };
   NSSize textSize = [text sizeWithAttributes:attrib];
+  textSize.width = ceil(textSize.width);
+  textSize.height = ceil(textSize.height);
   self.image = [NSImage imageWithSize:textSize flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-    [text drawAtPoint:NSMakePoint(0, 0) withAttributes:attrib];
+    [text drawAtPoint:NSZeroPoint withAttributes:attrib];
     return YES;
   }];
   NSDictionary *attrib2 = @{

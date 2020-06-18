@@ -63,10 +63,12 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
     _layer.backgroundColor = [[NSColor redColor] CGColor];
   }
   
+  CGFloat compx = (CGFloat)((int)(_layer.frame.size.width) % 2) / 2.0;
+  CGFloat compy = (CGFloat)((int)(_layer.frame.size.height) % 2) / 2.0;
   CGFloat sinv = sin(_angleOnRing), cosv = cos(_angleOnRing);
   NSPoint myCenter = NSMakePoint(
-      cosv * _distanceFromCenter + center.x,
-      sinv * _distanceFromCenter + center.y);
+      round(cosv * _distanceFromCenter + center.x) + compx,
+      round(sinv * _distanceFromCenter + center.y) + compy);
   _layer.position = myCenter;
 }
 
@@ -611,6 +613,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   _selectionLayer.contents = backdrop;
   _selectionLayer.frame = (NSRect){NSZeroPoint, backdrop.size};
   _selectionLayer.position = item.layer.position;
+  _selectionLayer.frame = [self.window backingAlignedRect:_selectionLayer.frame options:NSAlignAllEdgesInward];
   _selectionLayer.zPosition = 0.5;
   [item select];
   
