@@ -8,17 +8,11 @@
 
 #import "PTDRingMenuWindow.h"
 #import "PTDRingMenu.h"
-
-
-typedef struct {
-  CGFloat angle;
-  NSRange itemRange;
-} PTDRingMenuGravityData;
+#import "PTDRingMenuRing.h"
 
 
 @implementation PTDRingMenu {
-  NSMutableArray <NSMutableArray *> *_rings;
-  NSMutableArray *_gravities;
+  NSMutableArray <PTDRingMenuRing *> *_rings;
 }
 
 
@@ -26,76 +20,33 @@ typedef struct {
 {
   self = [super init];
   _rings = [[NSMutableArray alloc] init];
-  _gravities = [[NSMutableArray alloc] init];
   return self;
 }
 
 
-- (NSMutableArray *)_ringAtIndex:(NSInteger)i
++ (PTDRingMenu *)ringMenu
 {
-  while (_rings.count <= i) {
-    [self willChangeValueForKey:@"ringCount"];
-    [_rings addObject:[[NSMutableArray alloc] init]];
-    [_gravities addObject:[NSNull null]];
-    [self didChangeValueForKey:@"ringCount"];
-  }
-  return [_rings objectAtIndex:i];
+  return [[PTDRingMenu alloc] init];
 }
 
 
-- (void)addItem:(id)item inRing:(NSInteger)ring
+- (void)addRing:(PTDRingMenuRing *)ring
 {
-  [[self _ringAtIndex:ring] addObject:item];
+  [_rings addObject:ring];
 }
 
 
-- (void)addItem:(id)item inPosition:(NSInteger)i ring:(NSInteger)ring
+- (void)addRing:(PTDRingMenuRing *)ring inPosition:(NSInteger)pos
 {
-  [[self _ringAtIndex:ring] insertObject:item atIndex:i];
+  [_rings insertObject:ring atIndex:pos];
 }
 
 
-- (void)removeItemInPosition:(NSInteger)i ring:(NSInteger)ring
+- (PTDRingMenuRing *)newRing
 {
-  NSMutableArray *ringObj = [self _ringAtIndex:ring];
-  [ringObj removeObjectAtIndex:i];
-  
-  if (ring == _rings.count - 1 && ringObj.count == 0) {
-    [self willChangeValueForKey:@"ringCount"];
-    [_rings removeObjectAtIndex:ring];
-    [_gravities removeObjectAtIndex:ring];
-    [self didChangeValueForKey:@"ringCount"];
-  }
-}
-
-
-- (void)setGravityAngle:(CGFloat)rad forRing:(NSInteger)ring
-{
-  NSRange itmRange = NSMakeRange(0, _rings[ring].count);
-  [self setGravityAngle:rad forRing:ring itemRange:itmRange];
-}
-
-
-- (void)setGravityAngle:(CGFloat)radians forRing:(NSInteger)ring itemRange:(NSRange)range
-{
-  PTDRingMenuGravityData gdata;
-  gdata.angle = radians;
-  gdata.itemRange = range;
-  _gravities[ring] = [NSValue valueWithBytes:&gdata objCType:@encode(PTDRingMenuGravityData)];
-}
-
-
-- (void)ring:(NSInteger)ring gravityAngle:(CGFloat *)angle itemRange:(NSRange *)range
-{
-  PTDRingMenuGravityData gdata;
-  if ((NSNull *)_gravities[ring] != [NSNull null]) {
-    [_gravities[ring] getValue:&gdata size:sizeof(PTDRingMenuGravityData)];
-  } else {
-    gdata.angle = 0.0;
-    gdata.itemRange = NSMakeRange(0, _rings[ring].count);
-  }
-  *angle = gdata.angle;
-  *range = gdata.itemRange;
+  PTDRingMenuRing *ring = [PTDRingMenuRing ring];
+  [self addRing:ring];
+  return ring;
 }
 
 
@@ -105,19 +56,15 @@ typedef struct {
 }
 
 
-- (NSArray *)itemArray
+- (NSArray <PTDRingMenuRing *> *)rings
 {
-  NSMutableArray *res = [NSMutableArray array];
-  for (NSMutableArray *ring in _rings) {
-    [res addObjectsFromArray:ring];
-  }
-  return [res copy];
+  return [_rings copy];
 }
 
 
-- (NSArray *)itemArrayForRing:(NSInteger)ring
+- (void)removeRingInPosition:(NSInteger)i
 {
-  return [[_rings objectAtIndex:ring] copy];
+  [_rings removeObjectAtIndex:i];
 }
 
 

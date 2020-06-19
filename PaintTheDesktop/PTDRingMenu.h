@@ -7,26 +7,24 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "PTDRingMenuRing.h"
+#import "PTDRingMenuItem.h"
+#import "PTDRingMenuSpring.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class PTDRingMenuItem;
-@class PTDRingMenuSpring;
-
 @interface PTDRingMenu : NSObject
 
-- (void)addItem:(id)item inRing:(NSInteger)ring;
-- (void)addItem:(id)item inPosition:(NSInteger)i ring:(NSInteger)ring;
++ (PTDRingMenu *)ringMenu;
 
-- (void)removeItemInPosition:(NSInteger)i ring:(NSInteger)ring;
-
-- (void)setGravityAngle:(CGFloat)radians forRing:(NSInteger)ring;
-- (void)setGravityAngle:(CGFloat)radians forRing:(NSInteger)ring itemRange:(NSRange)range;
-- (void)ring:(NSInteger)ring gravityAngle:(CGFloat *)angle itemRange:(NSRange *)range;
+- (void)addRing:(PTDRingMenuRing *)ring;
+- (void)addRing:(PTDRingMenuRing *)ring inPosition:(NSInteger)pos;
+- (PTDRingMenuRing *)newRing;
 
 @property (nonatomic, readonly) NSInteger ringCount;
-- (NSArray *)itemArray;
-- (NSArray *)itemArrayForRing:(NSInteger)ring;
+@property (nonatomic, readonly) NSArray <PTDRingMenuRing *> *rings;
+
+- (void)removeRingInPosition:(NSInteger)i;
 
 - (void)popUpMenuWithEvent:(NSEvent *)event forView:(nullable NSView *)view;
 - (void)popUpMenuAtLocation:(NSPoint)location inWindow:(nullable NSWindow *)window event:(nullable NSEvent *)event;

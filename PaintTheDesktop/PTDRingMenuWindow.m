@@ -10,6 +10,7 @@
 #import "NSColor+PTD.h"
 #import "PTDRingMenuWindow.h"
 #import "PTDRingMenu.h"
+#import "PTDRingMenuRing.h"
 #import "PTDRingMenuItem.h"
 #import "PTDRingMenuSpring.h"
 
@@ -480,27 +481,23 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   
   CGFloat radius = 24.0;
   for (NSInteger i = 0; i < menu.ringCount; i++) {
-    NSArray *ring = [menu itemArrayForRing:i];
+    PTDRingMenuRing *ring = menu.rings[i];
     
-    CGFloat gravity;
-    NSRange range;
-    [menu ring:i gravityAngle:&gravity itemRange:&range];
-    
-    [self _layoutRing:ring withMinimumRadius:radius gravityAngle:gravity range:range nextMinimumRadius:&radius];
+    [self _layoutRing:ring withMinimumRadius:radius nextMinimumRadius:&radius];
     radius += 4.0;
   }
 }
 
 
-- (void)_layoutRing:(NSArray *)ring
+- (void)_layoutRing:(PTDRingMenuRing *)ring
   withMinimumRadius:(CGFloat)rad
-  gravityAngle:(CGFloat)grav range:(NSRange)range
   nextMinimumRadius:(CGFloat *)nextRad
 {
   NSMutableArray *ringItems = [@[] mutableCopy];
+  NSRange range = ring.gravityMass;
   NSRange gravityMassRange = NSMakeRange(NSNotFound, 0);
   NSInteger i = 0, j = 0;
-  for (id obj in ring) {
+  for (id obj in ring.itemArray) {
     if (i == range.location)
       gravityMassRange.location = j;
     if (i == NSMaxRange(range)-1)
@@ -517,7 +514,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   NSInteger currWeight = ringItems.count - 1;
   weights[currWeight] = 0.1;
   CGFloat weightAccum = 0.0;
-  for (id obj in ring) {
+  for (id obj in ring.itemArray) {
     if ([obj isKindOfClass:[PTDRingMenuItem class]]) {
       currWeight = (currWeight + 1) % ringItems.count;
       weights[currWeight] = 0.1;
@@ -537,7 +534,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   }
   
   CGFloat angleSpan = mainMass / totalWeight * (2 * M_PI);
-  CGFloat currentAngle = angleSpan / 2 + grav;
+  CGFloat currentAngle = angleSpan / 2 + ring.gravityAngle;
   CGFloat padding = 0.0;
   
   j = gravityMassRange.location;

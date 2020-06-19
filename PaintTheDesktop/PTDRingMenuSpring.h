@@ -12,7 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PTDRingMenuSpring : NSObject
 
-@property (nonatomic) CGFloat initialLength;
 @property (nonatomic) CGFloat elasticConstant;
 
 @end
