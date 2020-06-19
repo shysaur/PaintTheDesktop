@@ -13,6 +13,11 @@
 #import "PTDToolManager.h"
 #import "PTDCursor.h"
 #import "NSScreen+PTD.h"
+#import "PTDRingMenu.h"
+#import "PTDRingMenuRing.h"
+#import "PTDRingMenuItem.h"
+#import "PTDRingMenuSpring.h"
+#import "PTDRingMenuWindow.h"
 
 
 @interface PTDPaintWindow ()
@@ -226,33 +231,26 @@
 
 - (void)openContextMenuWithEvent:(NSEvent *)event
 {
-  NSMenu *menu = [[NSMenu alloc] init];
+  PTDRingMenu *ringMenu = [[PTDRingMenu alloc] init];
+  PTDRingMenuRing *itemsRing = [ringMenu newRing];
   
   NSInteger i = 0;
   for (NSString *toolid in PTDToolManager.sharedManager.availableToolIdentifiers) {
     NSString *label = [PTDToolManager.sharedManager toolNameForIdentifier:toolid];
-    NSMenuItem *item = [menu addItemWithTitle:label action:@selector(changeTool:) keyEquivalent:@""];
+    PTDRingMenuItem *item = [itemsRing addItemWithText:label target:self action:@selector(changeTool:)];
     item.tag = i;
-    if ([toolid isEqual:[[PTDToolManager.sharedManager.currentTool class] toolIdentifier]]) {
-      item.state = NSControlStateValueOn;
-    }
     i++;
   }
+  [itemsRing beginGravityMassGroupWithAngle:-M_PI_2];
+  [itemsRing addItemWithText:@"Quit" target:NSApp action:@selector(terminate:)];
+  [itemsRing endGravityMassGroup];
   
-  NSArray *toolMenu = [PTDToolManager.sharedManager.currentTool optionMenu];
-  if (toolMenu) {
-    [menu addItem:[NSMenuItem separatorItem]];
-    for (NSMenuItem *item in toolMenu) {
-      [menu addItem:item];
-    }
-  }
-  
-  [menu addItem:[NSMenuItem separatorItem]];
-  NSMenuItem *exitItm = [menu addItemWithTitle:@"Quit" action:@selector(terminate:) keyEquivalent:@""];
-  exitItm.target = NSApp;
+  PTDRingMenuRing *optMenu = [PTDToolManager.sharedManager.currentTool optionMenu];
+  if (optMenu)
+    [ringMenu addRing:optMenu];
   
   self.systemCursorVisibility = YES;
-  [NSMenu popUpContextMenu:menu withEvent:event forView:self.paintView];
+  [ringMenu popUpMenuWithEvent:event forView:self.paintView];
 }
 
 

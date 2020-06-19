@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "PTDRingMenu.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -36,7 +37,7 @@ extern NSString * const PTDToolCursorDidChangeNotification;
 - (void)activate;
 - (void)deactivate;
 
-- (nullable NSArray <NSMenuItem *> *)optionMenu;
+- (nullable PTDRingMenuRing *)optionMenu;
 
 @end
 

@@ -107,7 +107,7 @@ NSString * const PTDToolIdentifierRectangleTool = @"PTDToolIdentifierRectangleTo
 }
 
 
-- (NSArray <NSMenuItem *> *)optionMenu
+- (PTDRingMenuRing *)optionMenu
 {
   return PTDToolManager.sharedManager.currentBrush.menuOptions;
 }

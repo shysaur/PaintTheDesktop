@@ -23,40 +23,37 @@
 }
 
 
-- (NSArray <NSMenuItem *> *)menuOptions
+- (PTDRingMenuRing *)menuOptions
 {
-  NSMutableArray *res = [@[] mutableCopy];
+  PTDRingMenuRing *res = [PTDRingMenuRing ring];
   
+  [res beginGravityMassGroupWithAngle:M_PI_2];
   for (int i=2; i<10; i += 2) {
     NSString *title = [NSString stringWithFormat:@"Size %d", i];
-    NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle:title action:@selector(changeSize:) keyEquivalent:@""];
-    mi.target = self;
-    mi.tag = i;
-    [res addObject:mi];
+    PTDRingMenuItem *item = [res addItemWithText:title target:self action:@selector(changeSize:)];
+    item.tag = i;
   }
   for (int i=10; i<25; i += 5) {
     NSString *title = [NSString stringWithFormat:@"Size %d", i];
-    NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle:title action:@selector(changeSize:) keyEquivalent:@""];
-    mi.target = self;
-    mi.tag = i;
-    [res addObject:mi];
+    PTDRingMenuItem *item = [res addItemWithText:title target:self action:@selector(changeSize:)];
+    item.tag = i;
   }
+  [res endGravityMassGroup];
   
-  [res addObject:[NSMenuItem separatorItem]];
+  [res addSpringWithElasticity:0.5];
   
   NSArray *colors = @[
     @"Black", @"Red", @"Green", @"Blue", @"Yellow", @"White"
   ];
   int i = 0;
   for (NSString *color in colors) {
-    NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle:color action:@selector(changeColor:) keyEquivalent:@""];
-    mi.target = self;
-    mi.tag = i;
-    [res addObject:mi];
+    PTDRingMenuItem *item = [res addItemWithText:color target:self action:@selector(changeColor:)];
+    item.tag = i;
     i++;
   }
   
-  return [res copy];
+  [res addSpringWithElasticity:0.5];
+  return res;
 }
 
 

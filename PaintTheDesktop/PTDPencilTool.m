@@ -45,7 +45,7 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 }
 
 
-- (NSArray <NSMenuItem *> *)optionMenu
+- (PTDRingMenuRing *)optionMenu
 {
   return [PTDToolManager.sharedManager.currentBrush menuOptions];
 }

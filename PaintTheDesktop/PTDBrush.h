@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "PTDRingMenu.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -15,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) NSColor *color;
 @property (nonatomic) CGFloat size;
 
-- (NSArray <NSMenuItem *> *)menuOptions;
+- (PTDRingMenuRing *)menuOptions;
 
 @end
 

@@ -79,17 +79,18 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 }
 
 
-- (NSArray <NSMenuItem *> *)optionMenu
+- (PTDRingMenuRing *)optionMenu
 {
-  NSMutableArray *res = [@[] mutableCopy];
+  PTDRingMenuRing *res = [PTDRingMenuRing ring];
   
+  [res beginGravityMassGroupWithAngle:M_PI_2];
   for (int i=20; i<200; i += 50) {
     NSString *title = [NSString stringWithFormat:@"Size %d", i];
-    NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle:title action:@selector(changeSize:) keyEquivalent:@""];
-    mi.target = self;
-    mi.tag = i;
-    [res addObject:mi];
+    PTDRingMenuItem *itm = [res addItemWithText:title target:self action:@selector(changeSize:)];
+    itm.tag = i;
   }
+  [res endGravityMassGroup];
+  [res addSpringWithElasticity:1.0];
   
   return res;
 }
