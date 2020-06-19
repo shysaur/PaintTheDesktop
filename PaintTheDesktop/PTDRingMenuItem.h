@@ -20,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) id target;
 @property (nonatomic) SEL action;
 
+@property (nonatomic) NSInteger tag;
+
 @end
 
 NS_ASSUME_NONNULL_END

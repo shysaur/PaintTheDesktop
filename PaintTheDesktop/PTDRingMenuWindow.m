@@ -18,9 +18,10 @@
 static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 
-@interface PTDRingMenuWindowItemLayout: PTDRingMenuItem
+@interface PTDRingMenuWindowItemLayout: NSObject
 
 - (instancetype)initWithRingMenuItem:(PTDRingMenuItem *)item;
+@property (readonly) PTDRingMenuItem *item;
 
 @property (nonatomic) CALayer *layer;
 
@@ -43,16 +44,13 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 - (instancetype)initWithRingMenuItem:(PTDRingMenuItem *)item
 {
   self = [super init];
-  self.image = item.image;
-  self.selectedImage = item.selectedImage;
-  self.target = item.target;
-  self.action = item.action;
+  _item = item;
   
   _layer = [[CALayer alloc] init];
-  _layer.contents = self.image;
+  _layer.contents = self.item.image;
   _layer.anchorPoint = CGPointMake(0.5, 0.5);
   _layer.zPosition = 1.0;
-  _layer.frame = (NSRect){NSZeroPoint, self.image.size};
+  _layer.frame = (NSRect){NSZeroPoint, self.item.image.size};
   
   return self;
 }
@@ -76,18 +74,18 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 - (void)select
 {
-  if (self.selectedImage) {
+  if (self.item.selectedImage) {
     CATransaction.disableActions = YES;
-    self.layer.contents = self.selectedImage;
+    self.layer.contents = self.item.selectedImage;
   }
 }
 
 
 - (void)deselect
 {
-  if (self.selectedImage) {
+  if (self.item.selectedImage) {
     CATransaction.disableActions = YES;
-    self.layer.contents = self.image;
+    self.layer.contents = self.item.image;
   }
 }
 
@@ -99,7 +97,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
       cosv * _distanceFromCenter,
       sinv * _distanceFromCenter);
       
-  NSSize diagonal = self.image.size;
+  NSSize diagonal = self.item.image.size;
   diagonal.width /= 2.0;
   diagonal.height /= 2.0;
   if (cosv < 0)
@@ -132,6 +130,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 @implementation PTDRingMenuWindow {
   IBOutlet NSView *_mainView;
+  NSSize _windowSize;
   
   NSMutableArray <PTDRingMenuWindowItemLayout *> *_layout;
   NSMutableArray <PTDRingMenuWindowRingInfo *> *_rings;
@@ -360,8 +359,8 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 - (void)mouseUp:(NSEvent *)event
 {
   PTDRingMenuWindowItemLayout *found = [self _hitTestAtPoint:event.locationInWindow];
-  if ((found == _dragStartItem || _draggingMode) && found.action && !_endOfLife) {
-    [NSApp sendAction:found.action to:found.target from:nil];
+  if ((found == _dragStartItem || _draggingMode) && found.item.action && !_endOfLife) {
+    [NSApp sendAction:found.item.action to:found.item.target from:found.item];
   } else if (!found) {
     [self _fadeOutAndClose];
   }
@@ -414,6 +413,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 {
   [super windowDidLoad];
   
+  [self.window setFrame:(NSRect){NSZeroPoint, _windowSize} display:NO];
   self.window.level = NSSubmenuWindowLevel;
   self.window.backgroundColor = [NSColor clearColor];
   self.window.opaque = NO;
@@ -486,6 +486,8 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
     [self _layoutRing:ring withMinimumRadius:radius nextMinimumRadius:&radius];
     radius += 4.0;
   }
+  
+  _windowSize = NSMakeSize(radius * 2.0 + 1.0, radius * 2.0 + 1.0);
 }
 
 
@@ -561,7 +563,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 - (NSImage *)_selectionBackdropForItem:(PTDRingMenuWindowItemLayout *)item
 {
-  NSSize thisSize = item.image.size;
+  NSSize thisSize = item.item.image.size;
   CGFloat r1 = thisSize.height * (M_SQRT1_2 - 0.5);
   CGFloat r2 = thisSize.width * (M_SQRT1_2 - 0.5);
   
