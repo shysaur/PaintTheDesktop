@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) SEL action;
 
 @property (nonatomic) NSInteger tag;
+@property (nonatomic, nullable) id representedObject;
 
 @end
 

@@ -367,7 +367,8 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 {
   PTDRingMenuWindowItemLayout *found = [self _hitTestAtPoint:event.locationInWindow];
   if ((found == _dragStartItem || _draggingMode) && found.item.action && !_endOfLife) {
-    [NSApp sendAction:found.item.action to:found.item.target from:found.item];
+    id sender = found.item.representedObject ?: found.item;
+    [NSApp sendAction:found.item.action to:found.item.target from:sender];
   } else if (!found) {
     [self _fadeOutAndClose];
   }
