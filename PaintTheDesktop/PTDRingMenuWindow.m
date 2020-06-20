@@ -29,6 +29,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 @property (nonatomic) CGFloat angleOnRing;
 
 - (CGFloat)maximumExtensionRadius;
+- (CGFloat)maximumSide;
 
 - (void)updateLayerWithCenter:(CGPoint)center;
 
@@ -109,6 +110,12 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
       center.x + diagonal.width,
       center.y + diagonal.height);
   return sqrt(outermostPos.x * outermostPos.x + outermostPos.y * outermostPos.y);
+}
+
+
+- (CGFloat)maximumSide
+{
+  return MAX(self.item.image.size.width, self.item.image.size.height);
 }
 
 
@@ -479,12 +486,12 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   _layout = [[NSMutableArray alloc] init];
   _rings = [[NSMutableArray alloc] init];
   
-  CGFloat radius = 24.0;
+  CGFloat radius = 12.0;
   for (NSInteger i = 0; i < menu.ringCount; i++) {
     PTDRingMenuRing *ring = menu.rings[i];
     
     [self _layoutRing:ring withMinimumRadius:radius nextMinimumRadius:&radius];
-    radius += 4.0;
+    radius += 8.0;
   }
   
   _windowSize = NSMakeSize(radius * 2.0 + 1.0, radius * 2.0 + 1.0);
@@ -495,6 +502,10 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   withMinimumRadius:(CGFloat)rad
   nextMinimumRadius:(CGFloat *)nextRad
 {
+  CGFloat itemLength = 0.0;
+  CGFloat radiusExtension = 0.0;
+  CGFloat gravityItemLength = 0.0;
+
   NSMutableArray *ringItems = [@[] mutableCopy];
   NSRange range = ring.gravityMass;
   NSRange gravityMassRange = NSMakeRange(NSNotFound, 0);
@@ -505,11 +516,21 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
     if (i == NSMaxRange(range)-1)
       gravityMassRange.length = j - gravityMassRange.location;
     if ([obj isKindOfClass:[PTDRingMenuItem class]]) {
-      [ringItems addObject:[[PTDRingMenuWindowItemLayout alloc] initWithRingMenuItem:obj]];
+      PTDRingMenuWindowItemLayout *layout = [[PTDRingMenuWindowItemLayout alloc] initWithRingMenuItem:obj];
+      [ringItems addObject:layout];
+      itemLength += layout.maximumSide;
+      radiusExtension = MAX(radiusExtension, layout.maximumSide / 2.0);
+      if (NSLocationInRange(i, range))
+        gravityItemLength += layout.maximumSide;
       j++;
     }
     i++;
   }
+  
+  rad += radiusExtension;
+  rad = MAX(rad, itemLength / (2 * M_PI));
+  CGFloat circumference = rad * (2 * M_PI);
+  CGFloat springLength = circumference - itemLength;
   
   CGFloat *weights = calloc(ringItems.count, sizeof(CGFloat));
   
@@ -535,7 +556,9 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
       mainMass += weights[i];
   }
   
-  CGFloat angleSpan = mainMass / totalWeight * (2 * M_PI);
+  CGFloat springForce = springLength / totalWeight;
+  
+  CGFloat angleSpan = (mainMass * springForce + gravityItemLength) / circumference * 2.0 * M_PI;
   CGFloat currentAngle = angleSpan / 2 + ring.gravityAngle;
   CGFloat padding = 0.0;
   
@@ -543,15 +566,17 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   for (i = 0; i < ringItems.count; i++) {
     PTDRingMenuWindowItemLayout *litem = ringItems[j];
     litem.distanceFromCenter = rad;
+    currentAngle -= (0.5 * litem.maximumSide) / circumference * 2.0 * M_PI;
     litem.angleOnRing = currentAngle;
-    currentAngle -= weights[j] / totalWeight * (2 * M_PI);
+    currentAngle -= (0.5 * litem.maximumSide) / circumference * 2.0 * M_PI;
+    currentAngle -= weights[j] * springForce / circumference * (2 * M_PI);
     padding = MAX(padding, litem.maximumExtensionRadius);
     j = (j + 1) % ringItems.count;
   }
   
   free(weights);
   
-  *nextRad = rad + 2 * (padding - rad);
+  *nextRad = rad + (padding - rad);
   [_layout addObjectsFromArray:ringItems];
   
   PTDRingMenuWindowRingInfo *rinfo = [[PTDRingMenuWindowRingInfo alloc] init];
