@@ -487,12 +487,12 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   _layout = [[NSMutableArray alloc] init];
   _rings = [[NSMutableArray alloc] init];
   
-  CGFloat radius = 12.0;
+  CGFloat radius = 8.0;
   for (NSInteger i = 0; i < menu.ringCount; i++) {
     PTDRingMenuRing *ring = menu.rings[i];
     
     [self _layoutRing:ring withMinimumRadius:radius nextMinimumRadius:&radius];
-    radius += 8.0;
+    radius += 4.0;
   }
   
   _windowSize = NSMakeSize(radius * 2.0 + 1.0, radius * 2.0 + 1.0);
@@ -520,7 +520,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
       PTDRingMenuWindowItemLayout *layout = [[PTDRingMenuWindowItemLayout alloc] initWithRingMenuItem:obj];
       [ringItems addObject:layout];
       itemLength += layout.maximumSide;
-      radiusExtension = MAX(radiusExtension, layout.maximumSide / 2.0);
+      radiusExtension = MAX(radiusExtension, layout.maximumSide * M_SQRT2 / 2.0);
       if (NSLocationInRange(i, range))
         gravityItemLength += layout.maximumSide;
       j++;
