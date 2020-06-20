@@ -23,7 +23,6 @@
 
 
 @implementation PTDToolManager {
-  NSDictionary *_toolNames;
   NSDictionary *_toolClasses;
   NSMutableDictionary *_lastToolForIdentifier;
 }
@@ -47,12 +46,6 @@
       PTDToolIdentifierResetTool,
       PTDToolIdentifierRectangleTool
     ];
-  _toolNames = @{
-      PTDToolIdentifierPencilTool: @"Pencil",
-      PTDToolIdentifierEraserTool: @"Eraser",
-      PTDToolIdentifierResetTool: @"Reset",
-      PTDToolIdentifierRectangleTool: @"Rectangle"
-    };
   _toolClasses = @{
       PTDToolIdentifierPencilTool: [PTDPencilTool class],
       PTDToolIdentifierEraserTool: [PTDEraserTool class],
@@ -76,9 +69,20 @@
 }
 
 
-- (NSString *)toolNameForIdentifier:(NSString *)ti
+- (PTDRingMenuItem *)ringMenuItemForSelectingToolIdentifier:(NSString *)ti
 {
-  return [_toolNames objectForKey:ti];
+  Class toolClass = [_toolClasses objectForKey:ti];
+  PTDRingMenuItem *res = [toolClass menuItem];
+  res.representedObject = ti;
+  res.target = self;
+  res.action = @selector(changeToolAction:);
+  return res;
+}
+
+
+- (void)changeToolAction:(id)sender
+{
+  [PTDToolManager.sharedManager changeTool:sender];
 }
 
 

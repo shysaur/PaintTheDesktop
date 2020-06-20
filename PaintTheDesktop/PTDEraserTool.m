@@ -79,6 +79,12 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 }
 
 
++ (PTDRingMenuItem *)menuItem
+{
+  return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconEraser"] target:nil action:nil];
+}
+
+
 - (PTDRingMenuRing *)optionMenu
 {
   PTDRingMenuRing *res = [PTDRingMenuRing ring];

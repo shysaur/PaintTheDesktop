@@ -12,6 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PTDRingMenuItem : NSObject
 
++ (PTDRingMenuItem *)itemWithImage:(NSImage *)image target:(nullable id)target action:(nullable SEL)action;
++ (PTDRingMenuItem *)itemWithText:(NSString *)text target:(nullable id)target action:(nullable SEL)action;
+
 @property (nonatomic) NSImage *image;
 @property (nonatomic, nullable) NSImage *selectedImage;
 

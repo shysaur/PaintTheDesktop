@@ -107,6 +107,12 @@ NSString * const PTDToolIdentifierRectangleTool = @"PTDToolIdentifierRectangleTo
 }
 
 
++ (PTDRingMenuItem *)menuItem
+{
+  return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconRectangle"] target:nil action:nil];
+}
+
+
 - (PTDRingMenuRing *)optionMenu
 {
   return PTDToolManager.sharedManager.currentBrush.menuOptions;

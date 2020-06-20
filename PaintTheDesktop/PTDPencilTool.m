@@ -45,6 +45,12 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 }
 
 
++ (PTDRingMenuItem *)menuItem
+{
+  return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconPencil"] target:nil action:nil];
+}
+
+
 - (PTDRingMenuRing *)optionMenu
 {
   return [PTDToolManager.sharedManager.currentBrush menuOptions];

@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "PTDRingMenu.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -23,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, nullable) NSString *previousToolIdentifier;
 
 @property (nonatomic, readonly) NSArray <NSString *> *availableToolIdentifiers;
-- (NSString *)toolNameForIdentifier:(NSString *)ti;
+- (PTDRingMenuItem *)ringMenuItemForSelectingToolIdentifier:(NSString *)ti;
 
 - (void)changeTool:(NSString *)newIdentifier;
 

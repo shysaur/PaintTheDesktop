@@ -37,6 +37,7 @@ extern NSString * const PTDToolCursorDidChangeNotification;
 - (void)activate;
 - (void)deactivate;
 
++ (PTDRingMenuItem *)menuItem;
 - (nullable PTDRingMenuRing *)optionMenu;
 
 @end

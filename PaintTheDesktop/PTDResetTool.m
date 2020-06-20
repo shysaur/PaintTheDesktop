@@ -24,6 +24,12 @@ NSString * const PTDToolIdentifierResetTool = @"PTDToolIdentifierResetTool";
 }
 
 
++ (PTDRingMenuItem *)menuItem
+{
+  return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconReset"] target:nil action:nil];
+}
+
+
 - (void)mouseClickedAtPoint:(NSPoint)point
 {
   [self.currentDrawingSurface beginCanvasDrawing];

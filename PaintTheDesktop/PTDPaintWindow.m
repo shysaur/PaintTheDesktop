@@ -234,12 +234,9 @@
   PTDRingMenu *ringMenu = [[PTDRingMenu alloc] init];
   PTDRingMenuRing *itemsRing = [ringMenu newRing];
   
-  NSInteger i = 0;
   for (NSString *toolid in PTDToolManager.sharedManager.availableToolIdentifiers) {
-    NSString *label = [PTDToolManager.sharedManager toolNameForIdentifier:toolid];
-    PTDRingMenuItem *item = [itemsRing addItemWithText:label target:self action:@selector(changeTool:)];
-    item.tag = i;
-    i++;
+    PTDRingMenuItem *item = [PTDToolManager.sharedManager ringMenuItemForSelectingToolIdentifier:toolid];
+    [itemsRing addItem:item];
   }
   [itemsRing beginGravityMassGroupWithAngle:-M_PI_2];
   [itemsRing addItemWithText:@"Quit" target:NSApp action:@selector(terminate:)];
@@ -318,14 +315,6 @@
     }
   }
   _systemCursorVisibility = systemCursorVisibility;
-}
-
-
-- (void)changeTool:(id)sender
-{
-  NSArray *tools = PTDToolManager.sharedManager.availableToolIdentifiers;
-  NSString *tool = [tools objectAtIndex:[(NSMenuItem *)sender tag]];
-  [PTDToolManager.sharedManager changeTool:tool];
 }
 
 

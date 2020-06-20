@@ -72,7 +72,13 @@ NSString * const PTDToolCursorDidChangeNotification = @"PTDToolCursorDidChangeNo
 }
 
 
-- (nullable NSMenu *)optionMenu
++ (PTDRingMenuItem *)menuItem
+{
+  return [PTDRingMenuItem itemWithText:self.toolIdentifier target:nil action:nil];
+}
+
+
+- (nullable PTDRingMenuRing *)optionMenu
 {
   return nil;
 }
