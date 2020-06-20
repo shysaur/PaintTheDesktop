@@ -91,14 +91,55 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
   
   [res beginGravityMassGroupWithAngle:M_PI_2];
   for (int i=20; i<200; i += 50) {
-    NSString *title = [NSString stringWithFormat:@"Size %d", i];
-    PTDRingMenuItem *itm = [res addItemWithText:title target:self action:@selector(changeSize:)];
-    itm.tag = i;
+    PTDRingMenuItem *itm = [self menuItemForEraserSize:i];
+    [res addItem:itm];
   }
   [res endGravityMassGroup];
   [res addSpringWithElasticity:1.0];
   
   return res;
+}
+
+
+- (PTDRingMenuItem *)menuItemForEraserSize:(CGFloat)size
+{
+  NSImage *img;
+  const CGFloat threshold = 24;
+  const CGFloat minBorder = 4.0;
+  const CGFloat maxBorder = 8.0;
+  
+  if (size < threshold) {
+    CGFloat imageSize = round(minBorder + (maxBorder - minBorder) * (threshold-size)/threshold) + size;
+    img = [NSImage imageWithSize:NSMakeSize(imageSize, imageSize) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+      [[NSColor blackColor] setStroke];
+      [[NSColor whiteColor] setFill];
+      NSBezierPath *bp = [NSBezierPath bezierPathWithRect:NSMakeRect((imageSize - size) / 2.0, (imageSize - size) / 2.0, size, size)];
+      [bp fill];
+      [bp stroke];
+      return YES;
+    }];
+  } else {
+    CGFloat imageSize = threshold+minBorder;
+    NSMutableParagraphStyle *parastyle = [[NSMutableParagraphStyle alloc] init];
+    parastyle.alignment = NSTextAlignmentCenter;
+    NSDictionary *attrib = @{NSParagraphStyleAttributeName: parastyle};
+    NSString *sizeStr = [NSString stringWithFormat:@"%d", (int)size];
+    NSRect realSizeRect = [sizeStr boundingRectWithSize:NSMakeSize(imageSize, imageSize) options:0 attributes:attrib context:nil];
+    
+    img = [NSImage imageWithSize:NSMakeSize(imageSize, imageSize) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+      [[NSColor blackColor] setStroke];
+      [[NSColor whiteColor] setFill];
+      NSBezierPath *bp = [NSBezierPath bezierPathWithRect:NSMakeRect(minBorder/2.0-0.5, minBorder/2.0-0.5, threshold+1, threshold+1)];
+      [bp fill];
+      [bp stroke];
+      [sizeStr drawInRect:NSMakeRect(0, (imageSize-realSizeRect.size.height)/2.0, imageSize, realSizeRect.size.height) withAttributes:attrib];
+      return YES;
+    }];
+  }
+  
+  PTDRingMenuItem *itm = [PTDRingMenuItem itemWithImage:img target:self action:@selector(changeSize:)];
+  itm.tag = size;
+  return itm;
 }
 
 
