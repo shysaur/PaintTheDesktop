@@ -88,6 +88,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   _layer.zPosition = 1.0;
   
   if (self.item.state == NSControlStateValueOff) {
+    _layer.magnificationFilter = kCAFilterNearest;
     _layer.contents = self.item.image;
     _layer.frame = (NSRect){NSZeroPoint, _size};
     _contentsLayer = _layer;
@@ -121,6 +122,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
     _contentsLayer.zPosition = 1.0;
     _contentsLayer.contents = self.item.image;
     _contentsLayer.frame = (NSRect){NSZeroPoint, _size};
+    _contentsLayer.magnificationFilter = kCAFilterNearest;
     
     [_layer addSublayer:_contentsLayer];
     _contentsLayer.position = CGPointMake((NSMinX(rect)+NSMaxX(rect))/2.0, (NSMinY(rect)+NSMaxY(rect))/2.0);
