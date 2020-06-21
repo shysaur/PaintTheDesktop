@@ -7,13 +7,12 @@
 //
 
 #import "PTDTool.h"
-#import "PTDShapeTool.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString * const PTDToolIdentifierRectangleTool;
+@interface PTDShapeTool : PTDTool
 
-@interface PTDRectangleTool : PTDShapeTool
+- (NSBezierPath *)shapeBezierPathInRect:(NSRect)rect;
 
 @end
 

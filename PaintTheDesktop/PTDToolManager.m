@@ -13,6 +13,7 @@
 #import "PTDEraserTool.h"
 #import "PTDResetTool.h"
 #import "PTDRectangleTool.h"
+#import "PTDOvalTool.h"
 
 
 @interface PTDToolManager ()
@@ -43,14 +44,16 @@
   _availableToolIdentifiers = @[
       PTDToolIdentifierPencilTool,
       PTDToolIdentifierEraserTool,
-      PTDToolIdentifierResetTool,
-      PTDToolIdentifierRectangleTool
+      PTDToolIdentifierRectangleTool,
+      PTDToolIdentifierOvalTool,
+      PTDToolIdentifierResetTool
     ];
   _toolClasses = @{
       PTDToolIdentifierPencilTool: [PTDPencilTool class],
       PTDToolIdentifierEraserTool: [PTDEraserTool class],
-      PTDToolIdentifierResetTool: [PTDResetTool class],
-      PTDToolIdentifierRectangleTool: [PTDRectangleTool class]
+      PTDToolIdentifierRectangleTool: [PTDRectangleTool class],
+      PTDToolIdentifierOvalTool: [PTDOvalTool class],
+      PTDToolIdentifierResetTool: [PTDResetTool class]
     };
   _lastToolForIdentifier = [@{} mutableCopy];
     
