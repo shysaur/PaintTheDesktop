@@ -92,6 +92,8 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
   [res beginGravityMassGroupWithAngle:M_PI_2];
   for (int i=20; i<200; i += 50) {
     PTDRingMenuItem *itm = [self menuItemForEraserSize:i];
+    if (i == self.size)
+      itm.state = NSControlStateValueOn;
     [res addItem:itm];
   }
   [res endGravityMassGroup];

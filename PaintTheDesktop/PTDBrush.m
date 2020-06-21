@@ -66,6 +66,8 @@
   }];
   PTDRingMenuItem *itm = [PTDRingMenuItem itemWithImage:img target:self action:@selector(changeColor:)];
   itm.representedObject = color;
+  if ([color isEqual:_color])
+    itm.state = NSControlStateValueOn;
   return itm;
 }
 
@@ -108,6 +110,8 @@
   
   PTDRingMenuItem *itm = [PTDRingMenuItem itemWithImage:img target:self action:@selector(changeSize:)];
   itm.tag = size;
+  if (size == _size)
+    itm.state = NSControlStateValueOn;
   return itm;
 }
 

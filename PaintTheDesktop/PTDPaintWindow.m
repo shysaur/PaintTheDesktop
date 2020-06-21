@@ -236,6 +236,8 @@
   
   for (NSString *toolid in PTDToolManager.sharedManager.availableToolIdentifiers) {
     PTDRingMenuItem *item = [PTDToolManager.sharedManager ringMenuItemForSelectingToolIdentifier:toolid];
+    if ([toolid isEqual:[[[PTDToolManager.sharedManager currentTool] class] toolIdentifier]])
+      item.state = NSControlStateValueOn;
     [itemsRing addItem:item];
   }
   [itemsRing beginGravityMassGroupWithAngle:-M_PI_2];
