@@ -25,6 +25,11 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 @property (nonatomic) CALayer *layer;
 
+@property (nonatomic, readonly) NSSize size;
+
+@property (nonatomic, readonly) NSBezierPath *selectionShape;
+@property (nonatomic, readonly) NSSize selectionShapeSize;
+
 @property (nonatomic) CGFloat distanceFromCenter;
 @property (nonatomic) CGFloat angleOnRing;
 
@@ -39,21 +44,87 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 @end
 
 
-@implementation PTDRingMenuWindowItemLayout
+@implementation PTDRingMenuWindowItemLayout {
+  CALayer *_contentsLayer;
+}
 
 
 - (instancetype)initWithRingMenuItem:(PTDRingMenuItem *)item
 {
   self = [super init];
   _item = item;
-  
-  _layer = [[CALayer alloc] init];
-  _layer.contents = self.item.image;
-  _layer.anchorPoint = CGPointMake(0.5, 0.5);
-  _layer.zPosition = 1.0;
-  _layer.frame = (NSRect){NSZeroPoint, self.item.image.size};
-  
+  _size = self.item.image.size;
+  [self _computeSelectionShape];
+  [self _setupLayer];
   return self;
+}
+
+
+- (void)_computeSelectionShape
+{
+  NSSize thisSize = _size;
+  CGFloat r1 = thisSize.height * (M_SQRT1_2 - 0.5);
+  CGFloat r2 = thisSize.width * (M_SQRT1_2 - 0.5);
+  
+  if (fabs(r1 - r2) < FLT_EPSILON) {
+    thisSize.height += r1 * 2.0;
+    thisSize.width += r2 * 2.0;
+    _selectionShape = [NSBezierPath bezierPathWithOvalInRect:(NSRect){NSZeroPoint, thisSize}];
+  } else {
+    CGFloat r = MIN(r1, r2);
+    thisSize.height += r * 1.5;
+    thisSize.width += r * 1.5;
+    CGFloat rr = MIN(thisSize.height / 4.0, thisSize.width / 4.0);
+    _selectionShape = [NSBezierPath bezierPathWithRoundedRect:(NSRect){NSZeroPoint, thisSize} xRadius:rr yRadius:rr];
+  }
+  
+  _selectionShapeSize = thisSize;
+}
+
+
+- (void)_setupLayer
+{
+  _layer = [[CALayer alloc] init];
+  _layer.zPosition = 1.0;
+  
+  if (self.item.state == NSControlStateValueOff) {
+    _layer.contents = self.item.image;
+    _layer.frame = (NSRect){NSZeroPoint, _size};
+    _contentsLayer = _layer;
+  } else {
+    NSSize origSize = self.selectionShapeSize;
+    
+    CGFloat compx = (CGFloat)((int)(_size.width) % 2);
+    CGFloat compy = (CGFloat)((int)(_size.height) % 2);
+    NSRect rect = NSMakeRect(0, 0, floor(origSize.width/2.0)*2.0+compx, floor(origSize.height/2.0)*2.0+compy);
+    
+    NSColor *lineColor = [NSColor ptd_controlAccentColor];
+    if (self.item.state == NSControlStateValueMixed) {
+      lineColor = [NSColor systemGrayColor];
+    }
+    
+    NSBezierPath *bp = [self.selectionShape copy];
+    NSAffineTransform *transf = [NSAffineTransform transform];
+    [transf scaleXBy:(rect.size.width-2)/origSize.width yBy:(rect.size.height-2)/origSize.height];
+    [transf translateXBy:1.0 yBy:1.0];
+    
+    [bp transformUsingAffineTransform:transf];
+    [bp setLineWidth:2.0];
+    _layer.contents = [NSImage imageWithSize:rect.size flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+      [lineColor setStroke];
+      [bp stroke];
+      return YES;
+    }];
+    _layer.frame = rect;
+    
+    _contentsLayer = [[CALayer alloc] init];
+    _contentsLayer.zPosition = 1.0;
+    _contentsLayer.contents = self.item.image;
+    _contentsLayer.frame = (NSRect){NSZeroPoint, _size};
+    
+    [_layer addSublayer:_contentsLayer];
+    _contentsLayer.position = CGPointMake((NSMinX(rect)+NSMaxX(rect))/2.0, (NSMinY(rect)+NSMaxY(rect))/2.0);
+  }
 }
 
 
@@ -77,7 +148,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 {
   if (self.item.selectedImage) {
     CATransaction.disableActions = YES;
-    self.layer.contents = self.item.selectedImage;
+    _contentsLayer.contents = self.item.selectedImage;
   }
 }
 
@@ -86,7 +157,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 {
   if (self.item.selectedImage) {
     CATransaction.disableActions = YES;
-    self.layer.contents = self.item.image;
+    _contentsLayer.contents = self.item.image;
   }
 }
 
@@ -589,26 +660,9 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 - (NSImage *)_selectionBackdropForItem:(PTDRingMenuWindowItemLayout *)item
 {
-  NSSize thisSize = item.item.image.size;
-  CGFloat r1 = thisSize.height * (M_SQRT1_2 - 0.5);
-  CGFloat r2 = thisSize.width * (M_SQRT1_2 - 0.5);
-  
-  NSBezierPath *bp;
-  if (fabs(r1 - r2) < FLT_EPSILON) {
-    thisSize.height += r1 * 2.0;
-    thisSize.width += r2 * 2.0;
-    bp = [NSBezierPath bezierPathWithOvalInRect:(NSRect){NSZeroPoint, thisSize}];
-  } else {
-    CGFloat r = MIN(r1, r2);
-    thisSize.height += r * 1.5;
-    thisSize.width += r * 1.5;
-    CGFloat rr = MIN(thisSize.height / 4.0, thisSize.width / 4.0);
-    bp = [NSBezierPath bezierPathWithRoundedRect:(NSRect){NSZeroPoint, thisSize} xRadius:rr yRadius:rr];
-  }
-  
-  NSImage *image = [NSImage imageWithSize:thisSize flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+  NSImage *image = [NSImage imageWithSize:item.selectionShapeSize flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
     [[NSColor ptd_controlAccentColor] setFill];
-    [bp fill];
+    [item.selectionShape fill];
     return YES;
   }];
   return image;
