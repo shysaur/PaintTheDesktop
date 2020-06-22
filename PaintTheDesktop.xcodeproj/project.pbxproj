@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		011426B424968916005363E8 /* PTDOpenGLBufferedTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */; };
 		013C9A03249AD17E0033120A /* PTDPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 013C9A02249AD17E0033120A /* PTDPanel.m */; };
+		015A50CC24A13F4B0008AAB1 /* PTDRoundRectTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 015A50CB24A13F4B0008AAB1 /* PTDRoundRectTool.m */; };
 		0162BC91249A0CAE00DFECC9 /* PTDRingMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC90249A0CAE00DFECC9 /* PTDRingMenu.m */; };
 		0162BC94249A0CC400DFECC9 /* PTDRingMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC93249A0CC400DFECC9 /* PTDRingMenuItem.m */; };
 		0162BC97249A0DDA00DFECC9 /* PTDRingMenuSpring.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC96249A0DDA00DFECC9 /* PTDRingMenuSpring.m */; };
@@ -43,6 +44,8 @@
 		011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDOpenGLBufferedTexture.m; sourceTree = "<group>"; };
 		013C9A01249AD17E0033120A /* PTDPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDPanel.h; sourceTree = "<group>"; };
 		013C9A02249AD17E0033120A /* PTDPanel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPanel.m; sourceTree = "<group>"; };
+		015A50CA24A13F4B0008AAB1 /* PTDRoundRectTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRoundRectTool.h; sourceTree = "<group>"; };
+		015A50CB24A13F4B0008AAB1 /* PTDRoundRectTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRoundRectTool.m; sourceTree = "<group>"; };
 		0162BC8F249A0CAD00DFECC9 /* PTDRingMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenu.h; sourceTree = "<group>"; };
 		0162BC90249A0CAE00DFECC9 /* PTDRingMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRingMenu.m; sourceTree = "<group>"; };
 		0162BC92249A0CC400DFECC9 /* PTDRingMenuItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenuItem.h; sourceTree = "<group>"; };
@@ -146,6 +149,8 @@
 				016AD9AA2497A902004E3749 /* PTDRectangleTool.m */,
 				01642479249FF71F000955D8 /* PTDOvalTool.h */,
 				0164247A249FF71F000955D8 /* PTDOvalTool.m */,
+				015A50CA24A13F4B0008AAB1 /* PTDRoundRectTool.h */,
+				015A50CB24A13F4B0008AAB1 /* PTDRoundRectTool.m */,
 				016D36BE249068F40086E96D /* PTDResetTool.h */,
 				016D36BF249068F40086E96D /* PTDResetTool.m */,
 			);
@@ -305,6 +310,7 @@
 				0162BC91249A0CAE00DFECC9 /* PTDRingMenu.m in Sources */,
 				016AD9A8249790B3004E3749 /* PTDDrawingSurface.m in Sources */,
 				016D36B42490584E0086E96D /* PTDPencilTool.m in Sources */,
+				015A50CC24A13F4B0008AAB1 /* PTDRoundRectTool.m in Sources */,
 				01642478249FF58D000955D8 /* PTDShapeTool.m in Sources */,
 				016D36BD249067300086E96D /* PTDTool.m in Sources */,
 				01A213E7248EE94600B5EB9D /* main.m in Sources */,
