@@ -202,6 +202,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 @implementation PTDRingMenuWindow {
   IBOutlet NSView *_mainView;
+  IBOutlet NSVisualEffectView *_backdropView;
   NSSize _windowSize;
   
   NSMutableArray <PTDRingMenuWindowItemLayout *> *_layout;
@@ -503,10 +504,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
     [_mainView addSubview:li.view];
   }
   
-  CALayer *backdropLyr = [[CALayer alloc] init];
-  backdropLyr.contents = [self _backdrop];
-  backdropLyr.frame = (CGRect){CGPointZero, _mainView.bounds.size};
-  [rootLayer addSublayer:backdropLyr];
+  _backdropView.maskImage = [self _backdrop];
     
   rootLayer.frame = _mainView.bounds;
   _mainView.layer = rootLayer;
