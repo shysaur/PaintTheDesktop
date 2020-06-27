@@ -58,6 +58,7 @@
 		01642477249FF58D000955D8 /* PTDShapeTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDShapeTool.h; sourceTree = "<group>"; };
 		01642479249FF71F000955D8 /* PTDOvalTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDOvalTool.h; sourceTree = "<group>"; };
 		0164247A249FF71F000955D8 /* PTDOvalTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDOvalTool.m; sourceTree = "<group>"; };
+		0167A55624A7A02400E08507 /* NSGeometry+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSGeometry+PTD.h"; sourceTree = "<group>"; };
 		016A928924993FFD006C9678 /* PTDRingMenuWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenuWindow.h; sourceTree = "<group>"; };
 		016A928A24993FFD006C9678 /* PTDRingMenuWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRingMenuWindow.m; sourceTree = "<group>"; };
 		016A928B24993FFD006C9678 /* PTDRingMenuWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PTDRingMenuWindow.xib; sourceTree = "<group>"; };
@@ -166,6 +167,7 @@
 				016AD9A424978132004E3749 /* NSView+PTD.m */,
 				0162BC9E249A9BC000DFECC9 /* NSColor+PTD.h */,
 				0162BC9F249A9BC000DFECC9 /* NSColor+PTD.m */,
+				0167A55624A7A02400E08507 /* NSGeometry+PTD.h */,
 				013C9A01249AD17E0033120A /* PTDPanel.h */,
 				013C9A02249AD17E0033120A /* PTDPanel.m */,
 			);

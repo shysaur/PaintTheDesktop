@@ -13,6 +13,7 @@
 #import "PTDRingMenuRing.h"
 #import "PTDRingMenuItem.h"
 #import "PTDRingMenuSpring.h"
+#import "NSGeometry+PTD.h"
 
 
 static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
@@ -23,7 +24,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 - (instancetype)initWithRingMenuItem:(PTDRingMenuItem *)item;
 @property (readonly) PTDRingMenuItem *item;
 
-@property (nonatomic) CALayer *layer;
+@property (nonatomic, readonly) NSView *view;
 
 @property (nonatomic, readonly) NSSize size;
 
@@ -36,7 +37,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 - (CGFloat)maximumExtensionRadius;
 - (CGFloat)maximumSide;
 
-- (void)updateLayerWithCenter:(CGPoint)center;
+- (void)moveToCenter:(NSPoint)center;
 
 - (void)select;
 - (void)deselect;
@@ -45,7 +46,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 
 @implementation PTDRingMenuWindowItemLayout {
-  CALayer *_contentsLayer;
+  NSImageView *_contentsView;
 }
 
 
@@ -55,7 +56,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   _item = item;
   _size = self.item.image.size;
   [self _computeSelectionShape];
-  [self _setupLayer];
+  [self _setupView];
   return self;
 }
 
@@ -82,16 +83,13 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 }
 
 
-- (void)_setupLayer
+- (void)_setupView
 {
-  _layer = [[CALayer alloc] init];
-  _layer.zPosition = 1.0;
-  
   if (self.item.state == NSControlStateValueOff) {
-    _layer.magnificationFilter = kCAFilterNearest;
-    _layer.contents = self.item.image;
-    _layer.frame = (NSRect){NSZeroPoint, _size};
-    _contentsLayer = _layer;
+    NSImageView *view = [NSImageView imageViewWithImage:self.item.image];
+    [view setFrameSize:_size];
+    _view = view;
+    _contentsView = view;
   } else {
     NSSize origSize = self.selectionShapeSize;
     
@@ -111,38 +109,32 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
     
     [bp transformUsingAffineTransform:transf];
     [bp setLineWidth:2.0];
-    _layer.contents = [NSImage imageWithSize:rect.size flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+    
+    NSImage *bgImg = [NSImage imageWithSize:rect.size flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
       [lineColor setStroke];
       [bp stroke];
       return YES;
     }];
-    _layer.frame = rect;
+    NSImageView *mainView = [NSImageView imageViewWithImage:bgImg];
+    [mainView setFrameSize:rect.size];
+    _view = mainView;
     
-    _contentsLayer = [[CALayer alloc] init];
-    _contentsLayer.zPosition = 1.0;
-    _contentsLayer.contents = self.item.image;
-    _contentsLayer.frame = (NSRect){NSZeroPoint, _size};
-    _contentsLayer.magnificationFilter = kCAFilterNearest;
+    _contentsView = [NSImageView imageViewWithImage:self.item.image];
+    [_contentsView setFrameSize:_size];
     
-    [_layer addSublayer:_contentsLayer];
-    _contentsLayer.position = CGPointMake((NSMinX(rect)+NSMaxX(rect))/2.0, (NSMinY(rect)+NSMaxY(rect))/2.0);
+    [mainView addSubview:_contentsView];
+    [_contentsView setFrameOrigin:NSMakePoint((rect.size.width - _size.width) / 2.0, (rect.size.height - _size.height) / 2.0)];
   }
 }
 
 
-- (void)updateLayerWithCenter:(CGPoint)center
+- (void)moveToCenter:(NSPoint)center
 {
-  if ([[NSUserDefaults standardUserDefaults] boolForKey:@"debug"]) {
-    _layer.backgroundColor = [[NSColor redColor] CGColor];
-  }
-  
-  CGFloat compx = (CGFloat)((int)(_layer.frame.size.width) % 2) / 2.0;
-  CGFloat compy = (CGFloat)((int)(_layer.frame.size.height) % 2) / 2.0;
   CGFloat sinv = sin(_angleOnRing), cosv = cos(_angleOnRing);
   NSPoint myCenter = NSMakePoint(
-      round(cosv * _distanceFromCenter + center.x) + compx,
-      round(sinv * _distanceFromCenter + center.y) + compy);
-  _layer.position = myCenter;
+    round(cosv * _distanceFromCenter + center.x - 0.5 * _view.frame.size.width),
+    round(sinv * _distanceFromCenter + center.y - 0.5 * _view.frame.size.height));
+  [_view setFrameOrigin:myCenter];
 }
 
 
@@ -150,7 +142,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 {
   if (self.item.selectedImage) {
     CATransaction.disableActions = YES;
-    _contentsLayer.contents = self.item.selectedImage;
+    _contentsView.image = self.item.selectedImage;
   }
 }
 
@@ -159,7 +151,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 {
   if (self.item.selectedImage) {
     CATransaction.disableActions = YES;
-    _contentsLayer.contents = self.item.image;
+    _contentsView.image = self.item.image;
   }
 }
 
@@ -471,7 +463,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 {
   PTDRingMenuWindowItemLayout *res;
   for (PTDRingMenuWindowItemLayout *item in _layout) {
-    if (NSPointInRect(point, item.layer.frame))
+    if (NSPointInRect(point, item.view.frame))
       return item;
   }
   return res;
@@ -507,8 +499,8 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
       _mainView.bounds.size.width / 2.0,
       _mainView.bounds.size.height / 2.0);
   for (PTDRingMenuWindowItemLayout *li in _layout) {
-    [li updateLayerWithCenter:center];
-    [rootLayer addSublayer:li.layer];
+    [li moveToCenter:center];
+    [_mainView addSubview:li.view];
   }
   
   CALayer *backdropLyr = [[CALayer alloc] init];
@@ -688,7 +680,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   
   if (!_selectionLayer) {
     _selectionLayer = [[CALayer alloc] init];
-    [_mainView.layer addSublayer:_selectionLayer];
+    [_mainView.layer insertSublayer:_selectionLayer atIndex:1];
     CATransaction.disableActions = YES;
   }
   
@@ -697,9 +689,8 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   NSImage *backdrop = [self _selectionBackdropForItem:item];
   _selectionLayer.contents = backdrop;
   _selectionLayer.frame = (NSRect){NSZeroPoint, backdrop.size};
-  _selectionLayer.position = item.layer.position;
+  _selectionLayer.position = PTD_NSRectCenter(item.view.frame);
   _selectionLayer.frame = [self.window backingAlignedRect:_selectionLayer.frame options:NSAlignAllEdgesInward];
-  _selectionLayer.zPosition = 0.5;
   [item select];
   
   if (click) {
