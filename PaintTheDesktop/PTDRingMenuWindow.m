@@ -14,6 +14,7 @@
 #import "PTDRingMenuItem.h"
 #import "PTDRingMenuSpring.h"
 #import "NSGeometry+PTD.h"
+#import "NSImage+PTD.h"
 
 
 static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
@@ -125,6 +126,8 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
     [mainView addSubview:_contentsView];
     [_contentsView setFrameOrigin:NSMakePoint((rect.size.width - _size.width) / 2.0, (rect.size.height - _size.height) / 2.0)];
   }
+  
+  [self deselect];
 }
 
 
@@ -140,19 +143,21 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 - (void)select
 {
-  if (self.item.selectedImage) {
-    CATransaction.disableActions = YES;
-    _contentsView.image = self.item.selectedImage;
-  }
+  NSImage *image = self.item.selectedImage ?: self.item.image;
+  if (image.isTemplate)
+    image = [image ptd_imageByTintingWithColor:[NSColor selectedMenuItemTextColor]];
+  _contentsView.image = image;
+  _contentsView.cell.backgroundStyle = NSBackgroundStyleEmphasized;
 }
 
 
 - (void)deselect
 {
-  if (self.item.selectedImage) {
-    CATransaction.disableActions = YES;
-    _contentsView.image = self.item.image;
-  }
+  NSImage *image = self.item.image;
+  if (image.isTemplate)
+    image = [image ptd_imageByTintingWithColor:[NSColor labelColor]];
+  _contentsView.image = image;
+  _contentsView.cell.backgroundStyle = NSBackgroundStyleNormal;
 }
 
 
@@ -666,6 +671,9 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   if (_endOfLife)
     return;
     
+  [CATransaction begin];
+  CATransaction.disableActions = YES;
+    
   for (PTDRingMenuWindowItemLayout *itm in _layout) {
     [itm deselect];
   }
@@ -673,18 +681,17 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   if (!item) {
     if (_selectionLayer)
       _selectionLayer.opacity = 0.0;
+    [CATransaction commit];
     return;
   }
   
   if (!_selectionLayer) {
     _selectionLayer = [[CALayer alloc] init];
     [_mainView.layer insertSublayer:_selectionLayer atIndex:1];
-    CATransaction.disableActions = YES;
   }
   
-  CATransaction.disableActions = YES;
-  
   NSImage *backdrop = [self _selectionBackdropForItem:item];
+  
   _selectionLayer.contents = backdrop;
   _selectionLayer.frame = (NSRect){NSZeroPoint, backdrop.size};
   _selectionLayer.position = PTD_NSRectCenter(item.view.frame);
@@ -706,6 +713,8 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   } else {
     _selectionLayer.opacity = 1.0;
   }
+  
+  [CATransaction commit];
 }
 
 
