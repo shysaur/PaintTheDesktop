@@ -17,8 +17,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDisplay:(CGDirectDisplayID)display;
 
 @property (nonatomic) CGDirectDisplayID display;
+@property (nonatomic) NSString *displayName;
 
 @property (nonatomic) BOOL active;
+
+- (NSBitmapImageRep *)snapshot;
+- (void)restoreFromSnapshot:(NSBitmapImageRep *)bitmap;
 
 @end
 

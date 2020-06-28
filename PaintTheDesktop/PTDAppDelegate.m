@@ -80,19 +80,111 @@
 }
 
 
-- (IBAction)toggleDrawing:(id)sender
+- (void)toggleDrawing:(id)sender
 {
+  if ([NSEvent modifierFlags] == NSEventModifierFlagOption) {
+    [self.statusItem popUpStatusItemMenu:[self globalMenu]];
+    return;
+  }
   self.active = !self.active;
-  for (PTDPaintWindow *wc in self.paintWindowControllers) {
-    wc.active = self.active;
+}
+
+
+- (void)setActive:(BOOL)active
+{
+  if (active != _active) {
+    for (PTDPaintWindow *wc in self.paintWindowControllers) {
+      wc.active = active;
+    }
+    if (active) {
+      [PTDToolManager.sharedManager.currentTool activate];
+      self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIconOn"];
+    } else {
+      [PTDToolManager.sharedManager.currentTool deactivate];
+      self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIconOff"];
+    }
   }
-  if (self.active) {
-    [PTDToolManager.sharedManager.currentTool activate];
-    self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIconOn"];
+  _active = active;
+}
+
+
+- (NSMenu *)globalMenu
+{
+  NSMenu *res = [[NSMenu alloc] init];
+  
+  for (PTDPaintWindow *paintw in _paintWindowControllers) {
+    NSString *title = [NSString stringWithFormat:@"%@", paintw.displayName];
+    NSMenuItem *mi = [res addItemWithTitle:title action:nil keyEquivalent:@""];
+    
+    NSMenu *submenu = [[NSMenu alloc] init];
+    NSMenuItem *tmp;
+    tmp = [submenu addItemWithTitle:@"Save As..." action:@selector(saveWindow:) keyEquivalent:@""];
+    tmp.target = self;
+    tmp.representedObject = paintw;
+    tmp = [submenu addItemWithTitle:@"Restore..." action:@selector(loadWindow:) keyEquivalent:@""];
+    tmp.target = self;
+    tmp.representedObject = paintw;
+    
+    mi.submenu = submenu;
+  }
+  
+  [res addItem:[NSMenuItem separatorItem]];
+  [res addItemWithTitle:@"Quit" action:@selector(terminate:) keyEquivalent:@""];
+  
+  return res;
+}
+
+
+- (void)saveWindow:(NSMenuItem *)sender
+{
+  BOOL oldActive = self.active;
+  self.active = NO;
+  PTDPaintWindow *window = (PTDPaintWindow *)sender.representedObject;
+  
+  NSSavePanel *savePanel = [NSSavePanel savePanel];
+  savePanel.allowedFileTypes = @[@"png"];
+  [window.window addChildWindow:savePanel ordered:NSWindowAbove];
+  NSModalResponse resp = [savePanel runModal];
+  if (resp == NSModalResponseCancel)
+    return;
+  
+  NSBitmapImageRep *snapshot = [window snapshot];
+  NSURL *file = savePanel.URL;
+  NSData *dataToSave;
+  if ([file.pathExtension isEqual:@"tif"]) {
+    dataToSave = [snapshot representationUsingType:NSBitmapImageFileTypeTIFF properties:@{}];
   } else {
-    [PTDToolManager.sharedManager.currentTool deactivate];
-    self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIconOff"];
+    dataToSave = [snapshot representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
   }
+  [dataToSave writeToURL:file atomically:NO];
+  
+  self.active = oldActive;
+}
+
+
+- (void)loadWindow:(NSMenuItem *)sender
+{
+  BOOL oldActive = self.active;
+  self.active = NO;
+  PTDPaintWindow *window = (PTDPaintWindow *)sender.representedObject;
+  
+  NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+  openPanel.allowedFileTypes = @[
+    (__bridge NSString *)kUTTypePNG,
+    (__bridge NSString *)kUTTypeTIFF,
+    (__bridge NSString *)kUTTypeBMP,
+    (__bridge NSString *)kUTTypeJPEG,
+    (__bridge NSString *)kUTTypeGIF];
+  [window.window addChildWindow:openPanel ordered:NSWindowAbove];
+  NSModalResponse resp = [openPanel runModal];
+  if (resp == NSModalResponseCancel)
+    return;
+    
+  NSData *imageData = [NSData dataWithContentsOfURL:openPanel.URL];
+  NSBitmapImageRep *image = [[NSBitmapImageRep alloc] initWithData:imageData];
+  [window restoreFromSnapshot:image];
+  
+  self.active = oldActive;
 }
 
 

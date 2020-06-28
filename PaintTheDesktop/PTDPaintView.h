@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable) NSImage *cursorImage;
 @property (nonatomic) NSPoint cursorPosition;
 
+- (NSBitmapImageRep *)snapshot;
+
 @end
 
 NS_ASSUME_NONNULL_END

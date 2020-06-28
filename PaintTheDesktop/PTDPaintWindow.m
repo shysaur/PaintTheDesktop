@@ -41,7 +41,14 @@
 - (instancetype)initWithDisplay:(CGDirectDisplayID)display;
 {
   self = [super init];
+  
   _display = display;
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  io_service_t dispSvc = CGDisplayIOServicePort(display);
+  #pragma clang diagnostic pop
+  NSDictionary *properties = CFBridgingRelease(IODisplayCreateInfoDictionary(dispSvc, kIODisplayOnlyPreferredName));
+  _displayName = [[properties[@kDisplayProductName] allValues] firstObject];
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cursorDidChange:) name:PTDToolCursorDidChangeNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenConfigurationDidChange:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
@@ -324,6 +331,24 @@
 {
   PTDTool *newTool = notification.object;
   self.currentCursor = newTool.cursor;
+}
+
+
+- (NSBitmapImageRep *)snapshot
+{
+  return self.paintView.snapshot;
+}
+
+
+- (void)restoreFromSnapshot:(NSBitmapImageRep *)bitmap
+{
+  @autoreleasepool {
+    [NSGraphicsContext saveGraphicsState];
+    NSGraphicsContext.currentContext = self.paintView.graphicsContext;
+    [bitmap drawInRect:self.paintView.paintRect];
+    [NSGraphicsContext restoreGraphicsState];
+    [self.paintView setNeedsDisplay:YES];
+  }
 }
 
 

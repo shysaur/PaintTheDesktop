@@ -89,6 +89,17 @@
 }
 
 
+- (NSBitmapImageRep *)snapshot
+{
+  NSBitmapImageRep *copy;
+  @autoreleasepool {
+    NSBitmapImageRep *imageRep = _mainBuffer.bufferAsImageRep;
+    copy = [imageRep copy];
+  }
+  return copy;
+}
+
+
 - (NSGraphicsContext *)graphicsContext
 {
   NSBitmapImageRep *imageRep = _mainBuffer.bufferAsImageRep;
