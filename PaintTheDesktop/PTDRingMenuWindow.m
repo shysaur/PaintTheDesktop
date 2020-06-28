@@ -687,7 +687,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
   
   if (!_selectionLayer) {
     _selectionLayer = [[CALayer alloc] init];
-    [_mainView.layer insertSublayer:_selectionLayer atIndex:1];
+    [_mainView.layer insertSublayer:_selectionLayer atIndex:0];
   }
   
   NSImage *backdrop = [self _selectionBackdropForItem:item];
