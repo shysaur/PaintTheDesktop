@@ -114,9 +114,7 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
     CGFloat imageSize = round(minBorder + (maxBorder - minBorder) * (threshold-size)/threshold) + size;
     img = [NSImage imageWithSize:NSMakeSize(imageSize, imageSize) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
       [[NSColor blackColor] setStroke];
-      [[NSColor whiteColor] setFill];
       NSBezierPath *bp = [NSBezierPath bezierPathWithRect:NSMakeRect((imageSize - size) / 2.0, (imageSize - size) / 2.0, size, size)];
-      [bp fill];
       [bp stroke];
       return YES;
     }];
@@ -124,20 +122,19 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
     CGFloat imageSize = threshold+minBorder;
     NSMutableParagraphStyle *parastyle = [[NSMutableParagraphStyle alloc] init];
     parastyle.alignment = NSTextAlignmentCenter;
-    NSDictionary *attrib = @{NSParagraphStyleAttributeName: parastyle};
+    NSDictionary *attrib = @{NSParagraphStyleAttributeName: parastyle, NSForegroundColorAttributeName: [NSColor controlTextColor]};
     NSString *sizeStr = [NSString stringWithFormat:@"%d", (int)size];
     NSRect realSizeRect = [sizeStr boundingRectWithSize:NSMakeSize(imageSize, imageSize) options:0 attributes:attrib context:nil];
     
     img = [NSImage imageWithSize:NSMakeSize(imageSize, imageSize) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
       [[NSColor blackColor] setStroke];
-      [[NSColor whiteColor] setFill];
       NSBezierPath *bp = [NSBezierPath bezierPathWithRect:NSMakeRect(minBorder/2.0-0.5, minBorder/2.0-0.5, threshold+1, threshold+1)];
-      [bp fill];
       [bp stroke];
       [sizeStr drawInRect:NSMakeRect(0, (imageSize-realSizeRect.size.height)/2.0, imageSize, realSizeRect.size.height) withAttributes:attrib];
       return YES;
     }];
   }
+  img.template = YES;
   
   PTDRingMenuItem *itm = [PTDRingMenuItem itemWithImage:img target:self action:@selector(changeSize:)];
   itm.tag = size;

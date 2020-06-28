@@ -36,7 +36,7 @@
   NSFont *font = [NSFont systemFontOfSize:NSFont.systemFontSize];
   NSDictionary *attrib = @{
     NSFontAttributeName: font,
-    NSForegroundColorAttributeName: [NSColor labelColor]
+    NSForegroundColorAttributeName: [NSColor blackColor]
   };
   NSSize textSize = [text sizeWithAttributes:attrib];
   textSize.width = ceil(textSize.width);
@@ -45,14 +45,7 @@
     [text drawAtPoint:NSZeroPoint withAttributes:attrib];
     return YES;
   }];
-  NSDictionary *attrib2 = @{
-    NSFontAttributeName: font,
-    NSForegroundColorAttributeName: [NSColor selectedMenuItemTextColor]
-  };
-  self.selectedImage = [NSImage imageWithSize:textSize flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-    [text drawAtPoint:NSMakePoint(0, 0) withAttributes:attrib2];
-    return YES;
-  }];
+  self.image.template = YES;
 }
 
 
