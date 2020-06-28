@@ -57,11 +57,25 @@
 - (PTDRingMenuItem *)menuItemForBrushColor:(NSColor *)color
 {
   NSImage *img = [NSImage imageWithSize:NSMakeSize(16, 16) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-    [[color blendedColorWithFraction:0.5 ofColor:[NSColor blackColor]] setStroke];
+    NSRect mainRect = NSMakeRect(3, 3, 16-6, 16-6);
     [color setFill];
-    NSBezierPath *bp = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(3, 3, 16-6, 16-6)];
+    NSBezierPath *bp = [NSBezierPath bezierPathWithOvalInRect:mainRect];
     [bp fill];
-    [bp stroke];
+    
+    NSRect borderRect = NSInsetRect(mainRect, 0.5, 0.5);
+    NSColor *borderColor = [NSColor blackColor];
+    if (@available(macOS 10.14, *)) {
+      if ([[NSAppearance.currentAppearance
+          bestMatchFromAppearancesWithNames:
+            @[NSAppearanceNameDarkAqua, NSAppearanceNameAqua]]
+          isEqual:NSAppearanceNameDarkAqua]) {
+        borderColor = [NSColor whiteColor];
+      }
+    }
+    borderColor = [borderColor colorWithAlphaComponent:0.5];
+    NSBezierPath *border = [NSBezierPath bezierPathWithOvalInRect:borderRect];
+    [borderColor setStroke];
+    [border stroke];
     return YES;
   }];
   PTDRingMenuItem *itm = [PTDRingMenuItem itemWithImage:img target:self action:@selector(changeColor:)];
