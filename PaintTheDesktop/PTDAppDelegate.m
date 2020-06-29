@@ -11,6 +11,16 @@
 #import "PTDAppDelegate.h"
 #import "PTDPaintWindow.h"
 #import "NSScreen+PTD.h"
+#import "PTDScreenMenuItemView.h"
+#import "NSNib+PTD.h"
+
+
+@interface NSMenuItem ()
+
+- (BOOL)_viewHandlesEvents;
+- (void)_setViewHandlesEvents:(BOOL)arg1;
+
+@end
 
 
 @interface PTDAppDelegate ()
@@ -111,10 +121,17 @@
 - (NSMenu *)globalMenu
 {
   NSMenu *res = [[NSMenu alloc] init];
+  NSNib *viewNib = [[NSNib alloc] initWithNibNamed:@"PTDScreenMenuItemView" bundle:[NSBundle mainBundle]];
   
   for (PTDPaintWindow *paintw in _paintWindowControllers) {
     NSString *title = [NSString stringWithFormat:@"%@", paintw.displayName];
+    PTDScreenMenuItemView *view = [viewNib ptd_instantiateObjectWithIdentifier:@"screenMenuItem" withOwner:nil];
     NSMenuItem *mi = [res addItemWithTitle:title action:nil keyEquivalent:@""];
+    view.screenName.stringValue = title;
+    [view setThumbnail:[paintw snapshot]];
+    mi.view = view;
+    [mi _setViewHandlesEvents:NO];
+    [view setFrameSize:view.fittingSize];
     
     NSMenu *submenu = [[NSMenu alloc] init];
     NSMenuItem *tmp;

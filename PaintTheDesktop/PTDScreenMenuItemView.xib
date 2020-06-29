@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner"/>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customView identifier="screenMenuItem" translatesAutoresizingMaskIntoConstraints="NO" id="c22-O7-iKe" customClass="PTDScreenMenuItemView">
+            <rect key="frame" x="0.0" y="0.0" width="240" height="157"/>
+            <subviews>
+                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qRT-kX-K5r">
+                    <rect key="frame" x="18" y="140" width="105" height="17"/>
+                    <textFieldCell key="cell" lineBreakMode="clipping" title="SCREEN_NAME" id="cVY-U9-uZ7">
+                        <font key="font" metaFont="menuBar"/>
+                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    </textFieldCell>
+                </textField>
+                <box boxType="custom" borderType="line" borderWidth="2" cornerRadius="3" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="cOl-6O-TGs">
+                    <rect key="frame" x="20" y="3" width="180" height="135"/>
+                    <view key="contentView" id="KeY-1t-kV3">
+                        <rect key="frame" x="2" y="2" width="176" height="131"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="KEe-Zo-vny">
+                                <rect key="frame" x="0.0" y="0.0" width="176" height="131"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageAlignment="bottomLeft" imageScaling="proportionallyUpOrDown" id="5Vp-La-peo"/>
+                            </imageView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="KEe-Zo-vny" firstAttribute="leading" secondItem="KeY-1t-kV3" secondAttribute="leading" id="Ney-qT-1oK"/>
+                            <constraint firstItem="KEe-Zo-vny" firstAttribute="top" secondItem="KeY-1t-kV3" secondAttribute="top" id="agO-EQ-SRZ"/>
+                            <constraint firstAttribute="bottom" secondItem="KEe-Zo-vny" secondAttribute="bottom" id="iz0-Fy-dJa"/>
+                            <constraint firstAttribute="trailing" secondItem="KEe-Zo-vny" secondAttribute="trailing" id="p3o-jT-CEN"/>
+                        </constraints>
+                    </view>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="135" id="3Mc-0Z-B87"/>
+                        <constraint firstAttribute="width" constant="180" id="d55-fh-4W1"/>
+                    </constraints>
+                    <color key="borderColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                    <font key="titleFont" metaFont="message" size="11"/>
+                </box>
+            </subviews>
+            <constraints>
+                <constraint firstItem="cOl-6O-TGs" firstAttribute="leading" secondItem="qRT-kX-K5r" secondAttribute="leading" id="08p-k6-2cm"/>
+                <constraint firstItem="qRT-kX-K5r" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="5kR-c8-34c"/>
+                <constraint firstAttribute="bottom" secondItem="cOl-6O-TGs" secondAttribute="bottom" constant="3" id="D8y-DC-myl"/>
+                <constraint firstItem="cOl-6O-TGs" firstAttribute="top" secondItem="qRT-kX-K5r" secondAttribute="bottom" constant="2" id="LsD-UX-nwu"/>
+                <constraint firstItem="qRT-kX-K5r" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="20" id="ZRA-Cm-oOJ"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="cOl-6O-TGs" secondAttribute="trailing" priority="750" constant="40" id="gED-16-3id"/>
+                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="qRT-kX-K5r" secondAttribute="trailing" priority="750" constant="40" id="lZD-rE-6XE"/>
+            </constraints>
+            <connections>
+                <outlet property="heightThumbnailConstraint" destination="3Mc-0Z-B87" id="URR-kZ-eXD"/>
+                <outlet property="screenName" destination="qRT-kX-K5r" id="CM6-Jd-hey"/>
+                <outlet property="screenThumbnail" destination="KEe-Zo-vny" id="ie1-Og-1yf"/>
+                <outlet property="thumbnailBox" destination="cOl-6O-TGs" id="GTk-xI-FLm"/>
+                <outlet property="widthThumbnailConstraint" destination="d55-fh-4W1" id="WVT-bk-vOR"/>
+            </connections>
+            <point key="canvasLocation" x="8" y="78.5"/>
+        </customView>
+    </objects>
+</document>
