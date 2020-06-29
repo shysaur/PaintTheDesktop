@@ -13,6 +13,7 @@
 #import "NSScreen+PTD.h"
 #import "PTDScreenMenuItemView.h"
 #import "NSNib+PTD.h"
+#import "PTDAlwaysOnTopSavePanel.h"
 
 
 @interface NSMenuItem ()
@@ -158,9 +159,8 @@
   self.active = NO;
   PTDPaintWindow *window = (PTDPaintWindow *)sender.representedObject;
   
-  NSSavePanel *savePanel = [NSSavePanel savePanel];
+  PTDAlwaysOnTopSavePanel *savePanel = [[PTDAlwaysOnTopSavePanel alloc] init];
   savePanel.allowedFileTypes = @[@"png"];
-  [window.window addChildWindow:savePanel ordered:NSWindowAbove];
   NSModalResponse resp = [savePanel runModal];
   if (resp == NSModalResponseCancel)
     return;
@@ -168,11 +168,7 @@
   NSBitmapImageRep *snapshot = [window snapshot];
   NSURL *file = savePanel.URL;
   NSData *dataToSave;
-  if ([file.pathExtension isEqual:@"tif"]) {
-    dataToSave = [snapshot representationUsingType:NSBitmapImageFileTypeTIFF properties:@{}];
-  } else {
-    dataToSave = [snapshot representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
-  }
+  dataToSave = [snapshot representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
   [dataToSave writeToURL:file atomically:NO];
   
   self.active = oldActive;
@@ -185,14 +181,13 @@
   self.active = NO;
   PTDPaintWindow *window = (PTDPaintWindow *)sender.representedObject;
   
-  NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+  PTDAlwaysOnTopOpenPanel *openPanel = [[PTDAlwaysOnTopOpenPanel alloc] init];
   openPanel.allowedFileTypes = @[
     (__bridge NSString *)kUTTypePNG,
     (__bridge NSString *)kUTTypeTIFF,
     (__bridge NSString *)kUTTypeBMP,
     (__bridge NSString *)kUTTypeJPEG,
     (__bridge NSString *)kUTTypeGIF];
-  [window.window addChildWindow:openPanel ordered:NSWindowAbove];
   NSModalResponse resp = [openPanel runModal];
   if (resp == NSModalResponseCancel)
     return;
