@@ -166,6 +166,26 @@
 }
 
 
+- (void)mouseDragged:(NSEvent *)event
+{
+  self.mouseInWindow = YES;
+  
+  @autoreleasepool {
+    PTDDrawingSurface *surf = [self drawingSurface];
+    PTDTool *tool = [self initializeToolWithSurface:surf];
+    if (!self.mouseIsDragging) {
+      [tool dragDidStartAtPoint:self.lastMousePosition];
+      self.mouseIsDragging = YES;
+    } else {
+      [tool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
+    }
+  }
+  
+  self.lastMousePosition = event.locationInWindow;
+  [self updateCursorAtPoint:event.locationInWindow];
+}
+
+
 - (void)mouseUp:(NSEvent *)event
 {
   self.mouseInWindow = YES;
@@ -197,21 +217,6 @@
 {
   self.mouseInWindow = YES;
   [self openContextMenuWithEvent:event];
-}
-
-
-- (void)mouseDragged:(NSEvent *)event
-{
-  self.mouseInWindow = YES;
-  
-  @autoreleasepool {
-    PTDDrawingSurface *surf = [self drawingSurface];
-    PTDTool *tool = [self initializeToolWithSurface:surf];
-    [tool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
-  }
-  [self updateCursorAtPoint:event.locationInWindow];
-  
-  self.lastMousePosition = event.locationInWindow;
 }
 
 
