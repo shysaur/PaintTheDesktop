@@ -12,12 +12,12 @@
 @implementation NSColor (PTD)
 
 
-+ (NSColor *)ptd_controlAccentColor
++ (NSColor *)ptd_selectedRingMenuItemColor
 {
   if (@available(macOS 10.14, *)) {
       return [NSColor controlAccentColor];
   } else {
-      return [NSColor colorForControlTint:NSColor.currentControlTint];
+      return [NSColor selectedMenuItemColor];
   }
 }
 

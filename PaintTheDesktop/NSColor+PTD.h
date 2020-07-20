@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSColor (PTD)
 
-+ (NSColor *)ptd_controlAccentColor;
++ (NSColor *)ptd_selectedRingMenuItemColor;
 
 @end
 
