@@ -13,7 +13,6 @@
 #import "NSScreen+PTD.h"
 #import "PTDScreenMenuItemView.h"
 #import "NSNib+PTD.h"
-#import "PTDAlwaysOnTopSavePanel.h"
 
 
 @interface NSMenuItem ()
@@ -159,7 +158,7 @@
   self.active = NO;
   PTDPaintWindow *window = (PTDPaintWindow *)sender.representedObject;
   
-  PTDAlwaysOnTopSavePanel *savePanel = [[PTDAlwaysOnTopSavePanel alloc] init];
+  NSSavePanel *savePanel = [[NSSavePanel alloc] init];
   savePanel.allowedFileTypes = @[@"png"];
   NSModalResponse resp = [savePanel runModal];
   if (resp == NSModalResponseCancel)
@@ -181,7 +180,7 @@
   self.active = NO;
   PTDPaintWindow *window = (PTDPaintWindow *)sender.representedObject;
   
-  PTDAlwaysOnTopOpenPanel *openPanel = [[PTDAlwaysOnTopOpenPanel alloc] init];
+  NSOpenPanel *openPanel = [[NSOpenPanel alloc] init];
   openPanel.allowedFileTypes = @[
     (__bridge NSString *)kUTTypePNG,
     (__bridge NSString *)kUTTypeTIFF,
