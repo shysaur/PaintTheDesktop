@@ -216,7 +216,9 @@
 				01A213DC248EE94500B5EB9D /* PaintTheDesktop */,
 				01A213DB248EE94500B5EB9D /* Products */,
 			);
+			indentWidth = 2;
 			sourceTree = "<group>";
+			tabWidth = 2;
 		};
 		01A213DB248EE94500B5EB9D /* Products */ = {
 			isa = PBXGroup;
