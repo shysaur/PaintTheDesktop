@@ -258,6 +258,7 @@
 				01A213D6248EE94500B5EB9D /* Sources */,
 				01A213D7248EE94500B5EB9D /* Frameworks */,
 				01A213D8248EE94500B5EB9D /* Resources */,
+				01CFFD1424EB01F40093D6BA /* Write Build Number */,
 			);
 			buildRules = (
 			);
@@ -315,6 +316,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		01CFFD1424EB01F40093D6BA /* Write Build Number */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(TARGET_BUILD_DIR)/$(INFOPLIST_PATH)",
+			);
+			name = "Write Build Number";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "VERNO=$(git rev-list HEAD --count)\nif [ $? -ne 0 ]; then\n  VERNO='1';\nfi\necho $VERNO\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $VERNO\" \"$TARGET_BUILD_DIR/$INFOPLIST_PATH\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		01A213D6248EE94500B5EB9D /* Sources */ = {
