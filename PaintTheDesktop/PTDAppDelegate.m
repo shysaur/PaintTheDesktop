@@ -29,6 +29,9 @@
 @property (nonatomic) NSStatusItem *statusItem;
 @property (nonatomic) BOOL active;
 
+@property (nonatomic) IBOutlet NSWindow *aboutWindow;
+@property (nonatomic) IBOutlet NSTextField *aboutWindowVersionLabel;
+
 @end
 
 
@@ -53,6 +56,26 @@
     [self.paintWindowControllers addObject:thisWindow];
     thisWindow.active = self.active;
   }
+  
+  NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
+  NSNumber *showAboutScreen = [ud objectForKey:@"PTDAboutPanelDisplayOnLaunch"];
+  if (!showAboutScreen)
+    [ud setBool:NO forKey:@"PTDAboutPanelDisplayOnLaunch"];
+  if (!showAboutScreen || showAboutScreen.boolValue == YES) {
+    [self orderFrontAboutWindow:self];
+  }
+}
+
+
+- (IBAction)orderFrontAboutWindow:(id)sender
+{
+  NSString *version = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+  NSString *buildNum = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"];
+  self.aboutWindowVersionLabel.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Version %@ (%@)", @""), version, buildNum];
+  
+  self.active = NO;
+  [NSApp activateIgnoringOtherApps:YES];
+  [self.aboutWindow makeKeyAndOrderFront:sender];
 }
 
 
@@ -146,6 +169,7 @@
   }
   
   [res addItem:[NSMenuItem separatorItem]];
+  [res addItemWithTitle:@"About PaintTheDesktop" action:@selector(orderFrontAboutWindow:) keyEquivalent:@""];
   [res addItemWithTitle:@"Quit" action:@selector(terminate:) keyEquivalent:@""];
   
   return res;
