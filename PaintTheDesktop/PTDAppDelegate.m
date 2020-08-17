@@ -158,10 +158,10 @@
     
     NSMenu *submenu = [[NSMenu alloc] init];
     NSMenuItem *tmp;
-    tmp = [submenu addItemWithTitle:@"Save As..." action:@selector(saveWindow:) keyEquivalent:@""];
+    tmp = [submenu addItemWithTitle:NSLocalizedString(@"Save As...", @"Menu item for saving a drawing to file") action:@selector(saveWindow:) keyEquivalent:@""];
     tmp.target = self;
     tmp.representedObject = paintw;
-    tmp = [submenu addItemWithTitle:@"Restore..." action:@selector(loadWindow:) keyEquivalent:@""];
+    tmp = [submenu addItemWithTitle:NSLocalizedString(@"Restore...", @"Menu item for loading a drawing from file") action:@selector(loadWindow:) keyEquivalent:@""];
     tmp.target = self;
     tmp.representedObject = paintw;
     
@@ -169,8 +169,8 @@
   }
   
   [res addItem:[NSMenuItem separatorItem]];
-  [res addItemWithTitle:@"About PaintTheDesktop" action:@selector(orderFrontAboutWindow:) keyEquivalent:@""];
-  [res addItemWithTitle:@"Quit" action:@selector(terminate:) keyEquivalent:@""];
+  [res addItemWithTitle:NSLocalizedString(@"About PaintTheDesktop", @"") action:@selector(orderFrontAboutWindow:) keyEquivalent:@""];
+  [res addItemWithTitle:NSLocalizedString(@"Quit", @"") action:@selector(terminate:) keyEquivalent:@""];
   
   return res;
 }

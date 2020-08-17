@@ -41,6 +41,7 @@
 		01A213F5248EEA1D00B5EB9D /* PTDPaintView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A213F4248EEA1D00B5EB9D /* PTDPaintView.m */; };
 		01B63BA6249C2F3400D9DFBF /* PTDRingMenuRing.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B63BA5249C2F3400D9DFBF /* PTDRingMenuRing.m */; };
 		01C0D68C2492ED7100AECEAB /* NSScreen+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 01C0D68B2492ED7100AECEAB /* NSScreen+PTD.m */; };
+		01CFFD1924EB50580093D6BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01CFFD1B24EB50580093D6BA /* Localizable.strings */; };
 		F7023C1B24C72D6E00B54623 /* NSWindow+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */; };
 /* End PBXBuildFile section */
 
@@ -110,6 +111,8 @@
 		01B63BA5249C2F3400D9DFBF /* PTDRingMenuRing.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRingMenuRing.m; sourceTree = "<group>"; };
 		01C0D68A2492ED7100AECEAB /* NSScreen+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSScreen+PTD.h"; sourceTree = "<group>"; };
 		01C0D68B2492ED7100AECEAB /* NSScreen+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSScreen+PTD.m"; sourceTree = "<group>"; };
+		01CFFD1624EB4F6D0093D6BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/MainMenu.strings; sourceTree = "<group>"; };
+		01CFFD1A24EB50580093D6BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F7023C1924C72D6E00B54623 /* NSWindow+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSWindow+PTD.h"; sourceTree = "<group>"; };
 		F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+PTD.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -243,6 +246,7 @@
 				016AD99E24975619004E3749 /* Utilities */,
 				01A213E6248EE94600B5EB9D /* main.m */,
 				01A213E0248EE94600B5EB9D /* Assets.xcassets */,
+				01CFFD1B24EB50580093D6BA /* Localizable.strings */,
 				01A213E5248EE94600B5EB9D /* Info.plist */,
 			);
 			path = PaintTheDesktop;
@@ -308,6 +312,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				018CB0C624AA3CCB002ABD80 /* PTDScreenMenuItemView.xib in Resources */,
+				01CFFD1924EB50580093D6BA /* Localizable.strings in Resources */,
 				01A213E1248EE94600B5EB9D /* Assets.xcassets in Resources */,
 				016A928D24993FFD006C9678 /* PTDRingMenuWindow.xib in Resources */,
 				01A213E4248EE94600B5EB9D /* MainMenu.xib in Resources */,
@@ -384,8 +389,17 @@
 			isa = PBXVariantGroup;
 			children = (
 				01A213E3248EE94600B5EB9D /* Base */,
+				01CFFD1624EB4F6D0093D6BA /* en */,
 			);
 			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		01CFFD1B24EB50580093D6BA /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				01CFFD1A24EB50580093D6BA /* en */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

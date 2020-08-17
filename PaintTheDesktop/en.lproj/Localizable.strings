@@ -1,0 +1,15 @@
+/* No comment provided by engineer. */
+"About PaintTheDesktop" = "About PaintTheDesktop";
+
+/* No comment provided by engineer. */
+"Quit" = "Quit";
+
+/* Menu item for loading a drawing from file */
+"Restore..." = "Restore...";
+
+/* Menu item for saving a drawing to file */
+"Save As..." = "Save As...";
+
+/* No comment provided by engineer. */
+"Version %@ (%@)" = "Version %1$@ (%2$@)";
+

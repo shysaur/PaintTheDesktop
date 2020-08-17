@@ -253,7 +253,7 @@
     [itemsRing addItem:item];
   }
   [itemsRing beginGravityMassGroupWithAngle:-M_PI_2];
-  [itemsRing addItemWithText:@"Quit" target:NSApp action:@selector(terminate:)];
+  [itemsRing addItemWithText:NSLocalizedString(@"Quit", @"") target:NSApp action:@selector(terminate:)];
   [itemsRing endGravityMassGroup];
   
   PTDRingMenuRing *optMenu = [PTDToolManager.sharedManager.currentTool optionMenu];
