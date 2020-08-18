@@ -243,6 +243,11 @@
                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Ery-ZG-ZPA" secondAttribute="trailing" constant="20" id="xlJ-XN-PHZ"/>
                 </constraints>
             </view>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="color" keyPath="backgroundColor">
+                    <color key="value" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                </userDefinedRuntimeAttribute>
+            </userDefinedRuntimeAttributes>
             <point key="canvasLocation" x="249" y="359"/>
         </window>
         <userDefaultsController representsSharedInstance="YES" id="zWO-H7-T5d"/>
