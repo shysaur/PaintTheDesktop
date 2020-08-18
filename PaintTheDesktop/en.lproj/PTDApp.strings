@@ -1,0 +1,42 @@
+
+/* Class = "NSTextFieldCell"; title = "Click on the pencil icon on the title bar to enable or disable drawing mode"; ObjectID = "1cC-jB-add"; */
+"1cC-jB-add.title" = "Click on the pencil icon on the title bar to enable or disable drawing mode";
+
+/* Class = "NSTextFieldCell"; title = "Option+Click the pencil icon in the title bar to open the screen menu"; ObjectID = "BxP-yf-Bmz"; */
+"BxP-yf-Bmz.title" = "Option+Click the pencil icon in the title bar to open the screen menu";
+
+/* Class = "NSTextFieldCell"; title = "1."; ObjectID = "DIx-5X-cUT"; */
+"DIx-5X-cUT.title" = "1.";
+
+/* Class = "NSTextFieldCell"; title = "Version 1.0.0 (1234)"; ObjectID = "GwM-2W-lPf"; */
+"GwM-2W-lPf.title" = "Version 1.0.0 (1234)";
+
+/* Class = "NSTextFieldCell"; title = "Select a screen and save its drawing to a file, or replace the current drawing with an image"; ObjectID = "KRG-cs-6EP"; */
+"KRG-cs-6EP.title" = "Select a screen and save its drawing to a file, or replace the current drawing with an image";
+
+/* Class = "NSTextFieldCell"; title = "Click with the right button (or Control+Click) on the screen when drawing to change or configure the current tool"; ObjectID = "LLw-0Y-y5O"; */
+"LLw-0Y-y5O.title" = "Click with the right button (or Control+Click) on the screen when drawing to change or configure the current tool";
+
+/* Class = "NSTextFieldCell"; title = "Save or change the current drawing"; ObjectID = "XVm-It-UkX"; */
+"XVm-It-UkX.title" = "Save or change the current drawing";
+
+/* Class = "NSTextFieldCell"; title = "Draw on the screen"; ObjectID = "aFA-t2-EYJ"; */
+"aFA-t2-EYJ.title" = "Draw on the screen";
+
+/* Class = "NSTextFieldCell"; title = "2."; ObjectID = "cXb-Iw-bh0"; */
+"cXb-Iw-bh0.title" = "2.";
+
+/* Class = "NSTextFieldCell"; title = "1."; ObjectID = "gWC-SQ-ipw"; */
+"gWC-SQ-ipw.title" = "1.";
+
+/* Class = "NSButtonCell"; title = "Do not display on launch"; ObjectID = "k7c-X8-Wyo"; */
+"k7c-X8-Wyo.title" = "Do not display on launch";
+
+/* Class = "NSTextFieldCell"; title = "PaintTheDesktop"; ObjectID = "npq-3d-VJO"; */
+"npq-3d-VJO.title" = "PaintTheDesktop";
+
+/* Class = "NSWindow"; title = "PaintTheDesktop Help"; ObjectID = "xKJ-c7-ove"; */
+"xKJ-c7-ove.title" = "PaintTheDesktop Help";
+
+/* Class = "NSTextFieldCell"; title = "2."; ObjectID = "xp0-dH-0tK"; */
+"xp0-dH-0tK.title" = "2.";

@@ -34,7 +34,7 @@
 		018CB0C924AA421C002ABD80 /* NSNib+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 018CB0C824AA421C002ABD80 /* NSNib+PTD.m */; };
 		01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A213DE248EE94500B5EB9D /* PTDAppDelegate.m */; };
 		01A213E1248EE94600B5EB9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01A213E0248EE94600B5EB9D /* Assets.xcassets */; };
-		01A213E4248EE94600B5EB9D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01A213E2248EE94600B5EB9D /* MainMenu.xib */; };
+		01A213E4248EE94600B5EB9D /* PTDApp.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01A213E2248EE94600B5EB9D /* PTDApp.xib */; };
 		01A213E7248EE94600B5EB9D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A213E6248EE94600B5EB9D /* main.m */; };
 		01A213F1248EE9F600B5EB9D /* PTDPaintWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A213EF248EE9F600B5EB9D /* PTDPaintWindow.m */; };
 		01A213F2248EE9F600B5EB9D /* PTDPaintWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01A213F0248EE9F600B5EB9D /* PTDPaintWindow.xib */; };
@@ -99,7 +99,7 @@
 		01A213DD248EE94500B5EB9D /* PTDAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDAppDelegate.h; sourceTree = "<group>"; };
 		01A213DE248EE94500B5EB9D /* PTDAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDAppDelegate.m; sourceTree = "<group>"; };
 		01A213E0248EE94600B5EB9D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		01A213E3248EE94600B5EB9D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		01A213E3248EE94600B5EB9D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/PTDApp.xib; sourceTree = "<group>"; };
 		01A213E5248EE94600B5EB9D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		01A213E6248EE94600B5EB9D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		01A213EE248EE9F600B5EB9D /* PTDPaintWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDPaintWindow.h; sourceTree = "<group>"; };
@@ -111,7 +111,7 @@
 		01B63BA5249C2F3400D9DFBF /* PTDRingMenuRing.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRingMenuRing.m; sourceTree = "<group>"; };
 		01C0D68A2492ED7100AECEAB /* NSScreen+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSScreen+PTD.h"; sourceTree = "<group>"; };
 		01C0D68B2492ED7100AECEAB /* NSScreen+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSScreen+PTD.m"; sourceTree = "<group>"; };
-		01CFFD1624EB4F6D0093D6BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/MainMenu.strings; sourceTree = "<group>"; };
+		01CFFD1624EB4F6D0093D6BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PTDApp.strings; sourceTree = "<group>"; };
 		01CFFD1A24EB50580093D6BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F7023C1924C72D6E00B54623 /* NSWindow+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSWindow+PTD.h"; sourceTree = "<group>"; };
 		F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+PTD.m"; sourceTree = "<group>"; };
@@ -236,7 +236,7 @@
 			children = (
 				01A213DD248EE94500B5EB9D /* PTDAppDelegate.h */,
 				01A213DE248EE94500B5EB9D /* PTDAppDelegate.m */,
-				01A213E2248EE94600B5EB9D /* MainMenu.xib */,
+				01A213E2248EE94600B5EB9D /* PTDApp.xib */,
 				018CB0C224AA3C1B002ABD80 /* PTDScreenMenuItemView.h */,
 				018CB0C324AA3C1B002ABD80 /* PTDScreenMenuItemView.m */,
 				018CB0C524AA3CCB002ABD80 /* PTDScreenMenuItemView.xib */,
@@ -315,7 +315,7 @@
 				01CFFD1924EB50580093D6BA /* Localizable.strings in Resources */,
 				01A213E1248EE94600B5EB9D /* Assets.xcassets in Resources */,
 				016A928D24993FFD006C9678 /* PTDRingMenuWindow.xib in Resources */,
-				01A213E4248EE94600B5EB9D /* MainMenu.xib in Resources */,
+				01A213E4248EE94600B5EB9D /* PTDApp.xib in Resources */,
 				01A213F2248EE9F600B5EB9D /* PTDPaintWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -385,13 +385,13 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		01A213E2248EE94600B5EB9D /* MainMenu.xib */ = {
+		01A213E2248EE94600B5EB9D /* PTDApp.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				01A213E3248EE94600B5EB9D /* Base */,
 				01CFFD1624EB4F6D0093D6BA /* en */,
 			);
-			name = MainMenu.xib;
+			name = PTDApp.xib;
 			sourceTree = "<group>";
 		};
 		01CFFD1B24EB50580093D6BA /* Localizable.strings */ = {

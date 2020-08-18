@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
+            <connections>
+                <outlet property="delegate" destination="Voe-Tx-rLC" id="GzC-gU-4Uq"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <customObject id="Voe-Tx-rLC" customClass="PTDAppDelegate">
+            <connections>
+                <outlet property="aboutWindow" destination="xKJ-c7-ove" id="deE-WS-rGD"/>
+                <outlet property="aboutWindowVersionLabel" destination="u7c-PQ-aJt" id="Geo-iF-CWu"/>
+            </connections>
+        </customObject>
+        <window title="PaintTheDesktop Help" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="alertPanel" frameAutosaveName="" titlebarAppearsTransparent="YES" titleVisibility="hidden" id="xKJ-c7-ove" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
+            <rect key="contentRect" x="196" y="207" width="572" height="337"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
+            <view key="contentView" id="2bd-2X-8iP">
+                <rect key="frame" x="0.0" y="0.0" width="572" height="355"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="re3-7w-RPo">
+                        <rect key="frame" x="20" y="213" width="128" height="128"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="128" id="2eT-KW-33B"/>
+                            <constraint firstAttribute="width" constant="128" id="Cug-Wr-eJb"/>
+                        </constraints>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="AppIcon" id="oHH-XB-Uvo"/>
+                    </imageView>
+                    <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="b0b-7a-ChM">
+                        <rect key="frame" x="18" y="24" width="172" height="18"/>
+                        <buttonCell key="cell" type="check" title="Do not display on launch" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="k7c-X8-Wyo">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <binding destination="zWO-H7-T5d" name="value" keyPath="values.PTDAboutPanelDisplayOnLaunch" id="LbB-eu-bfU">
+                                <dictionary key="options">
+                                    <integer key="NSNullPlaceholder" value="1"/>
+                                    <bool key="NSValidatesImmediately" value="YES"/>
+                                    <string key="NSValueTransformerName">NSNegateBoolean</string>
+                                </dictionary>
+                            </binding>
+                        </connections>
+                    </button>
+                    <gridView xPlacement="leading" yPlacement="top" rowAlignment="none" translatesAutoresizingMaskIntoConstraints="NO" id="Ery-ZG-ZPA">
+                        <rect key="frame" x="168" y="60" width="378" height="281"/>
+                        <rows>
+                            <gridRow id="2uj-eR-bOz"/>
+                            <gridRow id="dh7-2p-nqX"/>
+                            <gridRow topPadding="6" bottomPadding="6" id="YgR-Mg-3ih"/>
+                            <gridRow id="k3E-0j-ghi"/>
+                            <gridRow id="Mze-cl-DCb"/>
+                            <gridRow id="hIL-LI-IJe"/>
+                            <gridRow id="thU-EZ-zJ3"/>
+                            <gridRow id="qeJ-2e-TtM"/>
+                            <gridRow id="tio-Uf-hd9"/>
+                        </rows>
+                        <columns>
+                            <gridColumn xPlacement="trailing" id="fbg-uu-Gjk"/>
+                            <gridColumn width="337" id="k5v-iM-TGE"/>
+                            <gridColumn width="17" id="LzO-GU-SLn"/>
+                        </columns>
+                        <gridCells>
+                            <gridCell row="2uj-eR-bOz" column="fbg-uu-Gjk" headOfMergedCell="m6d-Oc-N05" xPlacement="leading" id="m6d-Oc-N05">
+                                <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="kSP-79-0ya">
+                                    <rect key="frame" x="-2" y="253" width="177" height="28"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" title="PaintTheDesktop" id="npq-3d-VJO">
+                                        <font key="font" metaFont="system" size="24"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </gridCell>
+                            <gridCell row="2uj-eR-bOz" column="k5v-iM-TGE" headOfMergedCell="m6d-Oc-N05" id="T6a-K9-Fin"/>
+                            <gridCell row="2uj-eR-bOz" column="LzO-GU-SLn" headOfMergedCell="m6d-Oc-N05" id="p2E-pv-mjm"/>
+                            <gridCell row="dh7-2p-nqX" column="fbg-uu-Gjk" headOfMergedCell="WOw-vs-5Bx" xPlacement="leading" id="WOw-vs-5Bx">
+                                <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="u7c-PQ-aJt">
+                                    <rect key="frame" x="-2" y="231" width="125" height="16"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" title="Version 1.0.0 (1234)" id="GwM-2W-lPf">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </gridCell>
+                            <gridCell row="dh7-2p-nqX" column="k5v-iM-TGE" headOfMergedCell="WOw-vs-5Bx" id="q3N-dZ-bHO"/>
+                            <gridCell row="dh7-2p-nqX" column="LzO-GU-SLn" headOfMergedCell="WOw-vs-5Bx" id="325-SY-ypK"/>
+                            <gridCell row="YgR-Mg-3ih" column="fbg-uu-Gjk" headOfMergedCell="9Oc-4m-XYT" xPlacement="fill" id="9Oc-4m-XYT">
+                                <box key="contentView" verticalHuggingPriority="750" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="EVi-Pr-pX8">
+                                    <rect key="frame" x="0.0" y="216" width="378" height="5"/>
+                                </box>
+                            </gridCell>
+                            <gridCell row="YgR-Mg-3ih" column="k5v-iM-TGE" headOfMergedCell="9Oc-4m-XYT" id="s9Q-uH-0hE"/>
+                            <gridCell row="YgR-Mg-3ih" column="LzO-GU-SLn" headOfMergedCell="9Oc-4m-XYT" id="bwb-b8-eL1"/>
+                            <gridCell row="k3E-0j-ghi" column="fbg-uu-Gjk" headOfMergedCell="Hy5-ni-ZMd" xPlacement="leading" id="Hy5-ni-ZMd">
+                                <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="r98-j5-u62">
+                                    <rect key="frame" x="-2" y="190" width="129" height="16"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" title="Draw on the screen" id="aFA-t2-EYJ">
+                                        <font key="font" metaFont="systemBold"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </gridCell>
+                            <gridCell row="k3E-0j-ghi" column="k5v-iM-TGE" headOfMergedCell="Hy5-ni-ZMd" id="fEP-wx-Oto"/>
+                            <gridCell row="k3E-0j-ghi" column="LzO-GU-SLn" headOfMergedCell="Hy5-ni-ZMd" id="t4K-hy-MFS"/>
+                            <gridCell row="Mze-cl-DCb" column="fbg-uu-Gjk" yPlacement="top" id="xr2-Fo-sOx">
+                                <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="cdn-fR-RA2">
+                                    <rect key="frame" x="0.0" y="168" width="14" height="16"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" title="1." id="DIx-5X-cUT">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </gridCell>
+                            <gridCell row="Mze-cl-DCb" column="k5v-iM-TGE" id="Mu1-EX-dz0">
+                                <textField key="contentView" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="gVi-3z-fcO">
+                                    <rect key="frame" x="16" y="152" width="324" height="32"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="320" id="AEM-su-Lqq"/>
+                                    </constraints>
+                                    <textFieldCell key="cell" selectable="YES" title="Click on the pencil icon on the title bar to enable or disable drawing mode" id="1cC-jB-add">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </gridCell>
+                            <gridCell row="Mze-cl-DCb" column="LzO-GU-SLn" xPlacement="center" yPlacement="center" id="dAq-ww-MSl">
+                                <imageView key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uMz-VN-FEK">
+                                    <rect key="frame" x="362" y="160" width="16" height="16"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="16" id="wtb-QC-aVN"/>
+                                        <constraint firstAttribute="width" constant="16" id="z5F-SJ-UsC"/>
+                                    </constraints>
+                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="PTDMenuIconOff" id="w79-Eg-VST"/>
+                                    <color key="contentTintColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                </imageView>
+                            </gridCell>
+                            <gridCell row="hIL-LI-IJe" column="fbg-uu-Gjk" id="YSW-aL-whW">
+                                <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="c6o-wi-4p7">
+                                    <rect key="frame" x="-2" y="130" width="16" height="16"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" title="2." id="xp0-dH-0tK">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </gridCell>
+                            <gridCell row="hIL-LI-IJe" column="k5v-iM-TGE" id="cPQ-cX-77f">
+                                <textField key="contentView" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="bcc-0G-fQH">
+                                    <rect key="frame" x="16" y="98" width="324" height="48"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="320" id="maC-Up-3hj"/>
+                                    </constraints>
+                                    <textFieldCell key="cell" selectable="YES" title="Click with the right button (or Control+Click) on the screen when drawing to change or configure the current tool" id="LLw-0Y-y5O">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </gridCell>
+                            <gridCell row="hIL-LI-IJe" column="LzO-GU-SLn" id="2n7-nh-mDr"/>
+                            <gridCell row="thU-EZ-zJ3" column="fbg-uu-Gjk" headOfMergedCell="VZ5-1l-SLu" xPlacement="leading" id="VZ5-1l-SLu">
+                                <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="A7J-lv-6GP">
+                                    <rect key="frame" x="-2" y="76" width="234" height="16"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" title="Save or change the current drawing" id="XVm-It-UkX">
+                                        <font key="font" metaFont="systemBold"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </gridCell>
+                            <gridCell row="thU-EZ-zJ3" column="k5v-iM-TGE" headOfMergedCell="VZ5-1l-SLu" id="PNE-Uy-p41"/>
+                            <gridCell row="thU-EZ-zJ3" column="LzO-GU-SLn" headOfMergedCell="VZ5-1l-SLu" id="vlQ-uN-x9W"/>
+                            <gridCell row="qeJ-2e-TtM" column="fbg-uu-Gjk" id="TuI-Q8-K1i">
+                                <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="DtZ-rd-P0C">
+                                    <rect key="frame" x="0.0" y="54" width="14" height="16"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" title="1." id="gWC-SQ-ipw">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </gridCell>
+                            <gridCell row="qeJ-2e-TtM" column="k5v-iM-TGE" id="LLQ-N9-9aP">
+                                <textField key="contentView" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="9MU-3W-cGY">
+                                    <rect key="frame" x="16" y="38" width="324" height="32"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="320" id="dzc-nS-wQ6"/>
+                                    </constraints>
+                                    <textFieldCell key="cell" selectable="YES" title="Option+Click the pencil icon in the title bar to open the screen menu" id="BxP-yf-Bmz">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </gridCell>
+                            <gridCell row="qeJ-2e-TtM" column="LzO-GU-SLn" id="dda-IU-Dms"/>
+                            <gridCell row="tio-Uf-hd9" column="fbg-uu-Gjk" id="7is-4z-GZ3">
+                                <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="rtp-BU-5ZZ">
+                                    <rect key="frame" x="-2" y="16" width="16" height="16"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" title="2." id="cXb-Iw-bh0">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </gridCell>
+                            <gridCell row="tio-Uf-hd9" column="k5v-iM-TGE" id="HQd-6I-z1v">
+                                <textField key="contentView" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" translatesAutoresizingMaskIntoConstraints="NO" id="7fG-Gg-1Pt">
+                                    <rect key="frame" x="16" y="0.0" width="341" height="32"/>
+                                    <textFieldCell key="cell" selectable="YES" title="Select a screen and save its drawing to a file, or replace the current drawing with an image" id="KRG-cs-6EP">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                            </gridCell>
+                            <gridCell row="tio-Uf-hd9" column="LzO-GU-SLn" id="IcF-cF-kjG"/>
+                        </gridCells>
+                    </gridView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="b0b-7a-ChM" secondAttribute="trailing" constant="20" symbolic="YES" id="4EO-Ja-9Sc"/>
+                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="b0b-7a-ChM" secondAttribute="bottom" constant="20" id="5pr-0o-lsg"/>
+                    <constraint firstItem="b0b-7a-ChM" firstAttribute="leading" secondItem="2bd-2X-8iP" secondAttribute="leading" constant="20" id="E51-pD-Czr"/>
+                    <constraint firstItem="b0b-7a-ChM" firstAttribute="top" secondItem="Ery-ZG-ZPA" secondAttribute="bottom" constant="20" id="G9R-s9-FHF"/>
+                    <constraint firstItem="re3-7w-RPo" firstAttribute="leading" secondItem="2bd-2X-8iP" secondAttribute="leading" constant="20" id="LPo-Jf-B4b"/>
+                    <constraint firstItem="re3-7w-RPo" firstAttribute="top" secondItem="2bd-2X-8iP" secondAttribute="top" constant="14" id="S77-dF-bGd"/>
+                    <constraint firstItem="Ery-ZG-ZPA" firstAttribute="leading" secondItem="re3-7w-RPo" secondAttribute="trailing" constant="20" id="cc1-5A-kGh"/>
+                    <constraint firstItem="Ery-ZG-ZPA" firstAttribute="top" secondItem="re3-7w-RPo" secondAttribute="top" id="dK5-Cu-usQ"/>
+                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Ery-ZG-ZPA" secondAttribute="trailing" constant="20" id="xlJ-XN-PHZ"/>
+                </constraints>
+            </view>
+            <point key="canvasLocation" x="249" y="359"/>
+        </window>
+        <userDefaultsController representsSharedInstance="YES" id="zWO-H7-T5d"/>
+    </objects>
+    <resources>
+        <image name="AppIcon" width="128" height="128"/>
+        <image name="PTDMenuIconOff" width="16" height="16"/>
+    </resources>
+</document>

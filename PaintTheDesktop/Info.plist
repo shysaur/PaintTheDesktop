@@ -23,7 +23,7 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2020 danielecattaneo. All rights reserved.</string>
 	<key>NSMainNibFile</key>
-	<string>MainMenu</string>
+	<string>PTDApp</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSSupportsAutomaticTermination</key>
