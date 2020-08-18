@@ -122,7 +122,9 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
     CGFloat imageSize = threshold+minBorder;
     NSMutableParagraphStyle *parastyle = [[NSMutableParagraphStyle alloc] init];
     parastyle.alignment = NSTextAlignmentCenter;
-    NSDictionary *attrib = @{NSParagraphStyleAttributeName: parastyle, NSForegroundColorAttributeName: [NSColor controlTextColor]};
+    NSDictionary *attrib = @{
+        NSParagraphStyleAttributeName: parastyle,
+        NSFontAttributeName: [NSFont systemFontOfSize:12.0]};
     NSString *sizeStr = [NSString stringWithFormat:@"%d", (int)size];
     NSRect realSizeRect = [sizeStr boundingRectWithSize:NSMakeSize(imageSize, imageSize) options:0 attributes:attrib context:nil];
     
