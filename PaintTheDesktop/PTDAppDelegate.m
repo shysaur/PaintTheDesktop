@@ -59,9 +59,9 @@
   
   NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
   NSNumber *showAboutScreen = [ud objectForKey:@"PTDAboutPanelDisplayOnLaunch"];
-  if (!showAboutScreen)
+  if (showAboutScreen == nil)
     [ud setBool:NO forKey:@"PTDAboutPanelDisplayOnLaunch"];
-  if (!showAboutScreen || showAboutScreen.boolValue == YES) {
+  if (showAboutScreen == nil || showAboutScreen.boolValue == YES) {
     [self orderFrontAboutWindow:self];
   }
 }
