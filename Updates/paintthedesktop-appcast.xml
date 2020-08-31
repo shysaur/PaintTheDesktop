@@ -5,5 +5,22 @@
         <link>https://github.com/shysaur/PaintTheDesktop/raw/master/Updates/paintthedesktop-appcast.xml</link>
         <description>Most recent changes with links to updates.</description>
         <language>en</language>
+        
+        <item>
+            <title>Release 1.0.0</title>
+            <description><![CDATA[ 
+              <ul>
+                <li>First Release!</li>
+              </ul> ]]>
+            </description>
+            <pubDate>Mon, 31 August 2020 02:46:44 +0200</pubDate>
+            <enclosure url="https://github.com/shysaur/PaintTheDesktop/releases/download/release_1.0.0/PaintTheDesktop-1.0.0.tar.bz2" 
+              sparkle:version="91" 
+              sparkle:shortVersionString="1.0.0"
+              sparkle:edSignature="D3aRPpu/HUzEsolpWp6KQlrz/F9KSkjf7qoducpkYc5taZ6Ej7kchNKw5IvRU0E23RIN3GyRGxeDLZ6f7dEXAA=="
+              length="1404962"
+              type="application/octet-stream" 
+            <sparkle:minimumSystemVersion>10.13.4</sparkle:minimumSystemVersion>
+        </item>
     </channel>
 </rss>
