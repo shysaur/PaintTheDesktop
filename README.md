@@ -2,6 +2,8 @@
 
 <img src="PaintTheDesktop/Assets.xcassets/AppIcon.appiconset/AppIcon_2_512.png" width=256>
 
+### **[Download Here](https://github.com/shysaur/PaintTheDesktop/releases)**
+
 ## What is it?
 
 **PaintTheDesktop** is a bitmap drawing program whose canvas is your Mac's screen.
