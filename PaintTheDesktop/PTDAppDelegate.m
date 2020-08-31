@@ -6,6 +6,7 @@
 //  Copyright © 2020 danielecattaneo. All rights reserved.
 //
 
+#import <Sparkle/Sparkle.h>
 #import "PTDToolManager.h"
 #import "PTDTool.h"
 #import "PTDAppDelegate.h"
@@ -49,6 +50,8 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+  [SUUpdater sharedUpdater];
+  
   [self _setupMenu];
 
   for (NSScreen *screen in NSScreen.screens) {
@@ -170,6 +173,8 @@
   
   [res addItem:[NSMenuItem separatorItem]];
   [res addItemWithTitle:NSLocalizedString(@"About PaintTheDesktop", @"") action:@selector(orderFrontAboutWindow:) keyEquivalent:@""];
+  NSMenuItem *sparkleMi = [res addItemWithTitle:NSLocalizedString(@"Check for Updates...", @"") action:@selector(checkForUpdates:) keyEquivalent:@""];
+  [sparkleMi setTarget:[SUUpdater sharedUpdater]];
   [res addItemWithTitle:NSLocalizedString(@"Quit", @"") action:@selector(terminate:) keyEquivalent:@""];
   
   return res;

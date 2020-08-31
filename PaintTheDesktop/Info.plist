@@ -15,13 +15,15 @@
 	<key>CFBundlePackageType</key>
 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>LSUIElement</key>
+	<true/>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2020 danielecattaneo. All rights reserved.</string>
+	<string>Copyright © 2020 Daniele Cattaneo</string>
 	<key>NSMainNibFile</key>
 	<string>PTDApp</string>
 	<key>NSPrincipalClass</key>
@@ -30,7 +32,9 @@
 	<true/>
 	<key>NSSupportsSuddenTermination</key>
 	<true/>
-	<key>LSUIElement</key>
-	<true/>
+	<key>SUFeedURL</key>
+	<string>https://github.com/shysaur/PaintTheDesktop/raw/master/Updates/paintthedesktop-appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>xeftqEhxib28LfWujQPeqzQsOW1N7CbSjna1vfuIqtI=</string>
 </dict>
 </plist>
