@@ -43,6 +43,7 @@
 		01B63BA6249C2F3400D9DFBF /* PTDRingMenuRing.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B63BA5249C2F3400D9DFBF /* PTDRingMenuRing.m */; };
 		01C0D68C2492ED7100AECEAB /* NSScreen+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 01C0D68B2492ED7100AECEAB /* NSScreen+PTD.m */; };
 		01CFFD1924EB50580093D6BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01CFFD1B24EB50580093D6BA /* Localizable.strings */; };
+		01D68A5825AB9D1A00536CD6 /* PTDSelectionTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D68A5725AB9D1A00536CD6 /* PTDSelectionTool.m */; };
 		F7023C1B24C72D6E00B54623 /* NSWindow+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */; };
 /* End PBXBuildFile section */
 
@@ -216,6 +217,8 @@
 		01C0D68B2492ED7100AECEAB /* NSScreen+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSScreen+PTD.m"; sourceTree = "<group>"; };
 		01CFFD1624EB4F6D0093D6BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PTDApp.strings; sourceTree = "<group>"; };
 		01CFFD1A24EB50580093D6BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		01D68A5625AB9D1A00536CD6 /* PTDSelectionTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDSelectionTool.h; sourceTree = "<group>"; };
+		01D68A5725AB9D1A00536CD6 /* PTDSelectionTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDSelectionTool.m; sourceTree = "<group>"; };
 		F7023C1924C72D6E00B54623 /* NSWindow+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSWindow+PTD.h"; sourceTree = "<group>"; };
 		F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+PTD.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -291,6 +294,8 @@
 				0164247A249FF71F000955D8 /* PTDOvalTool.m */,
 				015A50CA24A13F4B0008AAB1 /* PTDRoundRectTool.h */,
 				015A50CB24A13F4B0008AAB1 /* PTDRoundRectTool.m */,
+				01D68A5625AB9D1A00536CD6 /* PTDSelectionTool.h */,
+				01D68A5725AB9D1A00536CD6 /* PTDSelectionTool.m */,
 				016D36BE249068F40086E96D /* PTDResetTool.h */,
 				016D36BF249068F40086E96D /* PTDResetTool.m */,
 			);
@@ -590,6 +595,7 @@
 				015A50CC24A13F4B0008AAB1 /* PTDRoundRectTool.m in Sources */,
 				01642478249FF58D000955D8 /* PTDShapeTool.m in Sources */,
 				016D36BD249067300086E96D /* PTDTool.m in Sources */,
+				01D68A5825AB9D1A00536CD6 /* PTDSelectionTool.m in Sources */,
 				01A213E7248EE94600B5EB9D /* main.m in Sources */,
 				013C9A03249AD17E0033120A /* PTDPanel.m in Sources */,
 				01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */,

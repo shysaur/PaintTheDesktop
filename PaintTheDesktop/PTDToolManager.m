@@ -32,6 +32,7 @@
 #import "PTDRectangleTool.h"
 #import "PTDOvalTool.h"
 #import "PTDRoundRectTool.h"
+#import "PTDSelectionTool.h"
 
 
 @interface PTDToolManager ()
@@ -65,6 +66,7 @@
       PTDToolIdentifierRectangleTool,
       PTDToolIdentifierOvalTool,
       PTDToolIdentifierRoundRectTool,
+      PTDToolIdentifierSelectionTool,
       PTDToolIdentifierResetTool
     ];
   _toolClasses = @{
@@ -73,6 +75,7 @@
       PTDToolIdentifierRectangleTool: [PTDRectangleTool class],
       PTDToolIdentifierOvalTool: [PTDOvalTool class],
       PTDToolIdentifierRoundRectTool: [PTDRoundRectTool class],
+      PTDToolIdentifierSelectionTool: [PTDSelectionTool class],
       PTDToolIdentifierResetTool: [PTDResetTool class]
     };
   _lastToolForIdentifier = [@{} mutableCopy];

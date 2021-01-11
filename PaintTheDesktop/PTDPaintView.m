@@ -117,6 +117,30 @@
 }
 
 
+- (NSBitmapImageRep *)snapshotOfRect:(NSRect)rect
+{
+  NSRect backingRect = rect;
+  backingRect.origin.x *= _backingScaleFactor.width;
+  backingRect.size.width *= _backingScaleFactor.width;
+  backingRect.origin.y *= _backingScaleFactor.height;
+  backingRect.size.height *= _backingScaleFactor.height;
+  
+  NSInteger backingWidth = ceil(backingRect.size.width);
+  NSInteger backingHeight = ceil(backingRect.size.height);
+  
+  NSBitmapImageRep *copy;
+  @autoreleasepool {
+    NSBitmapImageRep *imageRep = _mainBuffer.bufferAsImageRep;
+    copy = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:backingWidth pixelsHigh:backingHeight bitsPerSample:imageRep.bitsPerSample samplesPerPixel:imageRep.samplesPerPixel hasAlpha:imageRep.hasAlpha isPlanar:NO colorSpaceName:imageRep.colorSpaceName bytesPerRow:0 bitsPerPixel:0];
+    [NSGraphicsContext saveGraphicsState];
+    NSGraphicsContext.currentContext = [NSGraphicsContext graphicsContextWithBitmapImageRep:copy];
+    [imageRep drawInRect:(NSRect){NSZeroPoint, backingRect.size} fromRect:backingRect operation:NSCompositingOperationCopy fraction:1.0 respectFlipped:YES hints:nil];
+    [NSGraphicsContext restoreGraphicsState];
+  }
+  return copy;
+}
+
+
 - (NSGraphicsContext *)graphicsContext
 {
   NSBitmapImageRep *imageRep = _mainBuffer.bufferAsImageRep;

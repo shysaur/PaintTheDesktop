@@ -40,6 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) NSPoint cursorPosition;
 
 - (NSBitmapImageRep *)snapshot;
+- (NSBitmapImageRep *)snapshotOfRect:(NSRect)rect;
 
 @end
 

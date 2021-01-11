@@ -25,6 +25,7 @@
 
 #import "PTDDrawingSurface.h"
 #import "PTDPaintView.h"
+#import "NSView+PTD.h"
 
 
 @implementation PTDDrawingSurface {
@@ -61,9 +62,21 @@
 }
 
 
+- (NSImageRep *)captureRect:(NSRect)rect
+{
+  return [_paintView snapshotOfRect:rect];
+}
+
+
 - (NSRect)bounds
 {
   return _paintView.paintRect;
+}
+
+
+- (NSPoint)alignPointToBacking:(NSPoint)point
+{
+  return [_paintView ptd_backingAlignedPoint:point];
 }
 
 

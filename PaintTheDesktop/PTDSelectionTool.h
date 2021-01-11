@@ -1,8 +1,8 @@
 //
-// NSGeometry+PTD.h
-// PaintTheDesktop -- Created on 27/06/2020.
+// PTDSelectionTool.h
+// PaintTheDesktop -- Created on 10/01/2021.
 //
-// Copyright (c) 2020 Daniele Cattaneo
+// Copyright (c) 2021 Daniele Cattaneo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,30 +23,14 @@
 // SOFTWARE.
 //
 
-#import <Cocoa/Cocoa.h>
+#import "PTDTool.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-NS_INLINE NSPoint PTD_NSRectCenter(NSRect rect)
-{
-  return NSMakePoint(
-      rect.origin.x + rect.size.width / 2.0,
-      rect.origin.y + rect.size.height / 2.0);
-}
+extern NSString * const PTDToolIdentifierSelectionTool;
 
-NS_INLINE NSRect PTD_NSMakeRectFromPoints(NSPoint p0, NSPoint p1)
-{
-  if (p0.x > p1.x) {
-    CGFloat temp = p0.x;
-    p0.x = p1.x;
-    p1.x = temp;
-  }
-  if (p0.y > p1.y) {
-    CGFloat temp = p0.y;
-    p0.y = p1.y;
-    p1.y = temp;
-  }
-  return (NSRect){p0, NSMakeSize(p1.x - p0.x, p1.y - p0.y)};
-}
+@interface PTDSelectionTool : PTDTool
+
+@end
 
 NS_ASSUME_NONNULL_END
