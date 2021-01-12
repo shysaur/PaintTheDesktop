@@ -31,19 +31,37 @@
 
 NSString * const PTDToolIdentifierSelectionTool = @"PTDToolIdentifierSelectionTool";
 
-typedef enum : NSUInteger {
-    PTDSelectionToolModeMakeSelection,
-    PTDSelectionToolModeEditSelection
-} PTDSelectionToolMode;
+typedef NS_ENUM(NSUInteger, PTDSelectionToolMode) {
+  PTDSelectionToolModeMakeSelection,
+  PTDSelectionToolModeEditSelection
+};
+
+typedef NS_ENUM(NSInteger, PTDSelectionToolHandleID) {
+  PTDSelectionToolFirstResizeHandle = 0,
+  PTDSelectionToolSWResizeHandle = PTDSelectionToolFirstResizeHandle,
+  PTDSelectionToolSResizeHandle,
+  PTDSelectionToolSEResizeHandle,
+  PTDSelectionToolEResizeHandle,
+  PTDSelectionToolNEResizeHandle,
+  PTDSelectionToolNResizeHandle,
+  PTDSelectionToolNWResizeHandle,
+  PTDSelectionToolWResizeHandle,
+  PTDSelectionToolLastResizeHandle = PTDSelectionToolWResizeHandle,
+  PTDSelectionToolDragHandle,
+  PTDSelectionToolNumHandles
+};
 
 
 @implementation PTDSelectionTool {
   NSRect _currentSelection;
   NSPoint _dragPivot;
   NSRect _uneditedCurrentSelection;
+  PTDSelectionToolHandleID _activeSelectionHandle;
   NSImageRep *_selectedArea;
   PTDSelectionToolMode _mode;
+  
   CAShapeLayer *_selectionIndicator;
+  NSMutableArray <CALayer *> *_selectionHandleIndicators;
 }
 
 
@@ -51,6 +69,7 @@ typedef enum : NSUInteger {
 {
   self = [super init];
   _mode = PTDSelectionToolModeMakeSelection;
+  _selectionHandleIndicators = [NSMutableArray array];
   return self;
 }
 
@@ -172,11 +191,13 @@ typedef enum : NSUInteger {
 
 - (void)editSelection_dragDidStartAtPoint:(NSPoint)point
 {
-  if (!NSPointInRect(point, _currentSelection)) {
+  _activeSelectionHandle = [self hitTestSelectionHandleAtPoint:point];
+  if (_activeSelectionHandle == NSNotFound) {
     [self terminateEditSelection];
     [self newSelection_dragDidStartAtPoint:point];
     return;
   }
+  
   point = [self.currentDrawingSurface alignPointToBacking:point];
   _dragPivot = point;
   _uneditedCurrentSelection = _currentSelection;
@@ -186,9 +207,19 @@ typedef enum : NSUInteger {
 - (void)editSelection_dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint
 {
   [self clearSelectionInOverlay];
+  
   nextPoint = [self.currentDrawingSurface alignPointToBacking:nextPoint];
-  _currentSelection.origin.x = _uneditedCurrentSelection.origin.x + (nextPoint.x - _dragPivot.x);
-  _currentSelection.origin.y = _uneditedCurrentSelection.origin.y + (nextPoint.y - _dragPivot.y);
+  NSRect coeffs = [self transformCoefficientsForSelectionHandle:_activeSelectionHandle];
+  
+  CGFloat dx = nextPoint.x - _dragPivot.x;
+  CGFloat dy = nextPoint.y - _dragPivot.y;
+  
+  _currentSelection.origin.x = _uneditedCurrentSelection.origin.x + dx * coeffs.origin.x;
+  _currentSelection.origin.y = _uneditedCurrentSelection.origin.y + dy * coeffs.origin.y;
+  _currentSelection.size.width = _uneditedCurrentSelection.size.width + dx * coeffs.size.width;
+  _currentSelection.size.height = _uneditedCurrentSelection.size.height + dy * coeffs.size.height;
+  _currentSelection = PTD_NSNormalizedRect(_currentSelection);
+  
   [self drawSelectionInOverlay];
   [self updateSelectionIndicator];
 }
@@ -209,6 +240,72 @@ typedef enum : NSUInteger {
   } else {
     [self terminateEditSelection];
   }
+}
+
+
+- (NSPoint)centerOfSelectionHandle:(PTDSelectionToolHandleID)handle
+{
+  switch (handle) {
+    case PTDSelectionToolSWResizeHandle:
+      return NSMakePoint(NSMinX(_currentSelection)+.5         , NSMinY(_currentSelection)+.5         ); break;
+    case PTDSelectionToolSResizeHandle:
+      return NSMakePoint(PTD_NSRectCenter(_currentSelection).x, NSMinY(_currentSelection)+.5         ); break;
+    case PTDSelectionToolSEResizeHandle:
+      return NSMakePoint(NSMaxX(_currentSelection)-.5         , NSMinY(_currentSelection)+.5         ); break;
+    case PTDSelectionToolEResizeHandle:
+      return NSMakePoint(NSMaxX(_currentSelection)-.5         , PTD_NSRectCenter(_currentSelection).y); break;
+    case PTDSelectionToolNEResizeHandle:
+      return NSMakePoint(NSMaxX(_currentSelection)-.5         , NSMaxY(_currentSelection)-.5         ); break;
+    case PTDSelectionToolNResizeHandle:
+      return NSMakePoint(PTD_NSRectCenter(_currentSelection).x, NSMaxY(_currentSelection)-.5         ); break;
+    case PTDSelectionToolNWResizeHandle:
+      return NSMakePoint(NSMinX(_currentSelection)+.5         , NSMaxY(_currentSelection)-.5         ); break;
+    case PTDSelectionToolWResizeHandle:
+      return NSMakePoint(NSMinX(_currentSelection)+.5         , PTD_NSRectCenter(_currentSelection).y); break;
+    default:
+      break;
+  }
+  return PTD_NSRectCenter(_currentSelection);
+}
+
+
+- (PTDSelectionToolHandleID)hitTestSelectionHandleAtPoint:(NSPoint)loc
+{
+  #define HANDLE_WIDTH (9.0)
+  #define HANDLE_RECT(p) PTD_NSMakeRectFromPoints( \
+    (NSPoint){(p).x - HANDLE_WIDTH/2.0, (p).y - HANDLE_WIDTH/2.0}, \
+    (NSPoint){(p).x + HANDLE_WIDTH/2.0, (p).y + HANDLE_WIDTH/2.0})
+  
+  for (NSInteger i=PTDSelectionToolFirstResizeHandle; i<=PTDSelectionToolLastResizeHandle; i++) {
+    if (NSPointInRect(loc, HANDLE_RECT([self centerOfSelectionHandle:i])))
+      return i;
+  }
+  if (NSPointInRect(loc, _currentSelection))
+    return PTDSelectionToolDragHandle;
+  return NSNotFound;
+  
+  #undef HANDLE_WIDTH
+  #undef HANDLE_RECT
+}
+
+
+- (NSRect)transformCoefficientsForSelectionHandle:(PTDSelectionToolHandleID)handle
+{
+  static const NSRect coeffs[] = {
+           /*   x     y     w     h */
+    (NSRect){ 1.0,  1.0, -1.0, -1.0}, /* PTDSelectionToolSWResizeHandle */
+    (NSRect){ 0.0,  1.0,  0.0, -1.0}, /* PTDSelectionToolSResizeHandle */
+    (NSRect){ 0.0,  1.0,  1.0, -1.0}, /* PTDSelectionToolSEResizeHandle */
+    (NSRect){ 0.0,  0.0,  1.0,  0.0}, /* PTDSelectionToolEResizeHandle */
+    (NSRect){ 0.0,  0.0,  1.0,  1.0}, /* PTDSelectionToolNEResizeHandle */
+    (NSRect){ 0.0,  0.0,  0.0,  1.0}, /* PTDSelectionToolNResizeHandle */
+    (NSRect){ 1.0,  0.0, -1.0,  1.0}, /* PTDSelectionToolNWResizeHandle */
+    (NSRect){ 1.0,  0.0, -1.0,  0.0}, /* PTDSelectionToolWResizeHandle */
+  };
+  if (handle == PTDSelectionToolDragHandle) {
+    return NSMakeRect(1.0, 1.0, 0.0, 0.0);
+  }
+  return coeffs[handle];
 }
 
 
@@ -270,22 +367,52 @@ typedef enum : NSUInteger {
   dashPhaseAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
   [_selectionIndicator addAnimation:dashPhaseAnimation forKey:@"dashPhaseAnimation"];
   
+  for (PTDSelectionToolHandleID i=PTDSelectionToolFirstResizeHandle; i<=PTDSelectionToolLastResizeHandle; i++) {
+    CALayer *shi = [[CALayer alloc] init];
+    [_selectionIndicator addSublayer:shi];
+    shi.backgroundColor = NSColor.whiteColor.CGColor;
+    shi.borderColor = NSColor.blackColor.CGColor;
+    shi.borderWidth = 1.0;
+    shi.bounds = NSMakeRect(0, 0, 5, 5);
+    [_selectionHandleIndicators addObject:shi];
+  }
+  
   [self updateSelectionIndicator];
 }
 
 
 - (void)updateSelectionIndicator
 {
+  [CATransaction begin];
+  CATransaction.disableActions = YES;
+  
   CGPathRef path = CGPathCreateWithRect(NSInsetRect(_currentSelection, .5, .5), NULL);
   _selectionIndicator.path = path;
   CGPathRelease(path);
+  
+  for (PTDSelectionToolHandleID i=PTDSelectionToolFirstResizeHandle; i<=PTDSelectionToolLastResizeHandle; i++) {
+    CALayer *shi = _selectionHandleIndicators[i];
+    shi.position = [self centerOfSelectionHandle:i];
+  }
+  
+  [CATransaction commit];
 }
 
 
 - (void)removeSelectionIndicator
 {
+  [CATransaction begin];
+  CATransaction.disableActions = YES;
+  
+  for (CAShapeLayer *shi in _selectionHandleIndicators) {
+    [shi removeFromSuperlayer];
+  }
+  [_selectionHandleIndicators removeAllObjects];
+  
   [_selectionIndicator removeFromSuperlayer];
   _selectionIndicator = nil;
+  
+  [CATransaction commit];
 }
 
 
