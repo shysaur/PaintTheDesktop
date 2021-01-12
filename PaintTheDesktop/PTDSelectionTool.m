@@ -23,6 +23,7 @@
 // SOFTWARE.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "PTDSelectionTool.h"
 #import "PTDDrawingSurface.h"
 #import "NSGeometry+PTD.h"
@@ -38,9 +39,11 @@ typedef enum : NSUInteger {
 
 @implementation PTDSelectionTool {
   NSRect _currentSelection;
-  NSSize _dragOffset;
+  NSPoint _dragPivot;
+  NSRect _uneditedCurrentSelection;
   NSImageRep *_selectedArea;
   PTDSelectionToolMode _mode;
+  CAShapeLayer *_selectionIndicator;
 }
 
 
@@ -105,7 +108,14 @@ typedef enum : NSUInteger {
 
 - (void)mouseClickedAtPoint:(NSPoint)point
 {
-  [self terminateEditSelection];
+  switch (_mode) {
+    case PTDSelectionToolModeMakeSelection:
+      [self newSelection_mouseClickedAtPoint:point];
+      break;
+    case PTDSelectionToolModeEditSelection:
+      [self editSelection_mouseClickedAtPoint:point];
+      break;
+  }
 }
 
 
@@ -114,37 +124,33 @@ typedef enum : NSUInteger {
 
 - (void)newSelection_dragDidStartAtPoint:(NSPoint)point
 {
-  _currentSelection.origin = [self.currentDrawingSurface alignPointToBacking:point];
+  _dragPivot = [self.currentDrawingSurface alignPointToBacking:point];
+  _currentSelection.origin = _dragPivot;
+  _currentSelection.size = NSZeroSize;
+  [self createSelectionIndicator];
 }
 
 
 - (void)newSelection_dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint
 {
-  [self.currentDrawingSurface beginOverlayDrawing];
-  
-  NSRect oldSelection = PTD_NSMakeRectFromPoints(_currentSelection.origin, [self.currentDrawingSurface alignPointToBacking:prevPoint]);
-  NSRect newSelection = PTD_NSMakeRectFromPoints(_currentSelection.origin, [self.currentDrawingSurface alignPointToBacking:nextPoint]);
-  
-  [self.currentDrawingSurface beginOverlayDrawing];
-  [NSGraphicsContext.currentContext setCompositingOperation:NSCompositingOperationClear];
-  [NSColor.clearColor setFill];
-  NSRectFill(oldSelection);
-  [NSGraphicsContext.currentContext setCompositingOperation:NSCompositingOperationCopy];
-  [NSColor.blackColor setFill];
-  NSFrameRect(newSelection);
+  _currentSelection = PTD_NSMakeRectFromPoints(_dragPivot, [self.currentDrawingSurface alignPointToBacking:nextPoint]);
+  [self updateSelectionIndicator];
 }
 
 
 - (void)newSelection_dragDidEndAtPoint:(NSPoint)point
 {
   point = [self.currentDrawingSurface alignPointToBacking:point];
-  _currentSelection = PTD_NSMakeRectFromPoints(_currentSelection.origin, point);
-  if (_currentSelection.size.width < 1 || _currentSelection.size.height < 1)
+  _currentSelection = PTD_NSMakeRectFromPoints(_dragPivot, point);
+  if (_currentSelection.size.width < 1 || _currentSelection.size.height < 1) {
+    [self removeSelectionIndicator];
     return;
+  }
   
   _selectedArea = [self.currentDrawingSurface captureRect:_currentSelection];
   
   [self drawSelectionInOverlay];
+  [self updateSelectionIndicator];
   
   [self.currentDrawingSurface beginCanvasDrawing];
   [NSGraphicsContext.currentContext setCompositingOperation:NSCompositingOperationClear];
@@ -152,6 +158,12 @@ typedef enum : NSUInteger {
   NSRectFill(_currentSelection);
   
   _mode = PTDSelectionToolModeEditSelection;
+}
+
+
+- (void)newSelection_mouseClickedAtPoint:(NSPoint)point
+{
+  [self terminateEditSelection];
 }
 
 
@@ -166,8 +178,8 @@ typedef enum : NSUInteger {
     return;
   }
   point = [self.currentDrawingSurface alignPointToBacking:point];
-  _dragOffset.width = point.x - _currentSelection.origin.x;
-  _dragOffset.height = point.y - _currentSelection.origin.y;
+  _dragPivot = point;
+  _uneditedCurrentSelection = _currentSelection;
 }
 
 
@@ -175,15 +187,28 @@ typedef enum : NSUInteger {
 {
   [self clearSelectionInOverlay];
   nextPoint = [self.currentDrawingSurface alignPointToBacking:nextPoint];
-  _currentSelection.origin.x = nextPoint.x - _dragOffset.width;
-  _currentSelection.origin.y = nextPoint.y - _dragOffset.height;
+  _currentSelection.origin.x = _uneditedCurrentSelection.origin.x + (nextPoint.x - _dragPivot.x);
+  _currentSelection.origin.y = _uneditedCurrentSelection.origin.y + (nextPoint.y - _dragPivot.y);
   [self drawSelectionInOverlay];
+  [self updateSelectionIndicator];
 }
 
 
 - (void)editSelection_dragDidEndAtPoint:(NSPoint)point
 {
   /* noop */
+}
+
+
+- (void)editSelection_mouseClickedAtPoint:(NSPoint)point
+{
+  if (NSPointInRect(point, _currentSelection)) {
+    NSMenu *menu = [[NSMenu alloc] init];
+    [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item for deleting current selection") action:@selector(deleteAndTerminateEditSelection) keyEquivalent:@""].target = self;
+    [menu popUpMenuPositioningItem:nil atLocation:NSEvent.mouseLocation inView:nil];
+  } else {
+    [self terminateEditSelection];
+  }
 }
 
 
@@ -199,8 +224,14 @@ typedef enum : NSUInteger {
 {
   [self.currentDrawingSurface beginOverlayDrawing];
   [_selectedArea drawInRect:_currentSelection];
-  [NSColor.blackColor setFill];
-  NSFrameRect(_currentSelection);
+}
+
+
+- (void)deleteAndTerminateEditSelection
+{
+  [self clearSelectionInOverlay];
+  _selectedArea = nil;
+  [self terminateEditSelection];
 }
 
 
@@ -212,7 +243,49 @@ typedef enum : NSUInteger {
     [_selectedArea drawInRect:_currentSelection fromRect:(NSRect){NSZeroPoint, _selectedArea.size} operation:NSCompositingOperationSourceOver fraction:1.0 respectFlipped:YES hints:@{NSImageHintInterpolation: @(NSImageInterpolationHigh)}];
     _selectedArea = nil;
   }
+  [self removeSelectionIndicator];
   _mode = PTDSelectionToolModeMakeSelection;
+}
+
+
+#pragma mark - Selection Indicator
+
+
+- (void)createSelectionIndicator
+{
+  _selectionIndicator = [[CAShapeLayer alloc] init];
+  [self.currentDrawingSurface.overlayLayer addSublayer:_selectionIndicator];
+  _selectionIndicator.frame = self.currentDrawingSurface.overlayLayer.bounds;
+  _selectionIndicator.lineWidth = 1.0;
+  _selectionIndicator.lineDashPattern = @[@(4.0), @(4.0)];
+  _selectionIndicator.strokeColor = NSColor.blackColor.CGColor;
+  _selectionIndicator.fillColor = NSColor.clearColor.CGColor;
+  
+  CABasicAnimation *dashPhaseAnimation = [CABasicAnimation animation];
+  dashPhaseAnimation.duration = 1.0 / 30.0 * 8.0;
+  dashPhaseAnimation.repeatCount = INFINITY;
+  dashPhaseAnimation.keyPath = @"lineDashPhase";
+  dashPhaseAnimation.fromValue = @0.0;
+  dashPhaseAnimation.toValue = @8.0;
+  dashPhaseAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+  [_selectionIndicator addAnimation:dashPhaseAnimation forKey:@"dashPhaseAnimation"];
+  
+  [self updateSelectionIndicator];
+}
+
+
+- (void)updateSelectionIndicator
+{
+  CGPathRef path = CGPathCreateWithRect(NSInsetRect(_currentSelection, .5, .5), NULL);
+  _selectionIndicator.path = path;
+  CGPathRelease(path);
+}
+
+
+- (void)removeSelectionIndicator
+{
+  [_selectionIndicator removeFromSuperlayer];
+  _selectionIndicator = nil;
 }
 
 
