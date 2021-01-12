@@ -49,4 +49,17 @@ NS_INLINE NSRect PTD_NSMakeRectFromPoints(NSPoint p0, NSPoint p1)
   return (NSRect){p0, NSMakeSize(p1.x - p0.x, p1.y - p0.y)};
 }
 
+NS_INLINE NSRect PTD_NSNormalizedRect(NSRect rect)
+{
+  if (rect.size.width < 0) {
+    rect.origin.x += rect.size.width;
+    rect.size.width = -rect.size.width;
+  }
+  if (rect.size.height < 0) {
+    rect.origin.y += rect.size.height;
+    rect.size.height = -rect.size.height;
+  }
+  return rect;
+}
+
 NS_ASSUME_NONNULL_END

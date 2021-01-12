@@ -29,6 +29,7 @@
 #import "PTDDrawingSurface.h"
 #import "PTDTool.h"
 #import "PTDCursor.h"
+#import "NSGeometry+PTD.h"
 
 
 @implementation PTDShapeTool {
@@ -44,16 +45,7 @@
 
 - (NSRect)normalizedCurrentRect
 {
-  NSRect result = _currentRect;
-  if (result.size.width < 0) {
-    result.origin.x += result.size.width;
-    result.size.width = -result.size.width;
-  }
-  if (result.size.height < 0) {
-    result.origin.y += result.size.height;
-    result.size.height = -result.size.height;
-  }
-  return result;
+  return PTD_NSNormalizedRect(_currentRect);
 }
 
 
