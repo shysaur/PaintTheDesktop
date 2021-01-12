@@ -209,7 +209,7 @@ typedef enum : NSUInteger {
   if (_selectedArea) {
     [self clearSelectionInOverlay];
     [self.currentDrawingSurface beginCanvasDrawing];
-    [_selectedArea drawInRect:_currentSelection fromRect:(NSRect){NSZeroPoint, _currentSelection.size} operation:NSCompositingOperationSourceOver fraction:1.0 respectFlipped:YES hints:@{NSImageHintInterpolation: @(NSImageInterpolationHigh)}];
+    [_selectedArea drawInRect:_currentSelection fromRect:(NSRect){NSZeroPoint, _selectedArea.size} operation:NSCompositingOperationSourceOver fraction:1.0 respectFlipped:YES hints:@{NSImageHintInterpolation: @(NSImageInterpolationHigh)}];
     _selectedArea = nil;
   }
   _mode = PTDSelectionToolModeMakeSelection;
