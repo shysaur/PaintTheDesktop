@@ -34,6 +34,7 @@
   PTDOpenGLBufferedTexture *_mainBuffer;
   PTDOpenGLBufferedTexture *_overlayBuffer;
   CALayer *_cursorLayer;
+  CALayer *_overlayLayer;
 }
 
 
@@ -97,6 +98,18 @@
 {
   _backingScaleFactor = backingScaleFactor;
   [self updateBackingImages];
+}
+
+
+- (CALayer *)overlayLayer
+{
+  if (!_overlayLayer) {
+    _overlayLayer = [[CALayer alloc] init];
+    [self.layer addSublayer:_overlayLayer];
+    _overlayLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
+    _overlayLayer.frame = self.bounds;
+  }
+  return _overlayLayer;
 }
 
 
@@ -166,6 +179,8 @@
 
 - (void)updateBackingImages
 {
+  _overlayLayer.frame = self.bounds;
+  
   NSSize newSize = self.bounds.size;
   NSSize newPxSize = NSMakeSize(newSize.width * _backingScaleFactor.width, newSize.height * _backingScaleFactor.height);
   if (newPxSize.width == _mainBuffer.pixelWidth && newPxSize.height == _mainBuffer.pixelHeight)

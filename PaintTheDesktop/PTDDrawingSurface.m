@@ -62,6 +62,12 @@
 }
 
 
+- (CALayer *)overlayLayer
+{
+  return _paintView.overlayLayer;
+}
+
+
 - (NSImageRep *)captureRect:(NSRect)rect
 {
   return [_paintView snapshotOfRect:rect];

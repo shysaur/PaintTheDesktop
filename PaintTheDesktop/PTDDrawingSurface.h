@@ -36,6 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)beginCanvasDrawing;
 - (void)beginOverlayDrawing;
+- (CALayer *)overlayLayer;
 
 - (NSImageRep *)captureRect:(NSRect)rect;
 
