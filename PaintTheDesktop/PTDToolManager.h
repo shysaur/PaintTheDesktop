@@ -33,8 +33,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PTDToolManager : NSObject
 
-@property (class, nonatomic, readonly) PTDToolManager *sharedManager;
-
 @property (nonatomic) PTDBrush *currentBrush;
 
 @property (nonatomic, readonly) PTDTool *currentTool;

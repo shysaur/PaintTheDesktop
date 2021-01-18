@@ -71,7 +71,7 @@
   [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositingOperationClear];
   
   NSBezierPath *path = [self shapeBezierPathInRect:[self normalizedCurrentRect]];
-  [path setLineWidth:PTDToolManager.sharedManager.currentBrush.size+2.0];
+  [path setLineWidth:self.currentBrush.size+2.0];
   [[NSColor colorWithWhite:0.0 alpha:0.0] setStroke];
   [path stroke];
   
@@ -82,8 +82,8 @@
   [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositingOperationCopy];
   
   path = [self shapeBezierPathInRect:[self normalizedCurrentRect]];
-  [path setLineWidth:PTDToolManager.sharedManager.currentBrush.size];
-  [PTDToolManager.sharedManager.currentBrush.color setStroke];
+  [path setLineWidth:self.currentBrush.size];
+  [self.currentBrush.color setStroke];
   [path stroke];
 }
 
@@ -96,7 +96,7 @@
   [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositingOperationClear];
   
   NSBezierPath *path = [self shapeBezierPathInRect:[self normalizedCurrentRect]];
-  [path setLineWidth:PTDToolManager.sharedManager.currentBrush.size+2.0];
+  [path setLineWidth:self.currentBrush.size+2.0];
   [[NSColor colorWithWhite:0.0 alpha:0.0] setStroke];
   [path stroke];
   
@@ -108,28 +108,29 @@
   [NSGraphicsContext.currentContext setShouldAntialias:YES];
   
   path = [self shapeBezierPathInRect:[self normalizedCurrentRect]];
-  [path setLineWidth:PTDToolManager.sharedManager.currentBrush.size];
-  [PTDToolManager.sharedManager.currentBrush.color setStroke];
+  [path setLineWidth:self.currentBrush.size];
+  [self.currentBrush.color setStroke];
   [path stroke];
 }
 
 
 - (PTDRingMenuRing *)optionMenu
 {
-  return PTDToolManager.sharedManager.currentBrush.menuOptions;
+  return self.currentBrush.menuOptions;
 }
 
 
-- (void)brushDidChange
+- (void)setCurrentBrush:(PTDBrush *)currentBrush
 {
+  [super setCurrentBrush:currentBrush];
   [self updateCursor];
 }
 
 
 - (void)updateCursor
 {
-  CGFloat size = floor((PTDToolManager.sharedManager.currentBrush.size + 8.0) / 2.0) * 2.0 + 1.0;
-  NSColor *color = PTDToolManager.sharedManager.currentBrush.color;
+  CGFloat size = floor((self.currentBrush.size + 8.0) / 2.0) * 2.0 + 1.0;
+  NSColor *color = self.currentBrush.color;
   PTDCursor *cursor = [[PTDCursor alloc] init];
   
   cursor.image = [NSImage

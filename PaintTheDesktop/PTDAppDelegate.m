@@ -150,10 +150,8 @@
       wc.active = active;
     }
     if (active) {
-      [PTDToolManager.sharedManager.currentTool activate];
       self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIconOn"];
     } else {
-      [PTDToolManager.sharedManager.currentTool deactivate];
       self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIconOff"];
     }
   }

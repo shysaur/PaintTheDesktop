@@ -27,9 +27,6 @@
 #import "PTDCursor.h"
 
 
-NSString * const PTDToolCursorDidChangeNotification = @"PTDToolCursorDidChangeNotification";
-
-
 @implementation PTDTool
 
 
@@ -44,11 +41,6 @@ NSString * const PTDToolCursorDidChangeNotification = @"PTDToolCursorDidChangeNo
 {
   [NSException raise:NSInternalInconsistencyException format:@"ABSTRACT METHOD: %s", __FUNCTION__];
   return nil;
-}
-
-
-- (void)brushDidChange
-{
 }
 
 
@@ -69,13 +61,6 @@ NSString * const PTDToolCursorDidChangeNotification = @"PTDToolCursorDidChangeNo
 
 - (void)mouseClickedAtPoint:(NSPoint)point
 {
-}
-
-
-- (void)setCursor:(PTDCursor *)cursor
-{
-  _cursor = cursor;
-  [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:PTDToolCursorDidChangeNotification object:self]];
 }
 
 

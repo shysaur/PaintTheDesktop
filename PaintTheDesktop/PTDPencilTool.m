@@ -54,8 +54,8 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
   [self.currentDrawingSurface beginCanvasDrawing];
   NSBezierPath *path = [NSBezierPath bezierPath];
   [path setLineCapStyle:NSLineCapStyleRound];
-  [path setLineWidth:PTDToolManager.sharedManager.currentBrush.size];
-  [PTDToolManager.sharedManager.currentBrush.color setStroke];
+  [path setLineWidth:self.currentBrush.size];
+  [self.currentBrush.color setStroke];
   [path moveToPoint:prevPoint];
   [path lineToPoint:nextPoint];
   [path stroke];
@@ -70,20 +70,21 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 
 - (PTDRingMenuRing *)optionMenu
 {
-  return [PTDToolManager.sharedManager.currentBrush menuOptions];
+  return [self.currentBrush menuOptions];
 }
 
 
-- (void)brushDidChange
+- (void)setCurrentBrush:(PTDBrush *)currentBrush
 {
+  [super setCurrentBrush:currentBrush];
   [self updateCursor];
 }
 
 
 - (void)updateCursor
 {
-  CGFloat size = PTDToolManager.sharedManager.currentBrush.size;
-  NSColor *color = PTDToolManager.sharedManager.currentBrush.color;
+  CGFloat size = self.currentBrush.size;
+  NSColor *color = self.currentBrush.color;
   PTDCursor *cursor = [[PTDCursor alloc] init];
   
   cursor.image = [NSImage

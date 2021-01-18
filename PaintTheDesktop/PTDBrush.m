@@ -149,14 +149,12 @@
 - (void)changeSize:(id)sender
 {
   self.size = [(NSMenuItem *)sender tag];
-  [PTDToolManager.sharedManager.currentTool brushDidChange];
 }
 
 
 - (void)changeColor:(id)sender
 {
   self.color = sender;
-  [PTDToolManager.sharedManager.currentTool brushDidChange];
 }
 
 

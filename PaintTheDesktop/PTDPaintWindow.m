@@ -41,6 +41,8 @@
 
 @property IBOutlet PTDPaintView *paintView;
 
+@property (nonatomic) PTDToolManager *toolManager;
+
 @property (nonatomic) BOOL mouseInWindow;
 @property (nonatomic) BOOL mouseIsDragging;
 @property (nonatomic) NSPoint lastMousePosition;
@@ -59,6 +61,8 @@
 {
   self = [super init];
   
+  _toolManager = [[PTDToolManager alloc] init];
+  
   _display = display;
   #pragma clang diagnostic push
   #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -67,7 +71,7 @@
   NSDictionary *properties = CFBridgingRelease(IODisplayCreateInfoDictionary(dispSvc, kIODisplayOnlyPreferredName));
   _displayName = [[properties[@kDisplayProductName] allValues] firstObject];
   
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cursorDidChange:) name:PTDToolCursorDidChangeNotification object:nil];
+  [_toolManager addObserver:self forKeyPath:@"currentTool.cursor" options:0 context:NULL];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenConfigurationDidChange:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
   
   /* If we don't do this, Cocoa will muck around with our window positioning */
@@ -81,6 +85,7 @@
 
 - (void)dealloc
 {
+  [_toolManager removeObserver:self forKeyPath:@"currentTool.cursor"];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -119,9 +124,19 @@
     options:options owner:self userInfo:nil];
   [self.paintView addTrackingArea:area];
   
-  self.currentCursor = PTDToolManager.sharedManager.currentTool.cursor;
+  self.currentCursor = self.toolManager.currentTool.cursor;
   
   self.active = NO;
+}
+
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+  if (object == _toolManager) {
+    self.currentCursor = self.toolManager.currentTool.cursor;
+  } else {
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+  }
 }
 
 
@@ -162,7 +177,7 @@
 
 - (PTDTool *)initializeToolWithSurface:(PTDDrawingSurface *)drawingSurface
 {
-  PTDTool *tool = PTDToolManager.sharedManager.currentTool;
+  PTDTool *tool = self.toolManager.currentTool;
   tool.currentDrawingSurface = drawingSurface;
   return tool;
 }
@@ -263,9 +278,9 @@
   PTDRingMenu *ringMenu = [[PTDRingMenu alloc] init];
   PTDRingMenuRing *itemsRing = [ringMenu newRing];
   
-  for (NSString *toolid in PTDToolManager.sharedManager.availableToolIdentifiers) {
-    PTDRingMenuItem *item = [PTDToolManager.sharedManager ringMenuItemForSelectingToolIdentifier:toolid];
-    if ([toolid isEqual:[[[PTDToolManager.sharedManager currentTool] class] toolIdentifier]])
+  for (NSString *toolid in self.toolManager.availableToolIdentifiers) {
+    PTDRingMenuItem *item = [self.toolManager ringMenuItemForSelectingToolIdentifier:toolid];
+    if ([toolid isEqual:[[self.toolManager.currentTool class] toolIdentifier]])
       item.state = NSControlStateValueOn;
     [itemsRing addItem:item];
   }
@@ -273,7 +288,7 @@
   [itemsRing addItemWithText:NSLocalizedString(@"Quit", @"") target:NSApp action:@selector(terminate:)];
   [itemsRing endGravityMassGroup];
   
-  PTDRingMenuRing *optMenu = [PTDToolManager.sharedManager.currentTool optionMenu];
+  PTDRingMenuRing *optMenu = [self.toolManager.currentTool optionMenu];
   if (optMenu)
     [ringMenu addRing:optMenu];
   
@@ -316,9 +331,11 @@
 - (void)setActive:(BOOL)active
 {
   if (active) {
+    [self.toolManager.currentTool activate];
     self.window.ignoresMouseEvents = NO;
     [self.window makeKeyAndOrderFront:nil];
   } else {
+    [self.toolManager.currentTool deactivate];
     self.window.ignoresMouseEvents = YES;
   }
   _active = active;
@@ -346,13 +363,6 @@
     }
   }
   _systemCursorVisibility = systemCursorVisibility;
-}
-
-
-- (void)cursorDidChange:(NSNotification *)notification
-{
-  PTDTool *newTool = notification.object;
-  self.currentCursor = newTool.cursor;
 }
 
 

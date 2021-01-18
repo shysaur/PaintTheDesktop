@@ -37,6 +37,8 @@
 
 @interface PTDToolManager ()
 
+@property (nonatomic) PTDTool *currentTool;
+
 @property (nonatomic, nullable) NSString *previousToolIdentifier;
 
 @end
@@ -50,15 +52,9 @@
 
 - (instancetype)init
 {
-  return [[self class] sharedManager];
-}
-
-
-- (instancetype)_init
-{
   self = [super init];
-  _currentBrush = [[PTDBrush alloc] init];
   _currentTool = [[PTDPencilTool alloc] init];
+  [self setCurrentBrush:[[PTDBrush alloc] init]];
   
   _availableToolIdentifiers = @[
       PTDToolIdentifierPencilTool,
@@ -84,17 +80,6 @@
 }
 
 
-+ (PTDToolManager *)sharedManager
-{
-  static PTDToolManager *sharedManager;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-      sharedManager = [[PTDToolManager alloc] _init];
-  });
-  return sharedManager;
-}
-
-
 - (PTDRingMenuItem *)ringMenuItemForSelectingToolIdentifier:(NSString *)ti
 {
   Class toolClass = [_toolClasses objectForKey:ti];
@@ -108,7 +93,7 @@
 
 - (void)changeToolAction:(id)sender
 {
-  [PTDToolManager.sharedManager changeTool:sender];
+  [self changeTool:sender];
 }
 
 
@@ -126,18 +111,33 @@
   
   if (_currentTool != newTool) {
     [_currentTool deactivate];
-    _currentTool = newTool;
+    self.currentTool = newTool;
+    self.currentTool.currentBrush = self.currentBrush;
     [newTool activate];
-    
-    [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:PTDToolCursorDidChangeNotification object:newTool]];
   }
 }
 
 
 - (void)setCurrentBrush:(PTDBrush *)currentBrush
 {
+  if (_currentBrush) {
+    [_currentBrush removeObserver:self forKeyPath:NSStringFromSelector(@selector(color))];
+    [_currentBrush removeObserver:self forKeyPath:NSStringFromSelector(@selector(size))];
+  }
   _currentBrush = currentBrush;
-  [self.currentTool brushDidChange];
+  [_currentBrush addObserver:self forKeyPath:NSStringFromSelector(@selector(color)) options:0 context:NULL];
+  [_currentBrush addObserver:self forKeyPath:NSStringFromSelector(@selector(size)) options:0 context:NULL];
+  self.currentTool.currentBrush = self.currentBrush;
+}
+
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
+{
+  if (object == _currentBrush) {
+    self.currentTool.currentBrush = _currentBrush;
+  } else {
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+  }
 }
 
 
