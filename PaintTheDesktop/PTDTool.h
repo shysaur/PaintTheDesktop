@@ -47,6 +47,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)mouseClickedAtPoint:(NSPoint)point;
 
+- (void)modifierFlagsChanged;
+
 @property (nonatomic, nullable) PTDCursor *cursor;
 
 - (void)activate;

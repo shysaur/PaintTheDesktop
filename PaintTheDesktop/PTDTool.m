@@ -64,6 +64,11 @@
 }
 
 
+- (void)modifierFlagsChanged
+{
+}
+
+
 - (void)activate
 {
 }

@@ -284,6 +284,18 @@
 }
 
 
+- (void)flagsChanged:(NSEvent *)event
+{
+  if (self.mouseInWindow && self.mouseIsDragging) {
+    @autoreleasepool {
+      PTDDrawingSurface *surf = [self drawingSurface];
+      PTDTool *tool = [self initializeToolWithSurface:surf];
+      [tool modifierFlagsChanged];
+    }
+  }
+}
+
+
 - (void)openContextMenuWithEvent:(NSEvent *)event
 {
   PTDRingMenu *ringMenu = [[PTDRingMenu alloc] init];
