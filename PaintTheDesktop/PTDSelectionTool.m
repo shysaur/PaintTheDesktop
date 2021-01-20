@@ -51,10 +51,17 @@ typedef NS_ENUM(NSInteger, PTDSelectionToolHandleID) {
   PTDSelectionToolNumHandles
 };
 
+typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
+    PTDSelectionToolEditFlagsProportional = 1 << 0,
+    PTDSelectionToolEditFlagsCentered = 1 << 1,
+};
+
 
 @implementation PTDSelectionTool {
   NSRect _currentSelection;
+  BOOL _isDragging;
   NSPoint _dragPivot;
+  NSPoint _lastMousePosition;
   NSRect _uneditedCurrentSelection;
   PTDSelectionToolHandleID _activeSelectionHandle;
   NSImageRep *_selectedArea;
@@ -88,6 +95,7 @@ typedef NS_ENUM(NSInteger, PTDSelectionToolHandleID) {
 
 - (void)dragDidStartAtPoint:(NSPoint)point
 {
+  _isDragging = YES;
   switch (_mode) {
     case PTDSelectionToolModeMakeSelection:
       [self newSelection_dragDidStartAtPoint:point];
@@ -122,6 +130,7 @@ typedef NS_ENUM(NSInteger, PTDSelectionToolHandleID) {
       [self editSelection_dragDidEndAtPoint:point];
       break;
   }
+  _isDragging = NO;
 }
 
 
@@ -134,6 +143,14 @@ typedef NS_ENUM(NSInteger, PTDSelectionToolHandleID) {
     case PTDSelectionToolModeEditSelection:
       [self editSelection_mouseClickedAtPoint:point];
       break;
+  }
+}
+
+
+- (void)modifierFlagsChanged
+{
+  if (_mode == PTDSelectionToolModeEditSelection && _isDragging) {
+    [self continueEditingSelection];
   }
 }
 
@@ -204,7 +221,7 @@ typedef NS_ENUM(NSInteger, PTDSelectionToolHandleID) {
     return;
   }
   
-  point = [self.currentDrawingSurface alignPointToBacking:point];
+  _lastMousePosition = point = [self.currentDrawingSurface alignPointToBacking:point];
   _dragPivot = point;
   _uneditedCurrentSelection = _currentSelection;
 }
@@ -212,22 +229,9 @@ typedef NS_ENUM(NSInteger, PTDSelectionToolHandleID) {
 
 - (void)editSelection_dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint
 {
-  [self clearSelectionInOverlay];
+  _lastMousePosition = [self.currentDrawingSurface alignPointToBacking:nextPoint];
   
-  nextPoint = [self.currentDrawingSurface alignPointToBacking:nextPoint];
-  NSRect coeffs = [self transformCoefficientsForSelectionHandle:_activeSelectionHandle];
-  
-  CGFloat dx = nextPoint.x - _dragPivot.x;
-  CGFloat dy = nextPoint.y - _dragPivot.y;
-  
-  _currentSelection.origin.x = _uneditedCurrentSelection.origin.x + dx * coeffs.origin.x;
-  _currentSelection.origin.y = _uneditedCurrentSelection.origin.y + dy * coeffs.origin.y;
-  _currentSelection.size.width = _uneditedCurrentSelection.size.width + dx * coeffs.size.width;
-  _currentSelection.size.height = _uneditedCurrentSelection.size.height + dy * coeffs.size.height;
-  _currentSelection = PTD_NSNormalizedRect(_currentSelection);
-  
-  [self drawSelectionInOverlay];
-  [self updateSelectionIndicator];
+  [self continueEditingSelection];
 }
 
 
@@ -246,6 +250,65 @@ typedef NS_ENUM(NSInteger, PTDSelectionToolHandleID) {
   } else {
     [self terminateEditSelection];
   }
+}
+
+
+- (void)continueEditingSelection
+{
+  [self clearSelectionInOverlay];
+  
+  PTDSelectionToolEditFlags flags = 0;
+  if (_activeSelectionHandle != PTDSelectionToolDragHandle) {
+    if (NSEvent.modifierFlags & NSEventModifierFlagShift)
+      flags |= PTDSelectionToolEditFlagsProportional;
+    if (NSEvent.modifierFlags & NSEventModifierFlagOption)
+      flags |= PTDSelectionToolEditFlagsCentered;
+  }
+  
+  NSRect coeffs = [self transformCoefficientsForSelectionHandle:_activeSelectionHandle editFlags:flags];
+  
+  CGFloat dx = (_lastMousePosition.x - _dragPivot.x) * coeffs.origin.x;
+  CGFloat dy = (_lastMousePosition.y - _dragPivot.y) * coeffs.origin.y;
+  CGFloat dw = (_lastMousePosition.x - _dragPivot.x) * coeffs.size.width;
+  CGFloat dh = (_lastMousePosition.y - _dragPivot.y) * coeffs.size.height;
+  
+  if (flags & PTDSelectionToolEditFlagsProportional) {
+    CGFloat ratio = _uneditedCurrentSelection.size.width / _uneditedCurrentSelection.size.height;
+    if (_activeSelectionHandle == PTDSelectionToolEResizeHandle
+        || _activeSelectionHandle == PTDSelectionToolWResizeHandle)
+      dh = dw / ratio;
+    else if (_activeSelectionHandle == PTDSelectionToolNResizeHandle
+        || _activeSelectionHandle == PTDSelectionToolSResizeHandle)
+      dw = dh * ratio;
+    if (dw > dh * ratio)
+      dh = dw / ratio;
+    else
+      dw = dh * ratio;
+    dx = dw / coeffs.size.width * coeffs.origin.x;
+    dy = dh / coeffs.size.height * coeffs.origin.y;
+  }
+  
+  if (flags & PTDSelectionToolEditFlagsCentered) {
+    dx *= 2.0;
+    dy *= 2.0;
+    dw *= 2.0;
+    dh *= 2.0;
+  }
+  
+  _currentSelection.origin.x = _uneditedCurrentSelection.origin.x + round(dx);
+  _currentSelection.origin.y = _uneditedCurrentSelection.origin.y + round(dy);
+  _currentSelection.size.width = _uneditedCurrentSelection.size.width + round(dw);
+  _currentSelection.size.height = _uneditedCurrentSelection.size.height + round(dh);
+  _currentSelection = PTD_NSNormalizedRect(_currentSelection);
+  
+  if (flags & PTDSelectionToolEditFlagsCentered) {
+    NSPoint center = PTD_NSRectCenter(_uneditedCurrentSelection);
+    _currentSelection.origin.x = center.x - _currentSelection.size.width / 2.0;
+    _currentSelection.origin.y = center.y - _currentSelection.size.height / 2.0;
+  }
+  
+  [self drawSelectionInOverlay];
+  [self updateSelectionIndicator];
 }
 
 
@@ -295,8 +358,12 @@ typedef NS_ENUM(NSInteger, PTDSelectionToolHandleID) {
 }
 
 
-- (NSRect)transformCoefficientsForSelectionHandle:(PTDSelectionToolHandleID)handle
+- (NSRect)transformCoefficientsForSelectionHandle:(PTDSelectionToolHandleID)handle editFlags:(PTDSelectionToolEditFlags)flags
 {
+  if (handle == PTDSelectionToolDragHandle) {
+    return NSMakeRect(1.0, 1.0, 0.0, 0.0);
+  }
+  
   static const NSRect coeffs[] = {
            /*   x     y     w     h */
     (NSRect){ 1.0,  1.0, -1.0, -1.0}, /* PTDSelectionToolSWResizeHandle */
@@ -308,10 +375,19 @@ typedef NS_ENUM(NSInteger, PTDSelectionToolHandleID) {
     (NSRect){ 1.0,  0.0, -1.0,  1.0}, /* PTDSelectionToolNWResizeHandle */
     (NSRect){ 1.0,  0.0, -1.0,  0.0}, /* PTDSelectionToolWResizeHandle */
   };
-  if (handle == PTDSelectionToolDragHandle) {
-    return NSMakeRect(1.0, 1.0, 0.0, 0.0);
+  NSRect coeff = coeffs[handle];
+  
+  if (flags & PTDSelectionToolEditFlagsProportional) {
+    if (coeff.size.width == 0.0) {
+      coeff.size.width = 1.0;
+      coeff.origin.x = -0.5;
+    } else if (coeff.size.height == 0.0) {
+      coeff.size.height = 1.0;
+      coeff.origin.y = -0.5;
+    }
   }
-  return coeffs[handle];
+  
+  return coeff;
 }
 
 
