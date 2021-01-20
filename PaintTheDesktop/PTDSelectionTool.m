@@ -138,6 +138,12 @@ typedef NS_ENUM(NSInteger, PTDSelectionToolHandleID) {
 }
 
 
+- (void)deactivate
+{
+  [self terminateEditSelection];
+}
+
+
 #pragma mark - New Selection Mode
 
 
