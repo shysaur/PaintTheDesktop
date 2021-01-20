@@ -110,10 +110,8 @@
   }
   
   if (_currentTool != newTool) {
-    [_currentTool deactivate];
+    newTool.currentBrush = self.currentBrush;
     self.currentTool = newTool;
-    self.currentTool.currentBrush = self.currentBrush;
-    [newTool activate];
   }
 }
 

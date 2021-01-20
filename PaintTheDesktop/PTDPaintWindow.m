@@ -72,6 +72,7 @@
   _displayName = [[properties[@kDisplayProductName] allValues] firstObject];
   
   [_toolManager addObserver:self forKeyPath:@"currentTool.cursor" options:0 context:NULL];
+  [_toolManager addObserver:self forKeyPath:@"currentTool" options:NSKeyValueObservingOptionPrior context:NULL];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenConfigurationDidChange:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
   
   /* If we don't do this, Cocoa will muck around with our window positioning */
@@ -86,6 +87,7 @@
 - (void)dealloc
 {
   [_toolManager removeObserver:self forKeyPath:@"currentTool.cursor"];
+  [_toolManager removeObserver:self forKeyPath:@"currentTool"];
   [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -124,6 +126,7 @@
     options:options owner:self userInfo:nil];
   [self.paintView addTrackingArea:area];
   
+  [self currentToolDidChange];
   self.currentCursor = self.toolManager.currentTool.cursor;
   
   self.active = NO;
@@ -133,7 +136,15 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
 {
   if (object == _toolManager) {
-    self.currentCursor = self.toolManager.currentTool.cursor;
+    if ([keyPath isEqual:@"currentTool.cursor"]) {
+      self.currentCursor = self.toolManager.currentTool.cursor;
+    } else if ([keyPath isEqual:@"currentTool"]) {
+      if ([change[NSKeyValueChangeNotificationIsPriorKey] isEqual:@YES]) {
+        [self currentToolWillChange];
+      } else {
+        [self currentToolDidChange];
+      }
+    }
   } else {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
@@ -294,6 +305,26 @@
   
   self.systemCursorVisibility = YES;
   [ringMenu popUpMenuWithEvent:event forView:self.paintView];
+}
+
+
+- (void)currentToolWillChange
+{
+  @autoreleasepool {
+    PTDDrawingSurface *surf = [self drawingSurface];
+    PTDTool *tool = [self initializeToolWithSurface:surf];
+    [tool deactivate];
+  }
+}
+
+
+- (void)currentToolDidChange
+{
+  @autoreleasepool {
+    PTDDrawingSurface *surf = [self drawingSurface];
+    PTDTool *tool = [self initializeToolWithSurface:surf];
+    [tool activate];
+  }
 }
 
 
