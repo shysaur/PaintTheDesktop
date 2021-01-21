@@ -419,7 +419,7 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
   if (_selectedArea) {
     [self clearSelectionInOverlay];
     [self.currentDrawingSurface beginCanvasDrawing];
-    [_selectedArea drawInRect:_currentSelection fromRect:(NSRect){NSZeroPoint, _selectedArea.size} operation:NSCompositingOperationSourceOver fraction:1.0 respectFlipped:YES hints:@{NSImageHintInterpolation: @(NSImageInterpolationHigh)}];
+    [_selectedArea drawInRect:_currentSelection fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0 respectFlipped:YES hints:@{NSImageHintInterpolation: @(NSImageInterpolationHigh)}];
     _selectedArea = nil;
   }
   [self removeSelectionIndicator];

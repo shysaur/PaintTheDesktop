@@ -126,6 +126,10 @@
     NSBitmapImageRep *imageRep = _mainBuffer.bufferAsImageRep;
     copy = [imageRep copy];
   }
+  
+  copy.size = NSMakeSize(
+      (CGFloat)copy.pixelsWide / _backingScaleFactor.width,
+      (CGFloat)copy.pixelsHigh / _backingScaleFactor.height);
   return copy;
 }
 
@@ -153,6 +157,10 @@
     [imageRep drawInRect:(NSRect){NSZeroPoint, backingRect.size} fromRect:backingRect operation:NSCompositingOperationCopy fraction:1.0 respectFlipped:YES hints:nil];
     [NSGraphicsContext restoreGraphicsState];
   }
+  
+  copy.size = NSMakeSize(
+      (CGFloat)copy.pixelsWide / _backingScaleFactor.width,
+      (CGFloat)copy.pixelsHigh / _backingScaleFactor.height);
   return copy;
 }
 
@@ -200,8 +208,8 @@
     [NSGraphicsContext setCurrentContext:self.graphicsContext];
     if (oldImage) {
       [oldImage
-          drawInRect:(NSRect){NSMakePoint(0, 0), newSize}
-          fromRect:(NSRect){NSMakePoint(0, 0), oldImage.size}
+          drawInRect:(NSRect){NSZeroPoint, newSize}
+          fromRect:NSZeroRect
           operation:NSCompositingOperationCopy fraction:1.0 respectFlipped:YES
           hints:@{NSImageHintInterpolation: @(NSImageInterpolationHigh)}];
     } else {
