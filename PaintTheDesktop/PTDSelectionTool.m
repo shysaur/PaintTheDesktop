@@ -68,6 +68,7 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
   PTDSelectionToolMode _mode;
   
   CAShapeLayer *_selectionIndicator;
+  CALayer *_selectionPreview;
   NSMutableArray <CALayer *> *_selectionHandleIndicators;
 }
 
@@ -191,15 +192,13 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
   
   _selectedArea = [self.currentDrawingSurface captureRect:_currentSelection];
   
-  [self drawSelectionInOverlay];
-  [self updateSelectionIndicator];
-  
   [self.currentDrawingSurface beginCanvasDrawing];
   [NSGraphicsContext.currentContext setCompositingOperation:NSCompositingOperationClear];
   [NSColor.clearColor setFill];
   NSRectFill(_currentSelection);
   
   _mode = PTDSelectionToolModeEditSelection;
+  [self updateSelectionIndicator];
 }
 
 
@@ -255,8 +254,6 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 
 - (void)continueEditingSelection
 {
-  [self clearSelectionInOverlay];
-  
   PTDSelectionToolEditFlags flags = 0;
   if (_activeSelectionHandle != PTDSelectionToolDragHandle) {
     if (NSEvent.modifierFlags & NSEventModifierFlagShift)
@@ -307,7 +304,6 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
     _currentSelection.origin.y = center.y - _currentSelection.size.height / 2.0;
   }
   
-  [self drawSelectionInOverlay];
   [self updateSelectionIndicator];
 }
 
@@ -391,24 +387,8 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 }
 
 
-- (void)clearSelectionInOverlay
-{
-  [self.currentDrawingSurface beginOverlayDrawing];
-  [NSColor.clearColor setFill];
-  NSRectFill(_currentSelection);
-}
-
-
-- (void)drawSelectionInOverlay
-{
-  [self.currentDrawingSurface beginOverlayDrawing];
-  [_selectedArea drawInRect:_currentSelection];
-}
-
-
 - (void)deleteAndTerminateEditSelection
 {
-  [self clearSelectionInOverlay];
   _selectedArea = nil;
   [self terminateEditSelection];
 }
@@ -417,7 +397,6 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 - (void)terminateEditSelection
 {
   if (_selectedArea) {
-    [self clearSelectionInOverlay];
     [self.currentDrawingSurface beginCanvasDrawing];
     [_selectedArea drawInRect:_currentSelection fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0 respectFlipped:YES hints:@{NSImageHintInterpolation: @(NSImageInterpolationHigh)}];
     _selectedArea = nil;
@@ -432,6 +411,9 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 
 - (void)createSelectionIndicator
 {
+  _selectionPreview = [[CALayer alloc] init];
+  [self.currentDrawingSurface.overlayLayer addSublayer:_selectionPreview];
+  
   _selectionIndicator = [[CAShapeLayer alloc] init];
   [self.currentDrawingSurface.overlayLayer addSublayer:_selectionIndicator];
   _selectionIndicator.frame = self.currentDrawingSurface.overlayLayer.bounds;
@@ -472,9 +454,21 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
   _selectionIndicator.path = path;
   CGPathRelease(path);
   
+  if (_mode == PTDSelectionToolModeEditSelection) {
+    if (_selectionPreview.contents == nil) {
+      _selectionPreview.contents = (id)[_selectedArea CGImageForProposedRect:NULL context:nil hints:nil];
+    }
+    _selectionPreview.frame = _currentSelection;
+  }
+  
   for (PTDSelectionToolHandleID i=PTDSelectionToolFirstResizeHandle; i<=PTDSelectionToolLastResizeHandle; i++) {
     CALayer *shi = _selectionHandleIndicators[i];
-    shi.position = [self centerOfSelectionHandle:i];
+    if (_mode == PTDSelectionToolModeMakeSelection) {
+      shi.hidden = YES;
+    } else {
+      shi.hidden = NO;
+      shi.position = [self centerOfSelectionHandle:i];
+    }
   }
   
   [CATransaction commit];
@@ -493,6 +487,9 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
   
   [_selectionIndicator removeFromSuperlayer];
   _selectionIndicator = nil;
+  
+  [_selectionPreview removeFromSuperlayer];
+  _selectionPreview = nil;
   
   [CATransaction commit];
 }
