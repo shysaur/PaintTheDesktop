@@ -32,15 +32,20 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithOpenGLContext:(NSOpenGLContext *)context
     width:(GLint)width height:(GLint)height
-    usage:(GLenum)bufferUsage NS_DESIGNATED_INITIALIZER;
+    usage:(GLenum)bufferUsage colorSpace:(NSColorSpace *)colorSpace
+    NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithOpenGLContext:(NSOpenGLContext *)context
-    width:(GLint)width height:(GLint)height;
+    width:(GLint)width height:(GLint)height
+    colorSpace:(NSColorSpace *)colorSpace;
 - (instancetype)initWithOpenGLContext:(NSOpenGLContext *)context
-    image:(NSImage *)image backingScaleFactor:(NSSize)scale;
+    image:(NSImage *)image backingScaleFactor:(NSSize)scale
+    colorSpace:(NSColorSpace *)colorSpace;
     
 @property (readonly, nonatomic) NSSize pixelSize;
 @property (readonly, nonatomic) GLint pixelWidth;
 @property (readonly, nonatomic) GLint pixelHeight;
+
+@property (readonly, nonatomic) NSColorSpace *colorSpace;
 
 @property (readonly, nonatomic) NSOpenGLContext *openGLContext;
 

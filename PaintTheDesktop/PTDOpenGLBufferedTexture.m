@@ -30,6 +30,13 @@
 #define ALIGN_OFFS(n, a) ((((int64_t)(n) + ((a)-1)) / (a)) * (a))
 
 
+@interface NSBitmapImageRep ()
+
+- (void)_retagBackingWithColorSpace:(NSColorSpace *)colorSpace;
+
+@end
+
+
 @interface PTDOpenGLBufferedTextureWrapperImageRep: NSBitmapImageRep
 
 - (instancetype)initWithOpenGLContext:(NSOpenGLContext *)glcontext
@@ -39,7 +46,7 @@
     bitsPerSample:(NSInteger)bps
     samplesPerPixel:(NSInteger)spp
     hasAlpha:(BOOL)alpha
-    colorSpaceName:(NSColorSpaceName)colorSpaceName
+    colorSpace:(NSColorSpace *)colorSpace
     bytesPerRow:(NSInteger)rBytes
     bitsPerPixel:(NSInteger)pBits;
 
@@ -59,7 +66,7 @@
     bitsPerSample:(NSInteger)bps
     samplesPerPixel:(NSInteger)spp
     hasAlpha:(BOOL)alpha
-    colorSpaceName:(NSColorSpaceName)colorSpaceName
+    colorSpace:(NSColorSpace *)colorSpace
     bytesPerRow:(NSInteger)rBytes
     bitsPerPixel:(NSInteger)pBits
 {
@@ -72,8 +79,13 @@
       initWithBitmapDataPlanes:(unsigned char**)&bufptr
       pixelsWide:width pixelsHigh:height
       bitsPerSample:bps samplesPerPixel:spp hasAlpha:alpha isPlanar:NO
-      colorSpaceName:colorSpaceName
+      colorSpaceName:NSCalibratedRGBColorSpace
       bytesPerRow:rBytes bitsPerPixel:pBits];
+  [self setProperty:@"NSColorSpace" withValue:colorSpace];
+  if ([self respondsToSelector:@selector(_retagBackingWithColorSpace:)])
+    [self _retagBackingWithColorSpace:colorSpace];
+  else
+    NSLog(@"PTDOpenGLBufferedTextureWrapperImageRep: couldn't -_retagBackingWithColorSpace:");
       
   _glBuffer = buffer;
   _glContext = glcontext;
@@ -81,8 +93,19 @@
 }
 
 
+- (instancetype)copyWithZone:(NSZone *)zone
+{
+  PTDOpenGLBufferedTextureWrapperImageRep *new = [super copyWithZone:zone];
+  new->_glContext = nil;
+  new->_glBuffer = 0;
+  return new;
+}
+
+
 - (void)dealloc
 {
+  if (!_glContext)
+    return;
   [_glContext makeCurrentContext];
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, _glBuffer);
   glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
@@ -112,6 +135,7 @@
 
 - (instancetype)initWithOpenGLContext:(NSOpenGLContext *)context
     width:(GLint)width height:(GLint)height usage:(GLenum)bufferUsage
+    colorSpace:(NSColorSpace *)colorSpace
 {
   self = [super init];
   
@@ -127,24 +151,28 @@
   glBufferData(GL_PIXEL_UNPACK_BUFFER, bytePerRow * _pixelHeight, NULL, bufferUsage);
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
   
+  _colorSpace = colorSpace;
+  
   return self;
 }
 
 
 - (instancetype)initWithOpenGLContext:(NSOpenGLContext *)context
     width:(GLint)width height:(GLint)height
+    colorSpace:(NSColorSpace *)colorSpace
 {
-  return [self initWithOpenGLContext:context width:width height:height usage:GL_DYNAMIC_DRAW];
+  return [self initWithOpenGLContext:context width:width height:height usage:GL_DYNAMIC_DRAW colorSpace:colorSpace];
 }
 
 
 - (instancetype)initWithOpenGLContext:(NSOpenGLContext *)context
     image:(NSImage *)image backingScaleFactor:(NSSize)scale
+    colorSpace:(NSColorSpace *)colorSpace
 {
   NSSize size = image.size;
   size.width *= scale.width;
   size.height *= scale.height;
-  self = [self initWithOpenGLContext:context width:size.width height:size.height usage:GL_STATIC_DRAW];
+  self = [self initWithOpenGLContext:context width:size.width height:size.height usage:GL_STATIC_DRAW colorSpace:colorSpace];
   
   @autoreleasepool {
     NSBitmapImageRep *buffer = [self bufferAsImageRep];
@@ -179,7 +207,7 @@
       buffer:_bufferId
       pixelsWide:_pixelWidth pixelsHigh:_pixelHeight
       bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES
-      colorSpaceName:NSCalibratedRGBColorSpace
+      colorSpace:_colorSpace
       bytesPerRow:bytePerRow bitsPerPixel:0];
   _lastWrappedImage = imageRep;
   return imageRep;

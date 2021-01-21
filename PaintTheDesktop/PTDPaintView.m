@@ -144,7 +144,10 @@
   NSBitmapImageRep *copy;
   @autoreleasepool {
     NSBitmapImageRep *imageRep = _mainBuffer.bufferAsImageRep;
+    
     copy = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL pixelsWide:backingWidth pixelsHigh:backingHeight bitsPerSample:imageRep.bitsPerSample samplesPerPixel:imageRep.samplesPerPixel hasAlpha:imageRep.hasAlpha isPlanar:NO colorSpaceName:imageRep.colorSpaceName bytesPerRow:0 bitsPerPixel:0];
+    copy = [copy bitmapImageRepByRetaggingWithColorSpace:imageRep.colorSpace];
+    
     [NSGraphicsContext saveGraphicsState];
     NSGraphicsContext.currentContext = [NSGraphicsContext graphicsContextWithBitmapImageRep:copy];
     [imageRep drawInRect:(NSRect){NSZeroPoint, backingRect.size} fromRect:backingRect operation:NSCompositingOperationCopy fraction:1.0 respectFlipped:YES hints:nil];
@@ -168,7 +171,8 @@
   if (!_overlayBuffer) {
     _overlayBuffer = [[PTDOpenGLBufferedTexture alloc]
         initWithOpenGLContext:self.openGLContext
-        width:_mainBuffer.pixelWidth height:_mainBuffer.pixelHeight];
+        width:_mainBuffer.pixelWidth height:_mainBuffer.pixelHeight
+        colorSpace:self.window.screen.colorSpace];
   }
   NSBitmapImageRep *imageRep = _overlayBuffer.bufferAsImageRep;
   NSGraphicsContext *ctxt = [NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep];
@@ -190,7 +194,8 @@
     NSBitmapImageRep *oldImage = _mainBuffer.bufferAsImageRep;
     _mainBuffer = [[PTDOpenGLBufferedTexture alloc]
         initWithOpenGLContext:self.openGLContext
-        width:newPxSize.width height:newPxSize.height];
+        width:newPxSize.width height:newPxSize.height
+        colorSpace:self.window.screen.colorSpace];
   
     [NSGraphicsContext setCurrentContext:self.graphicsContext];
     if (oldImage) {
