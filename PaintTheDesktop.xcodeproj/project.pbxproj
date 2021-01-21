@@ -30,6 +30,7 @@
 		016D36BD249067300086E96D /* PTDTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 016D36BC249067300086E96D /* PTDTool.m */; };
 		016D36C0249068F40086E96D /* PTDResetTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 016D36BF249068F40086E96D /* PTDResetTool.m */; };
 		016D36C324907BBB0086E96D /* PTDCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = 016D36C224907BBB0086E96D /* PTDCursor.m */; };
+		0177600F25BA340000317B4F /* PTDNoAnimeCALayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0177600E25BA340000317B4F /* PTDNoAnimeCALayer.m */; };
 		018CB0C424AA3C1B002ABD80 /* PTDScreenMenuItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 018CB0C324AA3C1B002ABD80 /* PTDScreenMenuItemView.m */; };
 		018CB0C624AA3CCB002ABD80 /* PTDScreenMenuItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 018CB0C524AA3CCB002ABD80 /* PTDScreenMenuItemView.xib */; };
 		018CB0C924AA421C002ABD80 /* NSNib+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 018CB0C824AA421C002ABD80 /* NSNib+PTD.m */; };
@@ -194,6 +195,8 @@
 		016D36BF249068F40086E96D /* PTDResetTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDResetTool.m; sourceTree = "<group>"; };
 		016D36C124907BBB0086E96D /* PTDCursor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDCursor.h; sourceTree = "<group>"; };
 		016D36C224907BBB0086E96D /* PTDCursor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDCursor.m; sourceTree = "<group>"; };
+		0177600D25BA340000317B4F /* PTDNoAnimeCALayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDNoAnimeCALayer.h; sourceTree = "<group>"; };
+		0177600E25BA340000317B4F /* PTDNoAnimeCALayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDNoAnimeCALayer.m; sourceTree = "<group>"; };
 		018CB0C224AA3C1B002ABD80 /* PTDScreenMenuItemView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDScreenMenuItemView.h; sourceTree = "<group>"; };
 		018CB0C324AA3C1B002ABD80 /* PTDScreenMenuItemView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDScreenMenuItemView.m; sourceTree = "<group>"; };
 		018CB0C524AA3CCB002ABD80 /* PTDScreenMenuItemView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PTDScreenMenuItemView.xib; sourceTree = "<group>"; };
@@ -320,6 +323,8 @@
 				013C9A02249AD17E0033120A /* PTDNSPanel.m */,
 				F7023C1924C72D6E00B54623 /* NSWindow+PTD.h */,
 				F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */,
+				0177600D25BA340000317B4F /* PTDNoAnimeCALayer.h */,
+				0177600E25BA340000317B4F /* PTDNoAnimeCALayer.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -601,6 +606,7 @@
 				01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */,
 				016D36B724905E280086E96D /* PTDToolManager.m in Sources */,
 				01A213F1248EE9F600B5EB9D /* PTDPaintWindow.m in Sources */,
+				0177600F25BA340000317B4F /* PTDNoAnimeCALayer.m in Sources */,
 				016D36BA249064700086E96D /* PTDEraserTool.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

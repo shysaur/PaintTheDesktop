@@ -23,18 +23,19 @@
 // SOFTWARE.
 //
 
+#include <OpenGL/gl.h>
 #import <Quartz/Quartz.h>
 #import "NSView+PTD.h"
 #import "PTDPaintView.h"
 #import "PTDOpenGLBufferedTexture.h"
-#include <OpenGL/gl.h>
+#import "PTDNoAnimeCALayer.h"
 
 
 @implementation PTDPaintView {
   PTDOpenGLBufferedTexture *_mainBuffer;
   PTDOpenGLBufferedTexture *_overlayBuffer;
   CALayer *_cursorLayer;
-  CALayer *_overlayLayer;
+  PTDNoAnimeCALayer *_overlayLayer;
 }
 
 
@@ -104,7 +105,7 @@
 - (CALayer *)overlayLayer
 {
   if (!_overlayLayer) {
-    _overlayLayer = [[CALayer alloc] init];
+    _overlayLayer = [[PTDNoAnimeCALayer alloc] init];
     [self.layer addSublayer:_overlayLayer];
     _overlayLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
     _overlayLayer.frame = self.bounds;
