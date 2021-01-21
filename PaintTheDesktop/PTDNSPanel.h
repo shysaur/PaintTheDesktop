@@ -1,5 +1,5 @@
 //
-// PTDPanel.m
+// PTDNSPanel.h
 // PaintTheDesktop -- Created on 18/06/2020.
 //
 // Copyright (c) 2020 Daniele Cattaneo
@@ -23,25 +23,12 @@
 // SOFTWARE.
 //
 
-#import <objc/runtime.h>
-#import "PTDPanel.h"
+#import <Cocoa/Cocoa.h>
 
+NS_ASSUME_NONNULL_BEGIN
 
-@implementation PTDPanel
-
-
-- (void)rightMouseDown:(NSEvent *)event
-{
-  /* NSWindow passes right mouse down events straight to NSApp... */
-  NSResponder *nextResp = self.nextResponder;
-  while (nextResp) {
-    if ([self validateProposedFirstResponder:nextResp forEvent:event]) {
-      [nextResp rightMouseDown:event];
-      break;
-    }
-    nextResp = self.nextResponder;
-  }
-}
-
+@interface PTDNSPanel : NSPanel
 
 @end
+
+NS_ASSUME_NONNULL_END

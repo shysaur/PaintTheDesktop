@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		011426B424968916005363E8 /* PTDOpenGLBufferedTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */; };
-		013C9A03249AD17E0033120A /* PTDPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 013C9A02249AD17E0033120A /* PTDPanel.m */; };
+		013C9A03249AD17E0033120A /* PTDNSPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 013C9A02249AD17E0033120A /* PTDNSPanel.m */; };
 		0146EBAB24FB319400B3785C /* Sparkle.framework in Copy Bundle Frameworks */ = {isa = PBXBuildFile; fileRef = 0146EB9324FB316300B3785C /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		015A50CC24A13F4B0008AAB1 /* PTDRoundRectTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 015A50CB24A13F4B0008AAB1 /* PTDRoundRectTool.m */; };
 		0162BC91249A0CAE00DFECC9 /* PTDRingMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC90249A0CAE00DFECC9 /* PTDRingMenu.m */; };
@@ -151,8 +151,8 @@
 /* Begin PBXFileReference section */
 		011426B224968916005363E8 /* PTDOpenGLBufferedTexture.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDOpenGLBufferedTexture.h; sourceTree = "<group>"; };
 		011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDOpenGLBufferedTexture.m; sourceTree = "<group>"; };
-		013C9A01249AD17E0033120A /* PTDPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDPanel.h; sourceTree = "<group>"; };
-		013C9A02249AD17E0033120A /* PTDPanel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPanel.m; sourceTree = "<group>"; };
+		013C9A01249AD17E0033120A /* PTDNSPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDNSPanel.h; sourceTree = "<group>"; };
+		013C9A02249AD17E0033120A /* PTDNSPanel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDNSPanel.m; sourceTree = "<group>"; };
 		0146EB8024FB316200B3785C /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		015A50CA24A13F4B0008AAB1 /* PTDRoundRectTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRoundRectTool.h; sourceTree = "<group>"; };
 		015A50CB24A13F4B0008AAB1 /* PTDRoundRectTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRoundRectTool.m; sourceTree = "<group>"; };
@@ -316,8 +316,8 @@
 				018CB0C724AA421C002ABD80 /* NSNib+PTD.h */,
 				018CB0C824AA421C002ABD80 /* NSNib+PTD.m */,
 				0167A55624A7A02400E08507 /* NSGeometry+PTD.h */,
-				013C9A01249AD17E0033120A /* PTDPanel.h */,
-				013C9A02249AD17E0033120A /* PTDPanel.m */,
+				013C9A01249AD17E0033120A /* PTDNSPanel.h */,
+				013C9A02249AD17E0033120A /* PTDNSPanel.m */,
 				F7023C1924C72D6E00B54623 /* NSWindow+PTD.h */,
 				F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */,
 			);
@@ -597,7 +597,7 @@
 				016D36BD249067300086E96D /* PTDTool.m in Sources */,
 				01D68A5825AB9D1A00536CD6 /* PTDSelectionTool.m in Sources */,
 				01A213E7248EE94600B5EB9D /* main.m in Sources */,
-				013C9A03249AD17E0033120A /* PTDPanel.m in Sources */,
+				013C9A03249AD17E0033120A /* PTDNSPanel.m in Sources */,
 				01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */,
 				016D36B724905E280086E96D /* PTDToolManager.m in Sources */,
 				01A213F1248EE9F600B5EB9D /* PTDPaintWindow.m in Sources */,
