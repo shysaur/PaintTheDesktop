@@ -33,8 +33,8 @@
 
 @implementation PTDPaintView {
   PTDOpenGLBufferedTexture *_mainBuffer;
-  CALayer *_cursorLayer;
   PTDNoAnimeCALayer *_overlayLayer;
+  CALayer *_cursorLayer;
 }
 
 
@@ -108,6 +108,7 @@
     [self.layer addSublayer:_overlayLayer];
     _overlayLayer.autoresizingMask = kCALayerWidthSizable | kCALayerHeightSizable;
     _overlayLayer.frame = self.bounds;
+    _overlayLayer.zPosition = 50;
   }
   return _overlayLayer;
 }
@@ -216,6 +217,7 @@
     
   _cursorLayer = [CALayer layer];
   [self.layer addSublayer:_cursorLayer];
+  _cursorLayer.zPosition = 100;
   _cursorLayer.contents = cursorImage;
   _cursorLayer.anchorPoint = NSZeroPoint;
   
