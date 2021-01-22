@@ -41,6 +41,7 @@
 		01A213F1248EE9F600B5EB9D /* PTDPaintWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A213EF248EE9F600B5EB9D /* PTDPaintWindow.m */; };
 		01A213F2248EE9F600B5EB9D /* PTDPaintWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01A213F0248EE9F600B5EB9D /* PTDPaintWindow.xib */; };
 		01A213F5248EEA1D00B5EB9D /* PTDPaintView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A213F4248EEA1D00B5EB9D /* PTDPaintView.m */; };
+		01A31E4825BB35CA002BA7D4 /* NSBezierPath+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A31E4725BB35CA002BA7D4 /* NSBezierPath+PTD.m */; };
 		01B63BA6249C2F3400D9DFBF /* PTDRingMenuRing.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B63BA5249C2F3400D9DFBF /* PTDRingMenuRing.m */; };
 		01C0D68C2492ED7100AECEAB /* NSScreen+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 01C0D68B2492ED7100AECEAB /* NSScreen+PTD.m */; };
 		01CFFD1924EB50580093D6BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01CFFD1B24EB50580093D6BA /* Localizable.strings */; };
@@ -214,6 +215,8 @@
 		01A213F0248EE9F600B5EB9D /* PTDPaintWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PTDPaintWindow.xib; sourceTree = "<group>"; };
 		01A213F3248EEA1D00B5EB9D /* PTDPaintView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDPaintView.h; sourceTree = "<group>"; };
 		01A213F4248EEA1D00B5EB9D /* PTDPaintView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPaintView.m; sourceTree = "<group>"; };
+		01A31E4625BB35CA002BA7D4 /* NSBezierPath+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSBezierPath+PTD.h"; sourceTree = "<group>"; };
+		01A31E4725BB35CA002BA7D4 /* NSBezierPath+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBezierPath+PTD.m"; sourceTree = "<group>"; };
 		01B63BA4249C2F3400D9DFBF /* PTDRingMenuRing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenuRing.h; sourceTree = "<group>"; };
 		01B63BA5249C2F3400D9DFBF /* PTDRingMenuRing.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRingMenuRing.m; sourceTree = "<group>"; };
 		01C0D68A2492ED7100AECEAB /* NSScreen+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSScreen+PTD.h"; sourceTree = "<group>"; };
@@ -325,6 +328,8 @@
 				F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */,
 				0177600D25BA340000317B4F /* PTDNoAnimeCALayer.h */,
 				0177600E25BA340000317B4F /* PTDNoAnimeCALayer.m */,
+				01A31E4625BB35CA002BA7D4 /* NSBezierPath+PTD.h */,
+				01A31E4725BB35CA002BA7D4 /* NSBezierPath+PTD.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -604,6 +609,7 @@
 				01A213E7248EE94600B5EB9D /* main.m in Sources */,
 				013C9A03249AD17E0033120A /* PTDNSPanel.m in Sources */,
 				01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */,
+				01A31E4825BB35CA002BA7D4 /* NSBezierPath+PTD.m in Sources */,
 				016D36B724905E280086E96D /* PTDToolManager.m in Sources */,
 				01A213F1248EE9F600B5EB9D /* PTDPaintWindow.m in Sources */,
 				0177600F25BA340000317B4F /* PTDNoAnimeCALayer.m in Sources */,

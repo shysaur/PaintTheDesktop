@@ -23,6 +23,7 @@
 // SOFTWARE.
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "PTDToolManager.h"
 #import "PTDBrush.h"
 #import "PTDShapeTool.h"
@@ -30,11 +31,13 @@
 #import "PTDTool.h"
 #import "PTDCursor.h"
 #import "NSGeometry+PTD.h"
+#import "NSBezierPath+PTD.h"
 #import "NSColor+PTD.h"
 
 
 @implementation PTDShapeTool {
   NSRect _currentRect;
+  CAShapeLayer *_overlayShape;
 }
 
 
@@ -53,7 +56,7 @@
 - (void)dragDidStartAtPoint:(NSPoint)point
 {
   _currentRect = (NSRect){point, NSZeroSize};
-  [self dragDidContinueFromPoint:point toPoint:point];
+  [self createDragIndicator];
 }
 
 
@@ -66,49 +69,24 @@
 
 - (void)dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint
 {
-  [self.currentDrawingSurface beginOverlayDrawing];
-  [NSGraphicsContext.currentContext setShouldAntialias:NO];
-  
-  [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositingOperationClear];
-  
-  NSBezierPath *path = [self shapeBezierPathInRect:[self normalizedCurrentRect]];
-  [path setLineWidth:self.currentBrush.size+2.0];
-  [[NSColor colorWithWhite:0.0 alpha:0.0] setStroke];
-  [path stroke];
-  
   _currentRect.size = NSMakeSize(
       nextPoint.x - _currentRect.origin.x,
       nextPoint.y - _currentRect.origin.y);
-  
-  [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositingOperationCopy];
-  
-  path = [self shapeBezierPathInRect:[self normalizedCurrentRect]];
-  [path setLineWidth:self.currentBrush.size];
-  [self.currentBrush.color setStroke];
-  [path stroke];
+  [self updateDragIndicator];
 }
 
 
 - (void)dragDidEndAtPoint:(NSPoint)point
 {
-  [self.currentDrawingSurface beginOverlayDrawing];
-  [NSGraphicsContext.currentContext setShouldAntialias:NO];
-  
-  [[NSGraphicsContext currentContext] setCompositingOperation:NSCompositingOperationClear];
-  
-  NSBezierPath *path = [self shapeBezierPathInRect:[self normalizedCurrentRect]];
-  [path setLineWidth:self.currentBrush.size+2.0];
-  [[NSColor colorWithWhite:0.0 alpha:0.0] setStroke];
-  [path stroke];
-  
   _currentRect.size = NSMakeSize(
       point.x - _currentRect.origin.x,
       point.y - _currentRect.origin.y);
+  [self removeDragIndicator];
   
   [self.currentDrawingSurface beginCanvasDrawing];
   [NSGraphicsContext.currentContext setShouldAntialias:YES];
   
-  path = [self shapeBezierPathInRect:[self normalizedCurrentRect]];
+  NSBezierPath *path = [self shapeBezierPathInRect:[self normalizedCurrentRect]];
   [path setLineWidth:self.currentBrush.size];
   [self.currentBrush.color setStroke];
   [path stroke];
@@ -159,6 +137,36 @@
   cursor.hotspot = NSMakePoint(size/2.0+1.0, size/2.0+1.0);
   
   self.cursor = cursor;
+}
+
+
+- (void)createDragIndicator
+{
+  _overlayShape = [[CAShapeLayer alloc] init];
+  [self.currentDrawingSurface.overlayLayer addSublayer:_overlayShape];
+  _overlayShape.lineWidth = self.currentBrush.size;
+  _overlayShape.strokeColor = self.currentBrush.color.CGColor;
+  _overlayShape.fillColor = NSColor.clearColor.CGColor;
+  _overlayShape.frame = self.currentDrawingSurface.overlayLayer.bounds;
+  [self updateDragIndicator];
+}
+
+
+- (void)updateDragIndicator
+{
+  [CATransaction begin];
+  CATransaction.disableActions = YES;
+  
+  _overlayShape.path = [self shapeBezierPathInRect:self.normalizedCurrentRect].ptd_CGPath;
+  
+  [CATransaction commit];
+}
+
+
+- (void)removeDragIndicator
+{
+  [_overlayShape removeFromSuperlayer];
+  _overlayShape = nil;
 }
 
 
