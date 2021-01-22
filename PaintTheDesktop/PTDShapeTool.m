@@ -35,8 +35,12 @@
 #import "NSColor+PTD.h"
 
 
+#define SIGN(x) ((x) < 0.0 ? -1.0 : 1.0)
+
+
 @implementation PTDShapeTool {
   NSRect _currentRect;
+  NSPoint _point0, _point1;
   CAShapeLayer *_overlayShape;
 }
 
@@ -47,19 +51,6 @@
 }
 
 
-- (NSRect)normalizedCurrentRect
-{
-  return PTD_NSNormalizedRect(_currentRect);
-}
-
-
-- (void)dragDidStartAtPoint:(NSPoint)point
-{
-  _currentRect = (NSRect){point, NSZeroSize};
-  [self createDragIndicator];
-}
-
-
 - (NSBezierPath *)shapeBezierPathInRect:(NSRect)rect
 {
   [NSException raise:NSInternalInconsistencyException format:@"ABSTRACT METHOD: %s", __FUNCTION__];
@@ -67,26 +58,61 @@
 }
 
 
+- (void)dragDidStartAtPoint:(NSPoint)point
+{
+  _point0 = point;
+  _currentRect = (NSRect){point, NSZeroSize};
+  [self createDragIndicator];
+}
+
+
+- (void)recomputeCurrentRect
+{
+  CGFloat x = _point0.x;
+  CGFloat y = _point0.y;
+  CGFloat w = _point1.x - _point0.x;
+  CGFloat h = _point1.y - _point0.y;
+  
+  if (NSEvent.modifierFlags & NSEventModifierFlagShift) {
+    CGFloat side = MAX(fabs(w), fabs(h));
+    w = side * SIGN(w);
+    h = side * SIGN(h);
+  }
+  
+  if (NSEvent.modifierFlags & NSEventModifierFlagOption) {
+    x -= w;
+    y -= h;
+    w *= 2.0;
+    h *= 2.0;
+  }
+  
+  _currentRect = PTD_NSNormalizedRect(NSMakeRect(x, y, w, h));
+}
+
+
 - (void)dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint
 {
-  _currentRect.size = NSMakeSize(
-      nextPoint.x - _currentRect.origin.x,
-      nextPoint.y - _currentRect.origin.y);
+  _point1 = nextPoint;
+  [self recomputeCurrentRect];
+  [self updateDragIndicator];
+}
+
+
+- (void)modifierFlagsChanged
+{
+  [self recomputeCurrentRect];
   [self updateDragIndicator];
 }
 
 
 - (void)dragDidEndAtPoint:(NSPoint)point
 {
-  _currentRect.size = NSMakeSize(
-      point.x - _currentRect.origin.x,
-      point.y - _currentRect.origin.y);
   [self removeDragIndicator];
   
   [self.currentDrawingSurface beginCanvasDrawing];
   [NSGraphicsContext.currentContext setShouldAntialias:YES];
   
-  NSBezierPath *path = [self shapeBezierPathInRect:[self normalizedCurrentRect]];
+  NSBezierPath *path = [self shapeBezierPathInRect:_currentRect];
   [path setLineWidth:self.currentBrush.size];
   [self.currentBrush.color setStroke];
   [path stroke];
@@ -157,7 +183,7 @@
   [CATransaction begin];
   CATransaction.disableActions = YES;
   
-  _overlayShape.path = [self shapeBezierPathInRect:self.normalizedCurrentRect].ptd_CGPath;
+  _overlayShape.path = [self shapeBezierPathInRect:_currentRect].ptd_CGPath;
   
   [CATransaction commit];
 }
