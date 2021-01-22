@@ -31,7 +31,6 @@
 @implementation PTDDrawingSurface {
   PTDPaintView *_paintView;
   NSGraphicsContext *_canvasContext;
-  NSGraphicsContext *_overlayContext;
   BOOL _touchedPaintView;
 }
 
@@ -50,15 +49,6 @@
   if (!_canvasContext)
     _canvasContext = _paintView.graphicsContext;
   [NSGraphicsContext setCurrentContext:_canvasContext];
-}
-
-
-- (void)beginOverlayDrawing
-{
-  _touchedPaintView = YES;
-  if (!_overlayContext)
-    _overlayContext = _paintView.overlayGraphicsContext;
-  [NSGraphicsContext setCurrentContext:_overlayContext];
 }
 
 
@@ -96,7 +86,6 @@
 {
   [NSGraphicsContext setCurrentContext:nil];
   _canvasContext = nil;
-  _overlayContext = nil;
   if (_touchedPaintView) {
     [_paintView setNeedsDisplay:YES];
   }

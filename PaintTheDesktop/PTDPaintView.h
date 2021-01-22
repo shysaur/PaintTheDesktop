@@ -34,7 +34,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) NSGraphicsContext *graphicsContext;
 
-@property (nonatomic, readonly) NSGraphicsContext *overlayGraphicsContext;
 @property (nonatomic, readonly) CALayer *overlayLayer;
 
 @property (nonatomic, nullable) NSImage *cursorImage;
