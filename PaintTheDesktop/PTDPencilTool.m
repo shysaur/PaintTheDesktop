@@ -29,6 +29,7 @@
 #import "PTDDrawingSurface.h"
 #import "PTDTool.h"
 #import "PTDCursor.h"
+#import "NSColor+PTD.h"
 
 
 NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
@@ -85,18 +86,25 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 {
   CGFloat size = self.currentBrush.size;
   NSColor *color = self.currentBrush.color;
+  NSColor *borderColor = [color ptd_contrastingCursorBorderColor];
   PTDCursor *cursor = [[PTDCursor alloc] init];
   
   cursor.image = [NSImage
-      imageWithSize:NSMakeSize(size, size)
+      imageWithSize:NSMakeSize(size+2.0, size+2.0)
       flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-    NSRect circleRect = NSMakeRect(0.5, 0.5, size-1.0, size-1.0);
-    [color setStroke];
+    NSRect circleRect = NSMakeRect(1.5, 1.5, size-1.0, size-1.0);
     NSBezierPath *circle = [NSBezierPath bezierPathWithOvalInRect:circleRect];
+    
+    circle.lineWidth = 3.0;
+    [borderColor setStroke];
+    [circle stroke];
+    
+    circle.lineWidth = 1.0;
+    [color setStroke];
     [circle stroke];
     return YES;
   }];
-  cursor.hotspot = NSMakePoint(size/2, size/2);
+  cursor.hotspot = NSMakePoint(size/2+1.0, size/2+1.0);
   
   self.cursor = cursor;
 }

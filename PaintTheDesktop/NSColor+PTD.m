@@ -39,4 +39,19 @@
 }
 
 
+- (NSColor *)ptd_contrastingCursorBorderColor
+{
+  NSColor *grayscaleColor = [self colorUsingColorSpaceName:NSCalibratedWhiteColorSpace];
+  CGFloat white, alpha;
+  if (grayscaleColor.whiteComponent > sqrt(2.0) / 2.0) {
+    white = 0.0;
+    alpha = 1.0 - sqrt(2.0) / 2.0;
+  } else {
+    white = 1.0;
+    alpha = sqrt(2.0) / 2.0;
+  }
+  return [NSColor colorWithCalibratedWhite:white alpha:alpha];
+}
+
+
 @end

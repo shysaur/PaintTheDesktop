@@ -30,6 +30,7 @@
 #import "PTDTool.h"
 #import "PTDCursor.h"
 #import "NSGeometry+PTD.h"
+#import "NSColor+PTD.h"
 
 
 @implementation PTDShapeTool {
@@ -131,21 +132,31 @@
 {
   CGFloat size = floor((self.currentBrush.size + 8.0) / 2.0) * 2.0 + 1.0;
   NSColor *color = self.currentBrush.color;
+  NSColor *borderColor = [color ptd_contrastingCursorBorderColor];
   PTDCursor *cursor = [[PTDCursor alloc] init];
   
   cursor.image = [NSImage
-      imageWithSize:NSMakeSize(size, size)
+      imageWithSize:NSMakeSize(size+2.0, size+2.0)
       flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-    [color setStroke];
     NSBezierPath *cross = [NSBezierPath bezierPath];
-    [cross moveToPoint:NSMakePoint(0, size/2)];
-    [cross lineToPoint:NSMakePoint(size, size/2)];
-    [cross moveToPoint:NSMakePoint(size/2, 0)];
-    [cross lineToPoint:NSMakePoint(size/2, size)];
+    [cross moveToPoint:NSMakePoint(1.0         , 1.0+size/2.0)];
+    [cross lineToPoint:NSMakePoint(1.0+size    , 1.0+size/2.0)];
+    [cross moveToPoint:NSMakePoint(1.0+size/2.0, 1.0         )];
+    [cross lineToPoint:NSMakePoint(1.0+size/2.0, 1.0+size    )];
+    
+    cross.lineWidth = 3.0;
+    cross.lineCapStyle = NSLineCapStyleSquare;
+    [borderColor setStroke];
     [cross stroke];
+    
+    cross.lineWidth = 1.0;
+    cross.lineCapStyle = NSLineCapStyleButt;
+    [color setStroke];
+    [cross stroke];
+    
     return YES;
   }];
-  cursor.hotspot = NSMakePoint(size/2, size/2);
+  cursor.hotspot = NSMakePoint(size/2.0+1.0, size/2.0+1.0);
   
   self.cursor = cursor;
 }

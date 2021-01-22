@@ -31,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSColor *)ptd_selectedRingMenuItemColor;
 
+- (NSColor *)ptd_contrastingCursorBorderColor;
+
 @end
 
 NS_ASSUME_NONNULL_END
