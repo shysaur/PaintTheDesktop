@@ -54,7 +54,9 @@
 @end
 
 
-@implementation PTDPaintWindow
+@implementation PTDPaintWindow {
+  __weak PTDDrawingSurface *_lastDrawingSurface;
+}
 
 
 - (instancetype)initWithDisplay:(CGDirectDisplayID)display;
@@ -182,7 +184,10 @@
 
 - (PTDDrawingSurface *)drawingSurface
 {
-  return [[PTDDrawingSurface alloc] initWithPaintView:self.paintView];
+  PTDDrawingSurface *lastDrawingSurface = _lastDrawingSurface;
+  if (!lastDrawingSurface)
+    lastDrawingSurface = [[PTDDrawingSurface alloc] initWithPaintView:self.paintView];
+  return lastDrawingSurface;
 }
 
 
@@ -311,12 +316,18 @@
   [itemsRing addItemWithText:NSLocalizedString(@"Quit", @"") target:NSApp action:@selector(terminate:)];
   [itemsRing endGravityMassGroup];
   
-  PTDRingMenuRing *optMenu = [self.toolManager.currentTool optionMenu];
-  if (optMenu)
-    [ringMenu addRing:optMenu];
-  
-  self.systemCursorVisibility = YES;
-  [ringMenu popUpMenuWithEvent:event forView:self.paintView];
+  @autoreleasepool {
+    PTDDrawingSurface *surf = [self drawingSurface];
+    PTDTool *tool = [self initializeToolWithSurface:surf];
+    
+    PTDRingMenuRing *optMenu = [tool optionMenu];
+    if (optMenu)
+      [ringMenu addRing:optMenu];
+    
+    [tool willOpenOptionMenuAtPoint:event.locationInWindow];
+    self.systemCursorVisibility = YES;
+    [ringMenu popUpMenuWithEvent:event forView:self.paintView];
+  }
 }
 
 

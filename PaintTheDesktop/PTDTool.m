@@ -85,6 +85,11 @@
 }
 
 
+- (void)willOpenOptionMenuAtPoint:(NSPoint)point
+{
+}
+
+
 - (nullable PTDRingMenuRing *)optionMenu
 {
   return nil;

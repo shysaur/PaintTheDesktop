@@ -52,6 +52,16 @@
 }
 
 
+- (void)endCanvasDrawing
+{
+  [NSGraphicsContext setCurrentContext:nil];
+  _canvasContext = nil;
+  if (_touchedPaintView) {
+    [_paintView setNeedsDisplay:YES];
+  }
+}
+
+
 - (CALayer *)overlayLayer
 {
   return _paintView.overlayLayer;
@@ -78,17 +88,7 @@
 
 - (void)dealloc
 {
-  [self endDrawing];
-}
-
-
-- (void)endDrawing
-{
-  [NSGraphicsContext setCurrentContext:nil];
-  _canvasContext = nil;
-  if (_touchedPaintView) {
-    [_paintView setNeedsDisplay:YES];
-  }
+  [self endCanvasDrawing];
 }
 
 

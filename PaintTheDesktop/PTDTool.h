@@ -55,6 +55,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)deactivate;
 
 + (PTDRingMenuItem *)menuItem;
+
+- (void)willOpenOptionMenuAtPoint:(NSPoint)point;
 - (nullable PTDRingMenuRing *)optionMenu;
 
 @end
