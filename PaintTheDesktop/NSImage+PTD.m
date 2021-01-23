@@ -32,8 +32,6 @@
 - (instancetype)ptd_imageByTintingWithColor:(NSColor *)color
 {
   NSImage *copy = [self copy];
-  if (!self.template)
-    return copy;
   
   NSRect rect = (NSRect){NSZeroPoint, copy.size};
   NSImage *newImage = [NSImage imageWithSize:copy.size flipped:NO drawingHandler:^BOOL(NSRect dstRect) {

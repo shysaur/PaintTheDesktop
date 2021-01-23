@@ -37,6 +37,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setText:(NSString *)text;
 
+@property (nonatomic, getter=isEnabled) BOOL enabled;
+
 @property (nonatomic) NSControlStateValue state;
 
 @property (nonatomic, weak) id target;

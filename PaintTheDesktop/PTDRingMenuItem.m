@@ -28,6 +28,14 @@
 @implementation PTDRingMenuItem
 
 
+- (instancetype)init
+{
+  self = [super init];
+  _enabled = YES;
+  return self;
+}
+
+
 + (PTDRingMenuItem *)itemWithImage:(NSImage *)image target:(nullable id)target action:(nullable SEL)action
 {
   PTDRingMenuItem *res = [[[self class] alloc] init];

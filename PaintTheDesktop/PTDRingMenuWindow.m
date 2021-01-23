@@ -103,8 +103,11 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 - (void)_setupView
 {
-  if (self.item.state == NSControlStateValueOff) {
-    NSImageView *view = [NSImageView imageViewWithImage:self.item.image];
+  if (self.item.state == NSControlStateValueOff || !self.item.enabled) {
+    NSImage *itemImage = self.item.image;
+    if (!self.item.enabled)
+      itemImage = [itemImage ptd_imageByTintingWithColor:NSColor.ptd_ringMenuDisabledItemTextColor];
+    NSImageView *view = [NSImageView imageViewWithImage:itemImage];
     [view setFrameSize:_size];
     _view = view;
     _contentsView = view;
@@ -160,6 +163,8 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 - (void)select
 {
+  if (!self.item.enabled)
+    return;
   NSImage *image = self.item.selectedImage ?: self.item.image;
   if (image.isTemplate)
     image = [image ptd_imageByTintingWithColor:NSColor.ptd_ringMenuItemSelectedTextColor];
@@ -170,6 +175,8 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 - (void)deselect
 {
+  if (!self.item.enabled)
+    return;
   NSImage *image = self.item.image;
   if (image.isTemplate)
     image = [image ptd_imageByTintingWithColor:NSColor.ptd_ringMenuItemTextColor];
@@ -454,7 +461,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 - (void)mouseUp:(NSEvent *)event
 {
   PTDRingMenuWindowItemLayout *found = [self _hitTestAtPoint:event.locationInWindow];
-  if ((found == _dragStartItem || _draggingMode) && found.item.action && !_endOfLife) {
+  if ((found == _dragStartItem || _draggingMode) && found.item.enabled && found.item.action && !_endOfLife) {
     id sender = found.item.representedObject ?: found.item;
     [NSApp sendAction:found.item.action to:found.item.target from:sender];
   } else if (!found) {
@@ -695,7 +702,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
     [itm deselect];
   }
     
-  if (!item) {
+  if (!item || !item.item.enabled) {
     if (_selectionLayer)
       _selectionLayer.opacity = 0.0;
     [CATransaction commit];
