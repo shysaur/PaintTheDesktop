@@ -68,7 +68,7 @@
 }
 
 
-- (NSImageRep *)captureRect:(NSRect)rect
+- (NSBitmapImageRep *)captureRect:(NSRect)rect
 {
   return [_paintView snapshotOfRect:rect];
 }

@@ -58,14 +58,18 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 
 
 @implementation PTDSelectionTool {
-  NSRect _currentSelection;
+  PTDSelectionToolMode _mode;
   BOOL _isDragging;
+  NSPoint _lastMenuPosition;
+  
+  NSRect _currentSelection;
+  
+  NSBitmapImageRep *_selectedArea;
+  
   NSPoint _dragPivot;
   NSPoint _lastMousePosition;
   NSRect _uneditedCurrentSelection;
   PTDSelectionToolHandleID _activeSelectionHandle;
-  NSImageRep *_selectedArea;
-  PTDSelectionToolMode _mode;
   
   CAShapeLayer *_selectionIndicator;
   CALayer *_selectionPreview;
@@ -91,6 +95,85 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 + (PTDRingMenuItem *)menuItem
 {
   return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconSelection"] target:nil action:nil];
+}
+
+
+- (void)willOpenOptionMenuAtPoint:(NSPoint)point
+{
+  _lastMenuPosition = point;
+}
+
+
+- (nullable PTDRingMenuRing *)optionMenu
+{
+  PTDRingMenuRing *res = [PTDRingMenuRing ring];
+  PTDRingMenuItem *itm;
+  
+  [res beginGravityMassGroupWithAngle:M_PI_2];
+  
+  itm = [res addItemWithText:NSLocalizedString(@"Cut", @"Menu item for cutting current selection") target:self action:@selector(cut:)];
+  itm.enabled = _mode == PTDSelectionToolModeEditSelection;
+  itm = [res addItemWithText:NSLocalizedString(@"Copy", @"Menu item for copying current selection") target:self action:@selector(copy:)];
+  itm.enabled = _mode == PTDSelectionToolModeEditSelection;
+  
+  itm = [res addItemWithText:NSLocalizedString(@"Paste", @"Menu item for pasting current selection") target:self action:@selector(paste:)];
+  NSPasteboard *pb = [NSPasteboard generalPasteboard];
+  itm.enabled = [NSBitmapImageRep canInitWithPasteboard:pb];
+  
+  [res endGravityMassGroup];
+  
+  [res addSpringWithElasticity:1.0];
+  
+  itm = [res addItemWithText:NSLocalizedString(@"Delete", @"Menu item for deleting current selection") target:self action:@selector(delete:)];
+  itm.enabled = _mode == PTDSelectionToolModeEditSelection;
+  
+  [res addSpringWithElasticity:1.0];
+  
+  return res;
+}
+
+
+- (void)delete:(id)sender
+{
+  [self deleteAndTerminateEditSelection];
+}
+
+
+- (void)cut:(id)sender
+{
+  [self copy:sender];
+  [self deleteAndTerminateEditSelection];
+}
+
+
+- (void)copy:(id)sender
+{
+  NSPasteboard *pb = [NSPasteboard generalPasteboard];
+  [pb declareTypes:@[NSPasteboardTypePNG] owner:nil];
+  NSData *png = [_selectedArea representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+  [pb setData:png forType:NSPasteboardTypePNG];
+}
+
+
+- (void)paste:(id)sender
+{
+  NSPasteboard *pb = [NSPasteboard generalPasteboard];
+  NSBitmapImageRep *tmp = (NSBitmapImageRep *)[NSBitmapImageRep imageRepWithPasteboard:pb];
+  if (!tmp) {
+    NSBeep();
+    return;
+  }
+  
+  [self terminateEditSelection];
+  _selectedArea = tmp;
+  _currentSelection = NSMakeRect(
+      _lastMenuPosition.x - _selectedArea.size.height / 2.0,
+      _lastMenuPosition.y - _selectedArea.size.height / 2.0,
+      _selectedArea.size.width,
+      _selectedArea.size.height);
+  _currentSelection.origin = [self.currentDrawingSurface alignPointToBacking:_currentSelection.origin];
+  _mode = PTDSelectionToolModeEditSelection;
+  [self createSelectionIndicator];
 }
 
 

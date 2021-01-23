@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (CALayer *)overlayLayer;
 
-- (NSImageRep *)captureRect:(NSRect)rect;
+- (NSBitmapImageRep *)captureRect:(NSRect)rect;
 
 - (NSRect)bounds;
 
