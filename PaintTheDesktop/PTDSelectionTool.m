@@ -331,11 +331,7 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 
 - (void)editSelection_mouseClickedAtPoint:(NSPoint)point
 {
-  if (NSPointInRect(point, _currentSelection)) {
-    NSMenu *menu = [[NSMenu alloc] init];
-    [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item for deleting current selection") action:@selector(deleteAndTerminateEditSelection) keyEquivalent:@""].target = self;
-    [menu popUpMenuPositioningItem:nil atLocation:NSEvent.mouseLocation inView:nil];
-  } else {
+  if (!NSPointInRect(point, _currentSelection)) {
     [self terminateEditSelection];
   }
 }
