@@ -505,6 +505,8 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
   [self.currentDrawingSurface.overlayLayer addSublayer:_selectionPreview];
   _selectionPreview.borderWidth = 1.0;
   _selectionPreview.borderColor = NSColor.whiteColor.CGColor;
+  _selectionPreview.minificationFilter = kCAFilterTrilinear;
+  _selectionPreview.magnificationFilter = kCAFilterTrilinear;
   
   _selectionIndicator = [[CAShapeLayer alloc] init];
   [self.currentDrawingSurface.overlayLayer addSublayer:_selectionIndicator];
