@@ -64,7 +64,7 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
   
   NSRect _currentSelection;
   
-  NSBitmapImageRep *_selectedArea;
+  NSImageRep *_selectedArea;
   
   NSPoint _dragPivot;
   NSPoint _lastMousePosition;
@@ -148,9 +148,15 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 
 - (void)copy:(id)sender
 {
+  if (![_selectedArea isKindOfClass:NSBitmapImageRep.class]) {
+    NSBeep();
+    return;
+  }
+  
+  NSBitmapImageRep *area = (NSBitmapImageRep *)_selectedArea;
   NSPasteboard *pb = [NSPasteboard generalPasteboard];
   [pb declareTypes:@[NSPasteboardTypePNG] owner:nil];
-  NSData *png = [_selectedArea representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+  NSData *png = [area representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
   [pb setData:png forType:NSPasteboardTypePNG];
 }
 
@@ -158,7 +164,7 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 - (void)paste:(id)sender
 {
   NSPasteboard *pb = [NSPasteboard generalPasteboard];
-  NSBitmapImageRep *tmp = (NSBitmapImageRep *)[NSBitmapImageRep imageRepWithPasteboard:pb];
+  NSImageRep *tmp = [NSImageRep imageRepWithPasteboard:pb];
   if (!tmp) {
     NSBeep();
     return;
@@ -206,6 +212,7 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 
 - (void)dragDidEndAtPoint:(NSPoint)point
 {
+  _isDragging = NO;
   switch (_mode) {
     case PTDSelectionToolModeMakeSelection:
       [self newSelection_dragDidEndAtPoint:point];
@@ -214,7 +221,6 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
       [self editSelection_dragDidEndAtPoint:point];
       break;
   }
-  _isDragging = NO;
 }
 
 
@@ -319,7 +325,7 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 
 - (void)editSelection_dragDidEndAtPoint:(NSPoint)point
 {
-  /* noop */
+  [self updateSelectionIndicator];
 }
 
 
@@ -541,8 +547,12 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
   CGPathRelease(path);
   
   if (_mode == PTDSelectionToolModeEditSelection) {
-    if (_selectionPreview.contents == nil) {
-      _selectionPreview.contents = (id)[_selectedArea CGImageForProposedRect:NULL context:nil hints:nil];
+    BOOL regenContents = _selectionPreview.contents == nil;
+    /* regenerate the preview after each drag has ended for vector images */
+    regenContents |= ![_selectedArea isKindOfClass:NSBitmapImageRep.class] && !_isDragging;
+    if (regenContents) {
+      NSRect proposedRect = (NSRect){NSZeroPoint, _currentSelection.size};
+      _selectionPreview.contents = (id)[_selectedArea CGImageForProposedRect:&proposedRect context:nil hints:nil];
     }
   }
   _selectionPreview.frame = _currentSelection;
