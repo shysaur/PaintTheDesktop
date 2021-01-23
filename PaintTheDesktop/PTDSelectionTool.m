@@ -483,6 +483,7 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
     [self.currentDrawingSurface beginCanvasDrawing];
     [_selectedArea drawInRect:_currentSelection fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0 respectFlipped:YES hints:@{NSImageHintInterpolation: @(NSImageInterpolationHigh)}];
     _selectedArea = nil;
+    [self.currentDrawingSurface endCanvasDrawing];
   }
   [self removeSelectionIndicator];
   _mode = PTDSelectionToolModeMakeSelection;
@@ -496,6 +497,8 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 {
   _selectionPreview = [[CALayer alloc] init];
   [self.currentDrawingSurface.overlayLayer addSublayer:_selectionPreview];
+  _selectionPreview.borderWidth = 1.0;
+  _selectionPreview.borderColor = NSColor.whiteColor.CGColor;
   
   _selectionIndicator = [[CAShapeLayer alloc] init];
   [self.currentDrawingSurface.overlayLayer addSublayer:_selectionIndicator];
@@ -541,8 +544,8 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
     if (_selectionPreview.contents == nil) {
       _selectionPreview.contents = (id)[_selectedArea CGImageForProposedRect:NULL context:nil hints:nil];
     }
-    _selectionPreview.frame = _currentSelection;
   }
+  _selectionPreview.frame = _currentSelection;
   
   for (PTDSelectionToolHandleID i=PTDSelectionToolFirstResizeHandle; i<=PTDSelectionToolLastResizeHandle; i++) {
     CALayer *shi = _selectionHandleIndicators[i];
