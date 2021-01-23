@@ -29,13 +29,31 @@
 @implementation NSColor (PTD)
 
 
-+ (NSColor *)ptd_selectedRingMenuItemColor
++ (NSColor *)ptd_ringMenuHighlightColor
 {
   if (@available(macOS 10.14, *)) {
       return [NSColor controlAccentColor];
   } else {
       return [NSColor selectedMenuItemColor];
   }
+}
+
+
++ (NSColor *)ptd_ringMenuItemTextColor
+{
+  return NSColor.labelColor;
+}
+
+
++ (NSColor *)ptd_ringMenuItemSelectedTextColor
+{
+  return NSColor.selectedMenuItemTextColor;
+}
+
+
++ (NSColor *)ptd_ringMenuDisabledItemTextColor
+{
+  return NSColor.disabledControlTextColor;
 }
 
 

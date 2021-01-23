@@ -115,7 +115,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
     CGFloat compy = (CGFloat)((int)(_size.height) % 2);
     NSRect rect = NSMakeRect(0, 0, floor(origSize.width/2.0)*2.0+compx, floor(origSize.height/2.0)*2.0+compy);
     
-    NSColor *lineColor = [NSColor ptd_selectedRingMenuItemColor];
+    NSColor *lineColor = [NSColor ptd_ringMenuHighlightColor];
     if (self.item.state == NSControlStateValueMixed) {
       lineColor = [NSColor systemGrayColor];
     }
@@ -162,7 +162,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 {
   NSImage *image = self.item.selectedImage ?: self.item.image;
   if (image.isTemplate)
-    image = [image ptd_imageByTintingWithColor:[NSColor selectedMenuItemTextColor]];
+    image = [image ptd_imageByTintingWithColor:NSColor.ptd_ringMenuItemSelectedTextColor];
   _contentsView.image = image;
   _contentsView.cell.backgroundStyle = NSBackgroundStyleEmphasized;
 }
@@ -172,7 +172,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 {
   NSImage *image = self.item.image;
   if (image.isTemplate)
-    image = [image ptd_imageByTintingWithColor:[NSColor labelColor]];
+    image = [image ptd_imageByTintingWithColor:NSColor.ptd_ringMenuItemTextColor];
   _contentsView.image = image;
   _contentsView.cell.backgroundStyle = NSBackgroundStyleNormal;
 }
@@ -675,7 +675,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 - (NSImage *)_selectionBackdropForItem:(PTDRingMenuWindowItemLayout *)item
 {
   NSImage *image = [NSImage imageWithSize:item.selectionShapeSize flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-    [[NSColor ptd_selectedRingMenuItemColor] setFill];
+    [[NSColor ptd_ringMenuHighlightColor] setFill];
     [item.selectionShape fill];
     return YES;
   }];
