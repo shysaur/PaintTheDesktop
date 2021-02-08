@@ -118,7 +118,7 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
   
   itm = [res addItemWithText:NSLocalizedString(@"Paste", @"Menu item for pasting current selection") target:self action:@selector(paste:)];
   NSPasteboard *pb = [NSPasteboard generalPasteboard];
-  itm.enabled = [NSBitmapImageRep canInitWithPasteboard:pb];
+  itm.enabled = [self canPasteFromPasteboard:pb];
   
   [res endGravityMassGroup];
   
@@ -161,17 +161,33 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 }
 
 
+- (BOOL)canPasteFromPasteboard:(NSPasteboard *)pb
+{
+  if ([pb canReadItemWithDataConformingToTypes:@[NSPasteboardTypeFileURL]])
+    return YES;
+  return [NSBitmapImageRep canInitWithPasteboard:pb];
+}
+
+
 - (void)paste:(id)sender
 {
   NSPasteboard *pb = [NSPasteboard generalPasteboard];
-  NSImageRep *tmp = [NSImageRep imageRepWithPasteboard:pb];
-  if (!tmp) {
+  NSImageRep *newImage;
+  
+  NSURL *file = [NSURL URLFromPasteboard:pb];
+  if (file) {
+    newImage = [NSImageRep imageRepWithContentsOfURL:file];
+  } else {
+    newImage = [NSImageRep imageRepWithPasteboard:pb];
+  }
+  
+  if (!newImage) {
     NSBeep();
     return;
   }
   
   [self terminateEditSelection];
-  _selectedArea = tmp;
+  _selectedArea = newImage;
   _currentSelection = NSMakeRect(
       _lastMenuPosition.x - _selectedArea.size.height / 2.0,
       _lastMenuPosition.y - _selectedArea.size.height / 2.0,
