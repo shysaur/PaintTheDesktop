@@ -54,6 +54,8 @@ NSString * const PTDToolIdentifierResetTool = @"PTDToolIdentifierResetTool";
   [NSGraphicsContext.currentContext setCompositingOperation:NSCompositingOperationClear];
   [[NSColor colorWithWhite:1.0 alpha:0.0] setFill];
   NSRectFill(bounds);
+  
+  NSShowAnimationEffect(NSAnimationEffectPoof, NSEvent.mouseLocation, NSZeroSize, nil, nil, NULL);
 }
 
 
