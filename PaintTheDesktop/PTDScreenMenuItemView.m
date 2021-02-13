@@ -39,6 +39,15 @@
 @implementation PTDScreenMenuItemView
 
 
+- (void)awakeFromNib
+{
+  if (@available(macOS 10.16, *)) {
+    self.leftBorderConstraint.constant = 10;
+  }
+  self.screenName.font = [NSFont menuFontOfSize:0];
+}
+
+
 - (void)drawRect:(NSRect)dirtyRect
 {
   if (self.enclosingMenuItem.isHighlighted) {

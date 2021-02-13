@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PTDScreenMenuItemView : NSView
 
 @property (nonatomic) IBOutlet NSTextField *screenName;
+@property (nonatomic) IBOutlet NSLayoutConstraint *leftBorderConstraint;
 
 - (void)setThumbnail:(NSBitmapImageRep *)image;
 
