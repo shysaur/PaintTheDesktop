@@ -32,6 +32,8 @@
 
 NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 
+NSString * const PTDEraserToolOptionSize = @"size";
+
 
 @interface PTDEraserTool ()
 
@@ -46,14 +48,14 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 + (NSDictionary *)defaultOptions
 {
   return @{
-    @"size": @(20)
+    PTDEraserToolOptionSize: @(20)
   };
 }
 
 
 - (void)reloadOptions
 {
-  self.size = [[PTDToolOptions sharedOptions] integerForOption:@"size" ofTool:self];
+  self.size = [[PTDToolOptions sharedOptions] integerForOption:PTDEraserToolOptionSize ofTool:self];
   [self updateCursor];
 }
 
@@ -171,7 +173,7 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 
 - (void)changeSize:(id)sender
 {
-  [[PTDToolOptions sharedOptions] setInteger:[(NSMenuItem *)sender tag] forOption:@"size" ofTool:self];
+  [[PTDToolOptions sharedOptions] setInteger:[(NSMenuItem *)sender tag] forOption:PTDEraserToolOptionSize ofTool:self];
 }
 
 

@@ -27,22 +27,26 @@
 #import "PTDToolOptions.h"
 
 
+NSString * const PTDBrushToolOptionSize = @"brushSize";
+NSString * const PTDBrushToolOptionColor = @"brushColor";
+
+
 @implementation PTDBrushTool
 
 
 + (void)initialize
 {
   [PTDToolOptions.sharedOptions registerGlobalDefaults:@{
-      @"size": @(2.0),
-      @"color": [NSColor blackColor]
+      PTDBrushToolOptionSize: @(2.0),
+      PTDBrushToolOptionColor: [NSColor blackColor]
     }];
 }
 
 
 - (void)reloadOptions
 {
-  self.size = [[PTDToolOptions sharedOptions] integerForOption:@"size" ofTool:nil];
-  self.color = [[PTDToolOptions sharedOptions] objectForOption:@"color" ofTool:nil];
+  self.size = [[PTDToolOptions sharedOptions] integerForOption:PTDBrushToolOptionSize ofTool:nil];
+  self.color = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionColor ofTool:nil];
 }
 
 
@@ -154,13 +158,13 @@
 
 - (void)changeSize:(id)sender
 {
-  [[PTDToolOptions sharedOptions] setInteger:[(NSMenuItem *)sender tag] forOption:@"size" ofTool:nil];
+  [[PTDToolOptions sharedOptions] setInteger:[(NSMenuItem *)sender tag] forOption:PTDBrushToolOptionSize ofTool:nil];
 }
 
 
 - (void)changeColor:(id)sender
 {
-  [[PTDToolOptions sharedOptions] setObject:sender forOption:@"color" ofTool:nil];
+  [[PTDToolOptions sharedOptions] setObject:sender forOption:PTDBrushToolOptionColor ofTool:nil];
 }
 
 
