@@ -39,14 +39,11 @@
 
 @property (nonatomic) PTDTool *currentTool;
 
-@property (nonatomic, nullable) NSString *previousToolIdentifier;
-
 @end
 
 
 @implementation PTDToolManager {
   NSDictionary *_toolClasses;
-  NSMutableDictionary *_lastToolForIdentifier;
 }
 
 
@@ -73,7 +70,6 @@
       PTDToolIdentifierSelectionTool: [PTDSelectionTool class],
       PTDToolIdentifierResetTool: [PTDResetTool class]
     };
-  _lastToolForIdentifier = [@{} mutableCopy];
     
   return self;
 }
@@ -99,18 +95,11 @@
 - (void)changeTool:(NSString *)newIdentifier
 {
   NSString *prevId = [[_currentTool class] toolIdentifier];
-  self.previousToolIdentifier = prevId;
-  [_lastToolForIdentifier setObject:_currentTool forKey:prevId];
+  if ([prevId isEqual:newIdentifier])
+    return;
   
-  PTDTool *newTool = [_lastToolForIdentifier objectForKey:newIdentifier];
-  if (!newTool) {
-    Class toolClass = [_toolClasses objectForKey:newIdentifier];
-    newTool = [[toolClass alloc] init];
-  }
-  
-  if (_currentTool != newTool) {
-    self.currentTool = newTool;
-  }
+  Class toolClass = [_toolClasses objectForKey:newIdentifier];
+  self.currentTool = [[toolClass alloc] init];
 }
 
 
