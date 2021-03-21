@@ -25,7 +25,6 @@
 
 #import "PTDToolManager.h"
 #import "PTDTool.h"
-#import "PTDBrush.h"
 #import "PTDPencilTool.h"
 #import "PTDEraserTool.h"
 #import "PTDResetTool.h"
@@ -55,7 +54,6 @@
 {
   self = [super init];
   _currentTool = [[PTDPencilTool alloc] init];
-  [self setCurrentBrush:[[PTDBrush alloc] init]];
   
   _availableToolIdentifiers = @[
       PTDToolIdentifierPencilTool,
@@ -111,31 +109,7 @@
   }
   
   if (_currentTool != newTool) {
-    newTool.currentBrush = self.currentBrush;
     self.currentTool = newTool;
-  }
-}
-
-
-- (void)setCurrentBrush:(PTDBrush *)currentBrush
-{
-  if (_currentBrush) {
-    [_currentBrush removeObserver:self forKeyPath:NSStringFromSelector(@selector(color))];
-    [_currentBrush removeObserver:self forKeyPath:NSStringFromSelector(@selector(size))];
-  }
-  _currentBrush = currentBrush;
-  [_currentBrush addObserver:self forKeyPath:NSStringFromSelector(@selector(color)) options:0 context:NULL];
-  [_currentBrush addObserver:self forKeyPath:NSStringFromSelector(@selector(size)) options:0 context:NULL];
-  self.currentTool.currentBrush = self.currentBrush;
-}
-
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
-{
-  if (object == _currentBrush) {
-    self.currentTool.currentBrush = _currentBrush;
-  } else {
-    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
 }
 

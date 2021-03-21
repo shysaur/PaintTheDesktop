@@ -30,7 +30,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class PTDDrawingSurface;
 @class PTDCursor;
-@class PTDBrush;
 
 @interface PTDTool : NSObject
 
@@ -39,7 +38,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (class, readonly, nonatomic) NSString *toolIdentifier;
 
 @property (nonatomic, weak) PTDDrawingSurface *currentDrawingSurface;
-@property (nonatomic) PTDBrush *currentBrush;
 
 - (void)dragDidStartAtPoint:(NSPoint)point;
 - (void)dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint;

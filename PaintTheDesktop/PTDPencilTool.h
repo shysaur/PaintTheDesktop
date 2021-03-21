@@ -24,13 +24,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "PTDTool.h"
+#import "PTDBrushTool.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 extern NSString * const PTDToolIdentifierPencilTool;
 
-@interface PTDPencilTool : PTDTool
+@interface PTDPencilTool : PTDBrushTool
 
 @end
 

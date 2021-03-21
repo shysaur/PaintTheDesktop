@@ -1,8 +1,8 @@
 //
-// PTDBrush.m
-// PaintTheDesktop -- Created on 15/06/2020.
+// PTDBrushTool.m
+// PaintTheDesktop -- Created on 21/03/2021.
 //
-// Copyright (c) 2020 Daniele Cattaneo
+// Copyright (c) 2021 Daniele Cattaneo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,24 +23,30 @@
 // SOFTWARE.
 //
 
-#import "PTDBrush.h"
-#import "PTDToolManager.h"
-#import "PTDTool.h"
+#import "PTDBrushTool.h"
+#import "PTDToolOptions.h"
 
 
-@implementation PTDBrush
+@implementation PTDBrushTool
 
 
-- (instancetype)init
++ (void)initialize
 {
-  self = [super init];
-  _size = 2.0;
-  _color = [NSColor blackColor];
-  return self;
+  [PTDToolOptions.sharedOptions registerGlobalDefaults:@{
+      @"size": @(2.0),
+      @"color": [NSColor blackColor]
+    }];
 }
 
 
-- (PTDRingMenuRing *)menuOptions
+- (void)reloadOptions
+{
+  self.size = [[PTDToolOptions sharedOptions] integerForOption:@"size" ofTool:nil];
+  self.color = [[PTDToolOptions sharedOptions] objectForOption:@"color" ofTool:nil];
+}
+
+
+- (nullable PTDRingMenuRing *)optionMenu
 {
   PTDRingMenuRing *res = [PTDRingMenuRing ring];
   
@@ -148,13 +154,13 @@
 
 - (void)changeSize:(id)sender
 {
-  self.size = [(NSMenuItem *)sender tag];
+  [[PTDToolOptions sharedOptions] setInteger:[(NSMenuItem *)sender tag] forOption:@"size" ofTool:nil];
 }
 
 
 - (void)changeColor:(id)sender
 {
-  self.color = sender;
+  [[PTDToolOptions sharedOptions] setObject:sender forOption:@"color" ofTool:nil];
 }
 
 

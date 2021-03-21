@@ -23,11 +23,11 @@
 // SOFTWARE.
 //
 
-#import "PTDTool.h"
+#import "PTDBrushTool.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDShapeTool : PTDTool
+@interface PTDShapeTool : PTDBrushTool
 
 - (NSBezierPath *)shapeBezierPathInRect:(NSRect)rect;
 

@@ -1,8 +1,8 @@
 //
-// PTDBrush.h
-// PaintTheDesktop -- Created on 15/06/2020.
+// PTDBrushTool.h
+// PaintTheDesktop -- Created on 21/03/2021.
 //
-// Copyright (c) 2020 Daniele Cattaneo
+// Copyright (c) 2021 Daniele Cattaneo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,17 +23,14 @@
 // SOFTWARE.
 //
 
-#import <Cocoa/Cocoa.h>
-#import "PTDRingMenu.h"
+#import "PTDTool.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDBrush : NSObject
+@interface PTDBrushTool : PTDTool
 
 @property (nonatomic) NSColor *color;
 @property (nonatomic) CGFloat size;
-
-- (PTDRingMenuRing *)menuOptions;
 
 @end
 

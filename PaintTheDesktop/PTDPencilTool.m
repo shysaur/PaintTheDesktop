@@ -24,7 +24,6 @@
 //
 
 #import "PTDToolManager.h"
-#import "PTDBrush.h"
 #import "PTDPencilTool.h"
 #import "PTDDrawingSurface.h"
 #import "PTDTool.h"
@@ -55,8 +54,8 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
   [self.currentDrawingSurface beginCanvasDrawing];
   NSBezierPath *path = [NSBezierPath bezierPath];
   [path setLineCapStyle:NSLineCapStyleRound];
-  [path setLineWidth:self.currentBrush.size];
-  [self.currentBrush.color setStroke];
+  [path setLineWidth:self.size];
+  [self.color setStroke];
   [path moveToPoint:prevPoint];
   [path lineToPoint:nextPoint];
   [path stroke];
@@ -69,22 +68,16 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 }
 
 
-- (PTDRingMenuRing *)optionMenu
+- (void)reloadOptions
 {
-  return [self.currentBrush menuOptions];
-}
-
-
-- (void)setCurrentBrush:(PTDBrush *)currentBrush
-{
-  [super setCurrentBrush:currentBrush];
+  [super reloadOptions];
   [self updateCursor];
 }
 
 
 - (void)updateCursor
 {
-  NSColor *color = self.currentBrush.color;
+  NSColor *color = self.color;
   NSColor *borderColor = [color ptd_contrastingCursorBorderColor];
   PTDCursor *cursor = [[PTDCursor alloc] init];
   
@@ -92,7 +85,7 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
   const CGFloat lineSize = 1.0;
   const CGFloat circleXhairDist = 2.0;
   const CGFloat minXhairLen = 2.0;
-  CGFloat circleSize = self.currentBrush.size;
+  CGFloat circleSize = self.size;
   CGFloat cursorSize = MAX(21.0, circleSize + 2.0 * (circleXhairDist + minXhairLen) + outlineSize);
   CGFloat xhairLen = (cursorSize - circleSize - 2.0 * circleXhairDist - outlineSize) / 2.0;
   

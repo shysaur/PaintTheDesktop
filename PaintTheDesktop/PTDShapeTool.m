@@ -25,7 +25,6 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "PTDToolManager.h"
-#import "PTDBrush.h"
 #import "PTDShapeTool.h"
 #import "PTDDrawingSurface.h"
 #import "PTDTool.h"
@@ -113,29 +112,23 @@
   [NSGraphicsContext.currentContext setShouldAntialias:YES];
   
   NSBezierPath *path = [self shapeBezierPathInRect:_currentRect];
-  [path setLineWidth:self.currentBrush.size];
-  [self.currentBrush.color setStroke];
+  [path setLineWidth:self.size];
+  [self.color setStroke];
   [path stroke];
 }
 
 
-- (PTDRingMenuRing *)optionMenu
+- (void)reloadOptions
 {
-  return self.currentBrush.menuOptions;
-}
-
-
-- (void)setCurrentBrush:(PTDBrush *)currentBrush
-{
-  [super setCurrentBrush:currentBrush];
+  [super reloadOptions];
   [self updateCursor];
 }
 
 
 - (void)updateCursor
 {
-  CGFloat size = floor((self.currentBrush.size + 8.0) / 2.0) * 2.0 + 1.0;
-  NSColor *color = self.currentBrush.color;
+  CGFloat size = floor((self.size + 8.0) / 2.0) * 2.0 + 1.0;
+  NSColor *color = self.color;
   NSColor *borderColor = [color ptd_contrastingCursorBorderColor];
   PTDCursor *cursor = [[PTDCursor alloc] init];
   
@@ -170,8 +163,8 @@
 {
   _overlayShape = [[CAShapeLayer alloc] init];
   [self.currentDrawingSurface.overlayLayer addSublayer:_overlayShape];
-  _overlayShape.lineWidth = self.currentBrush.size;
-  _overlayShape.strokeColor = self.currentBrush.color.CGColor;
+  _overlayShape.lineWidth = self.size;
+  _overlayShape.strokeColor = self.color.CGColor;
   _overlayShape.fillColor = NSColor.clearColor.CGColor;
   _overlayShape.frame = self.currentDrawingSurface.overlayLayer.bounds;
   [self updateDragIndicator];
