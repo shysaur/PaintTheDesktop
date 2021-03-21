@@ -25,15 +25,43 @@
 
 #import "PTDTool.h"
 #import "PTDCursor.h"
+#import "PTDToolOptions.h"
 
 
-@implementation PTDTool
+@implementation PTDTool {
+  id _optionsChangedObserver;
+}
+
+
++ (void)initialize
+{
+  [PTDToolOptions.sharedOptions registerDefaultsOfToolClass:self];
+}
 
 
 - (instancetype)init
 {
   self = [super init];
+  
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  _optionsChangedObserver= [nc addObserverForName:PTDToolOptionsChangedNotification
+      object:PTDToolOptions.sharedOptions
+      queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+    PTDTool *otherTool = [note.userInfo objectForKey:PTDToolOptionsChangedNotificationUserInfoToolKey];
+    if (!otherTool || [self isKindOfClass:[otherTool class]])
+      [self reloadOptions];
+  }];
+  
+  [self reloadOptions];
+  
   return self;
+}
+
+
+- (void)dealloc
+{
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  [nc removeObserver:_optionsChangedObserver];
 }
 
 
@@ -93,6 +121,17 @@
 - (nullable PTDRingMenuRing *)optionMenu
 {
   return nil;
+}
+
+
+- (void)reloadOptions
+{
+}
+
+
++ (NSDictionary *)defaultOptions
+{
+  return @{};
 }
 
 

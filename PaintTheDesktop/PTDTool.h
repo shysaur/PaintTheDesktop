@@ -59,6 +59,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)willOpenOptionMenuAtPoint:(NSPoint)point;
 - (nullable PTDRingMenuRing *)optionMenu;
 
+- (void)reloadOptions;
+@property (class, readonly, nonatomic) NSDictionary *defaultOptions;
+
 @end
 
 NS_ASSUME_NONNULL_END

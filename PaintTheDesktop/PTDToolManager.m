@@ -33,6 +33,7 @@
 #import "PTDOvalTool.h"
 #import "PTDRoundRectTool.h"
 #import "PTDSelectionTool.h"
+#import "PTDToolOptions.h"
 
 
 @interface PTDToolManager ()

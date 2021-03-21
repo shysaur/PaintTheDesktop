@@ -27,6 +27,7 @@
 #import "PTDEraserTool.h"
 #import "PTDTool.h"
 #import "PTDCursor.h"
+#import "PTDToolOptions.h"
 
 
 NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
@@ -42,11 +43,18 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 @implementation PTDEraserTool
 
 
-- (instancetype)init
++ (NSDictionary *)defaultOptions
 {
-  self = [super init];
-  _size = 20.0;
-  return self;
+  return @{
+    @"size": @(20)
+  };
+}
+
+
+- (void)reloadOptions
+{
+  self.size = [[PTDToolOptions sharedOptions] integerForOption:@"size" ofTool:self];
+  [self updateCursor];
 }
 
 
@@ -163,8 +171,7 @@ NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 
 - (void)changeSize:(id)sender
 {
-  self.size = [(NSMenuItem *)sender tag];
-  [self updateCursor];
+  [[PTDToolOptions sharedOptions] setInteger:[(NSMenuItem *)sender tag] forOption:@"size" ofTool:self];
 }
 
 

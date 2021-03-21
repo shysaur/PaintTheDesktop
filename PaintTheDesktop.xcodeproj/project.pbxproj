@@ -18,6 +18,7 @@
 		01642478249FF58D000955D8 /* PTDShapeTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 01642476249FF58D000955D8 /* PTDShapeTool.m */; };
 		0164247B249FF71F000955D8 /* PTDOvalTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 0164247A249FF71F000955D8 /* PTDOvalTool.m */; };
 		0167A55B24A7F87700E08507 /* NSImage+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 0167A55A24A7F87700E08507 /* NSImage+PTD.m */; };
+		0169E1672607ACB6008F986B /* PTDToolOptions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0169E1662607ACB6008F986B /* PTDToolOptions.m */; };
 		016A928C24993FFD006C9678 /* PTDRingMenuWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 016A928A24993FFD006C9678 /* PTDRingMenuWindow.m */; };
 		016A928D24993FFD006C9678 /* PTDRingMenuWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 016A928B24993FFD006C9678 /* PTDRingMenuWindow.xib */; };
 		016AD9A524978132004E3749 /* NSView+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 016AD9A424978132004E3749 /* NSView+PTD.m */; };
@@ -173,6 +174,8 @@
 		0167A55624A7A02400E08507 /* NSGeometry+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSGeometry+PTD.h"; sourceTree = "<group>"; };
 		0167A55924A7F87700E08507 /* NSImage+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSImage+PTD.h"; sourceTree = "<group>"; };
 		0167A55A24A7F87700E08507 /* NSImage+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSImage+PTD.m"; sourceTree = "<group>"; };
+		0169E1652607ACB6008F986B /* PTDToolOptions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDToolOptions.h; sourceTree = "<group>"; };
+		0169E1662607ACB6008F986B /* PTDToolOptions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDToolOptions.m; sourceTree = "<group>"; };
 		016A928924993FFD006C9678 /* PTDRingMenuWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenuWindow.h; sourceTree = "<group>"; };
 		016A928A24993FFD006C9678 /* PTDRingMenuWindow.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRingMenuWindow.m; sourceTree = "<group>"; };
 		016A928B24993FFD006C9678 /* PTDRingMenuWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PTDRingMenuWindow.xib; sourceTree = "<group>"; };
@@ -280,6 +283,8 @@
 		016AD99D249755ED004E3749 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				0169E1652607ACB6008F986B /* PTDToolOptions.h */,
+				0169E1662607ACB6008F986B /* PTDToolOptions.m */,
 				016D36B524905E280086E96D /* PTDToolManager.h */,
 				016D36B624905E280086E96D /* PTDToolManager.m */,
 				016AD9A6249790B3004E3749 /* PTDDrawingSurface.h */,
@@ -614,6 +619,7 @@
 				01A213F1248EE9F600B5EB9D /* PTDPaintWindow.m in Sources */,
 				0177600F25BA340000317B4F /* PTDNoAnimeCALayer.m in Sources */,
 				016D36BA249064700086E96D /* PTDEraserTool.m in Sources */,
+				0169E1672607ACB6008F986B /* PTDToolOptions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
