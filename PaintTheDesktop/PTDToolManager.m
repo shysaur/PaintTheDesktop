@@ -35,6 +35,9 @@
 #import "PTDToolOptions.h"
 
 
+NSString * const PTDToolManagerOptionToolIdentifier = @"toolId";
+
+
 @interface PTDToolManager ()
 
 @property (nonatomic) PTDTool *currentTool;
@@ -44,13 +47,13 @@
 
 @implementation PTDToolManager {
   NSDictionary *_toolClasses;
+  id _optionsChangedObserver;
 }
 
 
 - (instancetype)init
 {
   self = [super init];
-  _currentTool = [[PTDPencilTool alloc] init];
   
   _availableToolIdentifiers = @[
       PTDToolIdentifierPencilTool,
@@ -71,7 +74,25 @@
       PTDToolIdentifierResetTool: [PTDResetTool class]
     };
     
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  _optionsChangedObserver = [nc addObserverForName:PTDToolOptionsChangedNotification
+      object:PTDToolOptions.sharedOptions
+      queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+    PTDTool *otherTool = [note.userInfo objectForKey:PTDToolOptionsChangedNotificationUserInfoToolKey];
+    if (!otherTool)
+      [self reloadOptions];
+  }];
+  
+  [self reloadOptions];
+    
   return self;
+}
+
+
+- (void)dealloc
+{
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  [nc removeObserver:_optionsChangedObserver];
 }
 
 
@@ -94,12 +115,31 @@
 
 - (void)changeTool:(NSString *)newIdentifier
 {
-  NSString *prevId = [[_currentTool class] toolIdentifier];
-  if ([prevId isEqual:newIdentifier])
-    return;
+  [PTDToolOptions.sharedOptions setString:newIdentifier forOption:PTDToolManagerOptionToolIdentifier ofTool:nil];
+}
+
+
+- (void)_changeTool:(NSString *)newIdentifier
+{
+  if (_currentTool) {
+    NSString *prevId = [[_currentTool class] toolIdentifier];
+    if ([prevId isEqual:newIdentifier])
+      return;
+  }
   
   Class toolClass = [_toolClasses objectForKey:newIdentifier];
   self.currentTool = [[toolClass alloc] init];
+}
+
+
+- (void)reloadOptions
+{
+  NSString *savedToolIdent = [PTDToolOptions.sharedOptions stringForOption:PTDToolManagerOptionToolIdentifier ofTool:nil];
+  if ([self.availableToolIdentifiers containsObject:savedToolIdent]) {
+    [self _changeTool:savedToolIdent];
+  } else {
+    [self changeTool:PTDToolIdentifierPencilTool];
+  }
 }
 
 
