@@ -23,7 +23,7 @@
 // SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -43,14 +43,14 @@ extern NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey;
 - (void)registerDefaultsOfToolClass:(nullable Class)toolClass;
 - (void)registerDefaults:(NSDictionary *)defaults ofToolClass:(nullable Class)toolClass;
 
-- (void)setObject:(id)object forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
 - (void)setString:(NSString *)object forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
+- (void)setColor:(NSColor *)object forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
 - (void)setInteger:(NSInteger)value forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
 - (void)setDouble:(double)value forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
 - (void)setBool:(BOOL)value forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
 
-- (id)objectForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
-- (NSString *)stringForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
+- (nullable NSString *)stringForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
+- (nullable NSColor *)colorForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
 - (NSInteger)integerForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
 - (double)doubleForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
 - (BOOL)boolForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;

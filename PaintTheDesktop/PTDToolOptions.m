@@ -109,6 +109,18 @@ NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey = @"object";
   
   [_values setObject:object forKey:dictKey];
   
+  NSUserDefaults *prefs = NSUserDefaults.standardUserDefaults;
+  id plistObject = object;
+  if (![plistObject isKindOfClass:[NSString class]] && ![plistObject isKindOfClass:[NSNumber class]]) {
+    plistObject = [NSKeyedArchiver archivedDataWithRootObject:object requiringSecureCoding:YES error:nil];
+  }
+  if (plistObject) {
+    NSString *key = [NSString stringWithFormat:@"PTDToolOptions.%@", dictKey];
+    [prefs setObject:plistObject forKey:key];
+  } else {
+    NSLog(@"warning: cannot store %@ to user defaults, archiving failed", object);
+  }
+  
   [[NSNotificationCenter defaultCenter]
       postNotificationName:PTDToolOptionsChangedNotification
       object:self
@@ -117,6 +129,12 @@ NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey = @"object";
 
 
 - (void)setString:(NSString *)object forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
+{
+  [self setObject:object forOption:optionId ofTool:tool];
+}
+
+
+- (void)setColor:(NSColor *)object forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
 {
   [self setObject:object forOption:optionId ofTool:tool];
 }
@@ -143,9 +161,17 @@ NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey = @"object";
 - (id)objectForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
 {
   NSString *dictKey = [self dictionaryKeyForOption:optionId ofToolClass:tool.class];
+  
   id res = [_values objectForKey:dictKey];
   if (res)
     return res;
+  
+  NSUserDefaults *prefs = NSUserDefaults.standardUserDefaults;
+  NSString *key = [NSString stringWithFormat:@"PTDToolOptions.%@", dictKey];
+  res = [prefs objectForKey:key];
+  if (res)
+    return res;
+  
   return [_defaults objectForKey:dictKey];
 }
 
@@ -155,6 +181,19 @@ NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey = @"object";
   id obj = [self objectForOption:optionId ofTool:tool];
   if (obj && [obj isKindOfClass:[NSString class]])
     return (NSString *)obj;
+  return nil;
+}
+
+
+- (NSColor *)colorForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
+{
+  id obj = [self objectForOption:optionId ofTool:tool];
+  if (obj && [obj isKindOfClass:[NSColor class]])
+    return (NSColor *)obj;
+  if (obj && [obj isKindOfClass:[NSData class]]) {
+    NSColor *res = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSColor class] fromData:obj error:nil];
+    return res;
+  }
   return nil;
 }
 

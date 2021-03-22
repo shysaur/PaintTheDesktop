@@ -46,7 +46,7 @@ NSString * const PTDBrushToolOptionColor = @"brushColor";
 - (void)reloadOptions
 {
   self.size = [[PTDToolOptions sharedOptions] integerForOption:PTDBrushToolOptionSize ofTool:nil];
-  self.color = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionColor ofTool:nil];
+  self.color = [[PTDToolOptions sharedOptions] colorForOption:PTDBrushToolOptionColor ofTool:nil];
 }
 
 
@@ -164,7 +164,7 @@ NSString * const PTDBrushToolOptionColor = @"brushColor";
 
 - (void)changeColor:(id)sender
 {
-  [[PTDToolOptions sharedOptions] setObject:sender forOption:PTDBrushToolOptionColor ofTool:nil];
+  [[PTDToolOptions sharedOptions] setColor:sender forOption:PTDBrushToolOptionColor ofTool:nil];
 }
 
 
