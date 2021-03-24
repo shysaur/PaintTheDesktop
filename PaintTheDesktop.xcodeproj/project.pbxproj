@@ -269,6 +269,8 @@
 				016D36B9249064700086E96D /* PTDEraserTool.m */,
 				016D36BE249068F40086E96D /* PTDResetTool.h */,
 				016D36BF249068F40086E96D /* PTDResetTool.m */,
+				01D68A5625AB9D1A00536CD6 /* PTDSelectionTool.h */,
+				01D68A5725AB9D1A00536CD6 /* PTDSelectionTool.m */,
 			);
 			name = "Utility Tools";
 			sourceTree = "<group>";
@@ -294,8 +296,6 @@
 				0164247A249FF71F000955D8 /* PTDOvalTool.m */,
 				015A50CA24A13F4B0008AAB1 /* PTDRoundRectTool.h */,
 				015A50CB24A13F4B0008AAB1 /* PTDRoundRectTool.m */,
-				01D68A5625AB9D1A00536CD6 /* PTDSelectionTool.h */,
-				01D68A5725AB9D1A00536CD6 /* PTDSelectionTool.m */,
 			);
 			name = "Shape Tools";
 			sourceTree = "<group>";
