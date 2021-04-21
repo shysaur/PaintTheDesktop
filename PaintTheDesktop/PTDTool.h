@@ -58,7 +58,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable PTDRingMenuRing *)optionMenu;
 
 - (void)reloadOptions;
-@property (class, readonly, nonatomic) NSDictionary *defaultOptions;
 
 @end
 

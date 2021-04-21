@@ -45,17 +45,16 @@ NSString * const PTDEraserToolOptionSize = @"size";
 @implementation PTDEraserTool
 
 
-+ (NSDictionary *)defaultOptions
++ (void)initialize
 {
-  return @{
-    PTDEraserToolOptionSize: @(20)
-  };
+  PTDToolOptions *o = PTDToolOptions.sharedOptions;
+  [o registerOption:PTDEraserToolOptionSize ofToolClass:self ofType:[NSNumber class] defaultValue:@(20) validationBlock:nil];
 }
 
 
 - (void)reloadOptions
 {
-  self.size = [[PTDToolOptions sharedOptions] integerForOption:PTDEraserToolOptionSize ofTool:self];
+  self.size = [[[PTDToolOptions sharedOptions] objectForOption:PTDEraserToolOptionSize ofTool:self] integerValue];
   [self updateCursor];
 }
 
@@ -173,7 +172,7 @@ NSString * const PTDEraserToolOptionSize = @"size";
 
 - (void)changeSize:(id)sender
 {
-  [[PTDToolOptions sharedOptions] setInteger:[(NSMenuItem *)sender tag] forOption:PTDEraserToolOptionSize ofTool:self];
+  [[PTDToolOptions sharedOptions] setObject:@([(NSMenuItem *)sender tag]) forOption:PTDEraserToolOptionSize ofTool:self];
 }
 
 

@@ -33,12 +33,6 @@
 }
 
 
-+ (void)initialize
-{
-  [PTDToolOptions.sharedOptions registerDefaultsOfToolClass:self];
-}
-
-
 - (instancetype)init
 {
   self = [super init];

@@ -35,25 +35,18 @@ extern NSString * const PTDToolOptionsChangedNotificationUserInfoOptionKey;
 extern NSString * const PTDToolOptionsChangedNotificationUserInfoToolKey;
 extern NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey;
 
+typedef BOOL (^PTDValidationBlock)(id value);
+
 @interface PTDToolOptions : NSObject
 
 + (PTDToolOptions *)sharedOptions;
 
-- (void)registerGlobalDefaults:(NSDictionary *)defaults;
-- (void)registerDefaultsOfToolClass:(nullable Class)toolClass;
-- (void)registerDefaults:(NSDictionary *)defaults ofToolClass:(nullable Class)toolClass;
+- (void)registerGlobalOption:(NSString *)optionId ofType:(Class)clss defaultValue:(id)value validationBlock:(nullable PTDValidationBlock)valid;
+- (void)registerOption:(NSString *)optionId ofToolClass:(nullable Class)toolClass ofType:(Class)clss defaultValue:(id)value validationBlock:(nullable PTDValidationBlock)valid;
 
-- (void)setString:(NSString *)object forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
-- (void)setColor:(NSColor *)object forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
-- (void)setInteger:(NSInteger)value forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
-- (void)setDouble:(double)value forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
-- (void)setBool:(BOOL)value forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
+- (void)setObject:(id)object forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
 
-- (nullable NSString *)stringForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
-- (nullable NSColor *)colorForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
-- (NSInteger)integerForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
-- (double)doubleForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
-- (BOOL)boolForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
+- (id)objectForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
 
 @end
 

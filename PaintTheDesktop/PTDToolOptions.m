@@ -34,9 +34,23 @@ NSString * const PTDToolOptionsChangedNotificationUserInfoToolKey = @"tool";
 NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey = @"object";
 
 
+@interface PTDToolOptionData: NSObject
+
+@property (nonatomic) id defaultValue;
+@property (nonatomic) Class unarchivingClass;
+@property (nonatomic, nullable) PTDValidationBlock validationBlock;
+
+@end
+
+
+@implementation PTDToolOptionData
+
+@end
+
+
 @interface PTDToolOptions ()
 
-@property (nonatomic, readonly) NSMutableDictionary *defaults;
+@property (nonatomic, readonly) NSMutableDictionary <NSString *, PTDToolOptionData *> *optionData;
 @property (nonatomic, readonly) NSMutableDictionary *values;
 
 @end
@@ -49,7 +63,7 @@ NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey = @"object";
 {
   self = [super init];
   _values = [[NSMutableDictionary alloc] init];
-  _defaults = [[NSMutableDictionary alloc] init];
+  _optionData = [[NSMutableDictionary alloc] init];
   return self;
 }
 
@@ -65,27 +79,6 @@ NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey = @"object";
 }
 
 
-- (void)registerDefaults:(NSDictionary *)defaults ofToolClass:(nullable Class)tool
-{
-  for (NSString *key in defaults) {
-    NSString *dictKey = [self dictionaryKeyForOption:key ofToolClass:tool.class];
-    [_defaults setObject:defaults[key] forKey:dictKey];
-  }
-}
-
-
-- (void)registerGlobalDefaults:(NSDictionary *)defaults
-{
-  [self registerDefaults:defaults ofToolClass:nil];
-}
-
-
-- (void)registerDefaultsOfToolClass:(Class)toolClass
-{
-  [self registerDefaults:[toolClass defaultOptions] ofToolClass:toolClass];
-}
-
-
 - (NSString *)dictionaryKeyForOption:(NSString *)optionId ofToolClass:(nullable Class)toolClass
 {
   if (!toolClass) {
@@ -95,9 +88,36 @@ NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey = @"object";
 }
 
 
+- (void)registerGlobalOption:(NSString *)optionId ofType:(Class)clss defaultValue:(id)value  validationBlock:(nullable PTDValidationBlock)valid
+{
+  NSString *optionKey = [self dictionaryKeyForOption:optionId ofToolClass:nil];
+  PTDToolOptionData *data = [[PTDToolOptionData alloc] init];
+  NSAssert(value, @"Value cannot be nil");
+  data.defaultValue = value;
+  data.validationBlock = valid;
+  data.unarchivingClass = clss;
+  [_optionData setObject:data forKey:optionKey];
+}
+
+
+- (void)registerOption:(NSString *)optionId ofToolClass:(nullable Class)toolClass ofType:(Class)clss defaultValue:(id)value validationBlock:(nullable PTDValidationBlock)valid
+{
+  NSString *optionKey = [self dictionaryKeyForOption:optionId ofToolClass:toolClass];
+  PTDToolOptionData *data = [[PTDToolOptionData alloc] init];
+  NSAssert(value, @"Value cannot be nil");
+  data.defaultValue = value;
+  data.validationBlock = valid;
+  data.unarchivingClass = clss;
+  [_optionData setObject:data forKey:optionKey];
+}
+
+
 - (void)setObject:(id)object forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
 {
   NSString *dictKey = [self dictionaryKeyForOption:optionId ofToolClass:tool.class];
+  PTDToolOptionData *optionData = [_optionData objectForKey:dictKey];
+  NSAssert(optionData, @"Option dictKey %@ not properly registered", dictKey);
+  NSAssert([object isKindOfClass:optionData.unarchivingClass], @"Option value not of the correct type");
   
   NSMutableDictionary *userInfo = [@{
       PTDToolOptionsChangedNotificationUserInfoOptionKey: optionId,
@@ -128,39 +148,11 @@ NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey = @"object";
 }
 
 
-- (void)setString:(NSString *)object forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
-{
-  [self setObject:object forOption:optionId ofTool:tool];
-}
-
-
-- (void)setColor:(NSColor *)object forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
-{
-  [self setObject:object forOption:optionId ofTool:tool];
-}
-
-
-- (void)setInteger:(NSInteger)value forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
-{
-  [self setObject:@(value) forOption:optionId ofTool:tool];
-}
-
-
-- (void)setDouble:(double)value forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
-{
-  [self setObject:@(value) forOption:optionId ofTool:tool];
-}
-
-
-- (void)setBool:(BOOL)value forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
-{
-  [self setObject:@(value) forOption:optionId ofTool:tool];
-}
-
-
 - (id)objectForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
 {
   NSString *dictKey = [self dictionaryKeyForOption:optionId ofToolClass:tool.class];
+  PTDToolOptionData *optionData = [_optionData objectForKey:dictKey];
+  NSAssert(optionData, @"Option dictKey %@ not properly registered", dictKey);
   
   id res = [_values objectForKey:dictKey];
   if (res)
@@ -168,63 +160,30 @@ NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey = @"object";
   
   NSUserDefaults *prefs = NSUserDefaults.standardUserDefaults;
   NSString *key = [NSString stringWithFormat:@"PTDToolOptions.%@", dictKey];
-  res = [prefs objectForKey:key];
-  if (res)
-    return res;
-  
-  return [_defaults objectForKey:dictKey];
-}
-
-
-- (NSString *)stringForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
-{
-  id obj = [self objectForOption:optionId ofTool:tool];
-  if (obj && [obj isKindOfClass:[NSString class]])
-    return (NSString *)obj;
-  return nil;
-}
-
-
-- (NSColor *)colorForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
-{
-  id obj = [self objectForOption:optionId ofTool:tool];
-  if (obj && [obj isKindOfClass:[NSColor class]])
-    return (NSColor *)obj;
-  if (obj && [obj isKindOfClass:[NSData class]]) {
-    NSColor *res = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSColor class] fromData:obj error:nil];
-    return res;
+  id objFromDefaults = [prefs objectForKey:key];
+  if (objFromDefaults) {
+    if ([objFromDefaults isKindOfClass:optionData.unarchivingClass]) {
+      if (optionData.validationBlock && !optionData.validationBlock(objFromDefaults))
+        NSLog(@"warning: option %@ is corrupt (validation failed), using default", dictKey);
+      else
+        res = objFromDefaults;
+        
+    } else if ([objFromDefaults isKindOfClass:[NSData class]]) {
+      id decodedObj = [NSKeyedUnarchiver unarchivedObjectOfClass:optionData.unarchivingClass fromData:objFromDefaults error:nil];
+      if (!decodedObj)
+        NSLog(@"warning: option %@ is corrupt (unarchiving failed), using default", dictKey);
+      else if (optionData.validationBlock && !optionData.validationBlock(decodedObj))
+        NSLog(@"warning: option %@ is corrupt (validation failed), using default", dictKey);
+      else
+        res = decodedObj;
+    }
   }
-  return nil;
-}
-
-
-- (NSNumber *)numberForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
-{
-  id obj = [self objectForOption:optionId ofTool:tool];
-  if (obj && [obj isKindOfClass:[NSNumber class]])
-    return (NSNumber *)obj;
-  return @(0);
-}
-
-
-- (NSInteger)integerForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
-{
-  NSNumber *obj = [self numberForOption:optionId ofTool:tool];
-  return obj.integerValue;
-}
-
-
-- (double)doubleForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
-{
-  NSNumber *obj = [self numberForOption:optionId ofTool:tool];
-  return obj.doubleValue;
-}
-
-
-- (BOOL)boolForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
-{
-  NSNumber *obj = [self numberForOption:optionId ofTool:tool];
-  return obj.boolValue;
+  
+  if (!res)
+    res = optionData.defaultValue;
+    
+  [_values setObject:res forKey:dictKey];
+  return res;
 }
 
 
