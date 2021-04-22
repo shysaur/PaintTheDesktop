@@ -29,6 +29,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PTDBrushTool : PTDTool
 
+@property (nonatomic, class, null_resettable) NSArray <NSColor *> *defaultColors;
+@property (nonatomic, class, null_resettable) NSArray <NSNumber *> *defaultSizes;
+
 @property (nonatomic) NSColor *color;
 @property (nonatomic) CGFloat size;
 

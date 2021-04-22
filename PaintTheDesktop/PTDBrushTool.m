@@ -25,10 +25,13 @@
 
 #import "PTDBrushTool.h"
 #import "PTDToolOptions.h"
+#import "PTDGraphics.h"
 
 
 NSString * const PTDBrushToolOptionSize = @"brushSize";
 NSString * const PTDBrushToolOptionColor = @"brushColor";
+NSString * const PTDBrushToolOptionColorOptions = @"brushColorOptions";
+NSString * const PTDBrushToolOptionSizeOptions = @"brushSizeOptions";
 
 
 @implementation PTDBrushTool
@@ -40,6 +43,62 @@ NSString * const PTDBrushToolOptionColor = @"brushColor";
   
   [o registerGlobalOption:PTDBrushToolOptionSize types:@[[NSNumber class]] defaultValue:@(2.0) validationBlock:nil];
   [o registerGlobalOption:PTDBrushToolOptionColor types:@[[NSColor class]] defaultValue:[NSColor blackColor] validationBlock:nil];
+  
+  [o registerGlobalOption:PTDBrushToolOptionColorOptions types:@[[NSArray class], [NSColor class]] defaultValue:@[
+      [NSColor blackColor], [NSColor systemRedColor], [NSColor systemGreenColor],
+      [NSColor systemBlueColor], [NSColor systemYellowColor], [NSColor whiteColor]
+    ] validationBlock:^BOOL(id  _Nonnull value) {
+      if (![value isKindOfClass:[NSArray class]])
+        return NO;
+      NSArray *a = (NSArray *)value;
+      for (id v in a) {
+        if (![v isKindOfClass:[NSColor class]])
+          return NO;
+      }
+      return YES;
+    }];
+  [o registerGlobalOption:PTDBrushToolOptionSizeOptions types:@[[NSArray class], [NSColor class]] defaultValue:@[
+      @(2), @(4), @(6), @(8), @(10), @(15), @(20)
+    ] validationBlock:^BOOL(id  _Nonnull value) {
+      if (![value isKindOfClass:[NSArray class]])
+        return NO;
+      NSArray *a = (NSArray *)value;
+      for (id v in a) {
+        if (![v isKindOfClass:[NSNumber class]])
+          return NO;
+      }
+      return YES;
+    }];
+}
+
+
++ (NSArray <NSColor *> *)defaultColors
+{
+  return [PTDToolOptions.sharedOptions objectForOption:PTDBrushToolOptionColorOptions ofTool:nil];
+}
+
+
++ (void)setDefaultColors:(NSArray<NSColor *> *)defaultColors
+{
+  if (!defaultColors)
+    [PTDToolOptions.sharedOptions restoreDefaultForOption:PTDBrushToolOptionColorOptions ofTool:nil];
+  else
+    [PTDToolOptions.sharedOptions setObject:defaultColors forOption:PTDBrushToolOptionColorOptions ofTool:nil];
+}
+
+
++ (NSArray <NSNumber *> *)defaultSizes
+{
+  return [PTDToolOptions.sharedOptions objectForOption:PTDBrushToolOptionSizeOptions ofTool:nil];
+}
+
+
++ (void)setDefaultSizes:(NSArray<NSNumber *> *)defaultSizes
+{
+  if (!defaultSizes)
+    [PTDToolOptions.sharedOptions restoreDefaultForOption:PTDBrushToolOptionSizeOptions ofTool:nil];
+  else
+    [PTDToolOptions.sharedOptions setObject:defaultSizes forOption:PTDBrushToolOptionSizeOptions ofTool:nil];
 }
 
 
@@ -55,22 +114,16 @@ NSString * const PTDBrushToolOptionColor = @"brushColor";
   PTDRingMenuRing *res = [PTDRingMenuRing ring];
   
   [res beginGravityMassGroupWithAngle:M_PI_2];
-  for (int i=2; i<10; i += 2) {
-    PTDRingMenuItem *item = [self menuItemForBrushSize:i];
-    [res addItem:item];
-  }
-  for (int i=10; i<25; i += 5) {
-    PTDRingMenuItem *item = [self menuItemForBrushSize:i];
+  NSArray <NSNumber *> *sizes = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionSizeOptions ofTool:nil];
+  for (NSNumber *size in sizes) {
+    PTDRingMenuItem *item = [self menuItemForBrushSize:size.integerValue];
     [res addItem:item];
   }
   [res endGravityMassGroup];
   
   [res addSpringWithElasticity:0.5];
   
-  NSArray *colors = @[
-    [NSColor blackColor], [NSColor systemRedColor], [NSColor systemGreenColor],
-    [NSColor systemBlueColor], [NSColor systemYellowColor], [NSColor whiteColor]
-  ];
+  NSArray <NSColor *> *colors = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionColorOptions ofTool:nil];
   for (NSColor *color in colors) {
     PTDRingMenuItem *item = [self menuItemForBrushColor:color];
     [res addItem:item];
