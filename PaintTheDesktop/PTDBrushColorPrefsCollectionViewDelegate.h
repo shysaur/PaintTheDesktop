@@ -1,5 +1,5 @@
 //
-// PTDBrushPrefsCollectionViewDelegate.h
+// PTDBrushColorPrefsCollectionViewDelegate.h
 // PaintTheDesktop -- Created on 10/04/2021.
 //
 // Copyright (c) 2021 Daniele Cattaneo
@@ -24,20 +24,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "PTDAbstractPrefsCollectionViewDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDBrushPrefsCollectionViewDelegate : NSObject <NSCollectionViewDelegate, NSCollectionViewDataSource, NSCollectionViewDelegateFlowLayout>
-
-@property (nonatomic) IBOutlet NSCollectionView *collectionView;
-
-- (IBAction)reset:(id)sender;
-- (IBAction)addItem:(id)sender;
-- (IBAction)deleteItem:(id)sender;
-
-@property (nonatomic, readonly) BOOL canDelete;
-
-- (void)colorChanged:(id)sender;
+@interface PTDBrushColorPrefsCollectionViewDelegate : PTDAbstractPrefsCollectionViewDelegate
 
 @end
 

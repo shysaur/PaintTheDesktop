@@ -1,6 +1,6 @@
 //
-// PTDPreferencesWindowController.m
-// PaintTheDesktop -- Created on 24/03/2021.
+// PTDAbstractPrefsCollectionViewDelegate.h
+// PaintTheDesktop -- Created on 10/04/2021.
 //
 // Copyright (c) 2021 Daniele Cattaneo
 //
@@ -23,22 +23,34 @@
 // SOFTWARE.
 //
 
-#import "PTDPreferencesWindowController.h"
-#import "PTDBrushColorPrefsCollectionViewDelegate.h"
+#import <Cocoa/Cocoa.h>
 
+NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDPreferencesWindowController ()
+@interface PTDAbstractPrefsCollectionViewDelegate : NSObject <NSCollectionViewDelegate, NSCollectionViewDataSource, NSCollectionViewDelegateFlowLayout>
+
+@property (nonatomic) IBOutlet NSCollectionView *collectionView;
+
+- (IBAction)reset:(id)sender;
+- (IBAction)addItem:(id)sender;
+- (IBAction)deleteItem:(id)sender;
+
+@property (nonatomic, readonly) BOOL canDelete;
+
+- (void)saveOptions:(id)sender;
+
+#pragma mark - Abstract Methods
+
++ (NSSize)itemSize;
+
+- (void)reset;
+- (void)saveItems:(NSArray <NSCollectionViewItem *> *)items;
+- (NSArray <NSCollectionViewItem *> *)loadItems;
+
+- (id<NSPasteboardWriting>)pasteboardWriterForItem:(NSCollectionViewItem *)item;
+- (void)updateItem:(NSCollectionViewItem *)item withPasteboard:(NSPasteboard *)pb;
+- (NSCollectionViewItem *)newItemFromPasteboard:(nullable NSPasteboard *)pb;
 
 @end
 
-
-@implementation PTDPreferencesWindowController
-
-
-- (NSString *)windowNibName
-{
-  return @"PTDPreferencesWindow";
-}
-
-
-@end
+NS_ASSUME_NONNULL_END

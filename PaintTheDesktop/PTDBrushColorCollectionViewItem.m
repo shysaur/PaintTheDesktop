@@ -24,7 +24,7 @@
 //
 
 #import <Carbon/Carbon.h>
-#import "PTDBrushPrefsCollectionViewDelegate.h"
+#import "PTDBrushColorPrefsCollectionViewDelegate.h"
 #import "PTDBrushColorCollectionViewItem.h"
 #import "PTDGraphics.h"
 #import "NSColor+PTD.h"
@@ -37,11 +37,6 @@ static const CGFloat _SwatchHeight = 14.0;
 static const CGFloat _DropIndicatorWidth = 19.5;
 static const CGFloat _DropIndicatorHeight = 19.5;
 static const CGFloat _DropIndicatorLineWidth = 3.0;
-
-
-@interface PTDBrushColorCollectionViewItem ()
-
-@end
 
 
 @implementation PTDBrushColorCollectionViewItem {
@@ -138,7 +133,7 @@ static const CGFloat _DropIndicatorLineWidth = 3.0;
   NSColorPanel *colorPanel = NSColorPanel.sharedColorPanel;
   self.color = colorPanel.color;
   
-  [NSApp sendAction:@selector(colorChanged:) to:self.target from:self];
+  [NSApp sendAction:@selector(saveOptions:) to:self.target from:self];
 }
 
 

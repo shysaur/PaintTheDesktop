@@ -11,6 +11,7 @@
 		013C9A03249AD17E0033120A /* PTDNSPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 013C9A02249AD17E0033120A /* PTDNSPanel.m */; };
 		0146EBAB24FB319400B3785C /* Sparkle.framework in Copy Bundle Frameworks */ = {isa = PBXBuildFile; fileRef = 0146EB9324FB316300B3785C /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		01484AE62631AC1A00B0518F /* PTDCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484AE52631AC1A00B0518F /* PTDCollectionViewFlowLayout.m */; };
+		01484AFF263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484AFE263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m */; };
 		015A50CC24A13F4B0008AAB1 /* PTDRoundRectTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 015A50CB24A13F4B0008AAB1 /* PTDRoundRectTool.m */; };
 		0162BC91249A0CAE00DFECC9 /* PTDRingMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC90249A0CAE00DFECC9 /* PTDRingMenu.m */; };
 		0162BC94249A0CC400DFECC9 /* PTDRingMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC93249A0CC400DFECC9 /* PTDRingMenuItem.m */; };
@@ -37,7 +38,7 @@
 		018CB0C624AA3CCB002ABD80 /* PTDScreenMenuItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 018CB0C524AA3CCB002ABD80 /* PTDScreenMenuItemView.xib */; };
 		018CB0C924AA421C002ABD80 /* NSNib+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 018CB0C824AA421C002ABD80 /* NSNib+PTD.m */; };
 		018E37632623C99E0009B7A4 /* PTDGraphics.m in Sources */ = {isa = PBXBuildFile; fileRef = 018E37622623C99E0009B7A4 /* PTDGraphics.m */; };
-		019AB4882622571F008F85A7 /* PTDBrushPrefsCollectionViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 019AB4872622571F008F85A7 /* PTDBrushPrefsCollectionViewDelegate.m */; };
+		019AB4882622571F008F85A7 /* PTDBrushColorPrefsCollectionViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 019AB4872622571F008F85A7 /* PTDBrushColorPrefsCollectionViewDelegate.m */; };
 		01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A213DE248EE94500B5EB9D /* PTDAppDelegate.m */; };
 		01A213E1248EE94600B5EB9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01A213E0248EE94600B5EB9D /* Assets.xcassets */; };
 		01A213E4248EE94600B5EB9D /* PTDApp.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01A213E2248EE94600B5EB9D /* PTDApp.xib */; };
@@ -165,6 +166,9 @@
 		0146EB8024FB316200B3785C /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		01484AE42631AC1A00B0518F /* PTDCollectionViewFlowLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDCollectionViewFlowLayout.h; sourceTree = "<group>"; };
 		01484AE52631AC1A00B0518F /* PTDCollectionViewFlowLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDCollectionViewFlowLayout.m; sourceTree = "<group>"; };
+		01484AFD263213E900B0518F /* PTDAbstractPrefsCollectionViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDAbstractPrefsCollectionViewDelegate.h; sourceTree = "<group>"; };
+		01484AFE263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDAbstractPrefsCollectionViewDelegate.m; sourceTree = "<group>"; };
+		01484B012632197300B0518F /* PTDUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDUtils.h; sourceTree = "<group>"; };
 		015A50CA24A13F4B0008AAB1 /* PTDRoundRectTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRoundRectTool.h; sourceTree = "<group>"; };
 		015A50CB24A13F4B0008AAB1 /* PTDRoundRectTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRoundRectTool.m; sourceTree = "<group>"; };
 		0162BC8F249A0CAD00DFECC9 /* PTDRingMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenu.h; sourceTree = "<group>"; };
@@ -216,8 +220,8 @@
 		018CB0C824AA421C002ABD80 /* NSNib+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSNib+PTD.m"; sourceTree = "<group>"; };
 		018E37612623C99E0009B7A4 /* PTDGraphics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDGraphics.h; sourceTree = "<group>"; };
 		018E37622623C99E0009B7A4 /* PTDGraphics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDGraphics.m; sourceTree = "<group>"; };
-		019AB4862622571F008F85A7 /* PTDBrushPrefsCollectionViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDBrushPrefsCollectionViewDelegate.h; sourceTree = "<group>"; };
-		019AB4872622571F008F85A7 /* PTDBrushPrefsCollectionViewDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDBrushPrefsCollectionViewDelegate.m; sourceTree = "<group>"; };
+		019AB4862622571F008F85A7 /* PTDBrushColorPrefsCollectionViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDBrushColorPrefsCollectionViewDelegate.h; sourceTree = "<group>"; };
+		019AB4872622571F008F85A7 /* PTDBrushColorPrefsCollectionViewDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDBrushColorPrefsCollectionViewDelegate.m; sourceTree = "<group>"; };
 		01A213DA248EE94500B5EB9D /* PaintTheDesktop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PaintTheDesktop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01A213DD248EE94500B5EB9D /* PTDAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDAppDelegate.h; sourceTree = "<group>"; };
 		01A213DE248EE94500B5EB9D /* PTDAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDAppDelegate.m; sourceTree = "<group>"; };
@@ -357,6 +361,7 @@
 		016AD99E24975619004E3749 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				01484B012632197300B0518F /* PTDUtils.h */,
 				01C0D68A2492ED7100AECEAB /* NSScreen+PTD.h */,
 				01C0D68B2492ED7100AECEAB /* NSScreen+PTD.m */,
 				016AD9A324978132004E3749 /* NSView+PTD.h */,
@@ -447,8 +452,10 @@
 				01EE461D260BAD3400CF4CFF /* PTDPreferencesWindowController.h */,
 				01EE461E260BAD3400CF4CFF /* PTDPreferencesWindowController.m */,
 				01EE461F260BAD3400CF4CFF /* PTDPreferencesWindow.xib */,
-				019AB4862622571F008F85A7 /* PTDBrushPrefsCollectionViewDelegate.h */,
-				019AB4872622571F008F85A7 /* PTDBrushPrefsCollectionViewDelegate.m */,
+				01484AFD263213E900B0518F /* PTDAbstractPrefsCollectionViewDelegate.h */,
+				01484AFE263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m */,
+				019AB4862622571F008F85A7 /* PTDBrushColorPrefsCollectionViewDelegate.h */,
+				019AB4872622571F008F85A7 /* PTDBrushColorPrefsCollectionViewDelegate.m */,
 				01EE4622260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.h */,
 				01EE4623260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m */,
 			);
@@ -650,7 +657,7 @@
 				016D36C0249068F40086E96D /* PTDResetTool.m in Sources */,
 				018E37632623C99E0009B7A4 /* PTDGraphics.m in Sources */,
 				0164247B249FF71F000955D8 /* PTDOvalTool.m in Sources */,
-				019AB4882622571F008F85A7 /* PTDBrushPrefsCollectionViewDelegate.m in Sources */,
+				019AB4882622571F008F85A7 /* PTDBrushColorPrefsCollectionViewDelegate.m in Sources */,
 				0162BC97249A0DDA00DFECC9 /* PTDRingMenuSpring.m in Sources */,
 				01A213F5248EEA1D00B5EB9D /* PTDPaintView.m in Sources */,
 				016AD9AB2497A902004E3749 /* PTDRectangleTool.m in Sources */,
@@ -669,6 +676,7 @@
 				01EE4624260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m in Sources */,
 				01B63BA6249C2F3400D9DFBF /* PTDRingMenuRing.m in Sources */,
 				0162BC91249A0CAE00DFECC9 /* PTDRingMenu.m in Sources */,
+				01484AFF263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m in Sources */,
 				016AD9A8249790B3004E3749 /* PTDDrawingSurface.m in Sources */,
 				016D36B42490584E0086E96D /* PTDPencilTool.m in Sources */,
 				015A50CC24A13F4B0008AAB1 /* PTDRoundRectTool.m in Sources */,

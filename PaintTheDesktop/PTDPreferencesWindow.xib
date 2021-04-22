@@ -139,7 +139,7 @@
             </connections>
             <point key="canvasLocation" x="85.5" y="69"/>
         </window>
-        <customObject id="g8C-lH-LOG" customClass="PTDBrushPrefsCollectionViewDelegate">
+        <customObject id="g8C-lH-LOG" customClass="PTDBrushColorPrefsCollectionViewDelegate">
             <connections>
                 <outlet property="collectionView" destination="PgB-gI-Lui" id="aqD-GS-v2S"/>
             </connections>

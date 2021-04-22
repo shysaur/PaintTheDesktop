@@ -1,5 +1,5 @@
 //
-// PTDBrushPrefsCollectionViewDelegate.m
+// PTDAbstractPrefsCollectionViewDelegate.m
 // PaintTheDesktop -- Created on 10/04/2021.
 //
 // Copyright (c) 2021 Daniele Cattaneo
@@ -23,15 +23,14 @@
 // SOFTWARE.
 //
 
-#import "PTDBrushPrefsCollectionViewDelegate.h"
-#import "PTDBrushColorCollectionViewItem.h"
-#import "PTDBrushTool.h"
+#import "PTDAbstractPrefsCollectionViewDelegate.h"
 #import "PTDToolOptions.h"
 #import "PTDCollectionViewFlowLayout.h"
+#import "PTDUtils.h"
 
 
-@implementation PTDBrushPrefsCollectionViewDelegate {
-  NSMutableArray <PTDBrushColorCollectionViewItem *> *_items;
+@implementation PTDAbstractPrefsCollectionViewDelegate {
+  NSMutableArray <NSCollectionViewItem *> *_items;
   NSInteger _draggedItemIndex;
 }
 
@@ -42,35 +41,19 @@
   
   _collectionView = collectionView;
   
-  _items = [[NSMutableArray alloc] init];
-  NSArray *colors = PTDBrushTool.defaultColors;
-  for (NSColor *color in colors) {
-    PTDBrushColorCollectionViewItem *item = [self createItemWithColor:color];
-    [_items addObject:item];
-  }
+  _items = [[self loadItems] mutableCopy];
   
   _collectionView = collectionView;
   NSCollectionViewFlowLayout *flowLayout = [[PTDCollectionViewFlowLayout alloc] init];
   flowLayout.minimumInteritemSpacing = 3;
   flowLayout.minimumLineSpacing = 3;
   flowLayout.sectionInset = NSEdgeInsetsMake(2, 2, 2, 2);
-  flowLayout.estimatedItemSize = PTDBrushColorCollectionViewItem.size;
+  flowLayout.estimatedItemSize = [self class].itemSize;
   _collectionView.collectionViewLayout = flowLayout;
   _collectionView.selectable = YES;
   
-  [_collectionView registerForDraggedTypes:@[NSPasteboardTypeColor]];
-  [_collectionView setDraggingSourceOperationMask:NSDragOperationEvery forLocal:YES];
-  
   _collectionView.delegate = self;
   _collectionView.dataSource = self;
-}
-
-
-- (PTDBrushColorCollectionViewItem *)createItemWithColor:(NSColor *)color
-{
-  PTDBrushColorCollectionViewItem *item = [[PTDBrushColorCollectionViewItem alloc] initWithColor:color];
-  item.target = self;
-  return item;
 }
 
 
@@ -84,7 +67,7 @@
 
 - (NSSize)collectionView:(NSCollectionView *)collectionView layout:(NSCollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-  return PTDBrushColorCollectionViewItem.size;
+  return [self class].itemSize;
 }
 
 
@@ -96,7 +79,7 @@
 
 - (id<NSPasteboardWriting>)collectionView:(NSCollectionView *)collectionView pasteboardWriterForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-  return _items[indexPath.item].color;
+  return [self pasteboardWriterForItem:_items[indexPath.item]];
 }
 
 
@@ -118,13 +101,12 @@
 
 - (BOOL)collectionView:(NSCollectionView *)collectionView acceptDrop:(id<NSDraggingInfo>)draggingInfo indexPath:(nonnull NSIndexPath *)indexPath dropOperation:(NSCollectionViewDropOperation)dropOperation
 {
-  NSColor *color = [draggingInfo.draggingPasteboard readObjectsForClasses:@[[NSColor class]] options:nil][0];
   if (dropOperation == NSCollectionViewDropOn) {
-    _items[indexPath.item].color = color;
+    [self updateItem:_items[indexPath.item] withPasteboard:draggingInfo.draggingPasteboard];
     return YES;
   }
   
-  PTDBrushColorCollectionViewItem *item = [self createItemWithColor:color];
+  NSCollectionViewItem *item = [self newItemFromPasteboard:draggingInfo.draggingPasteboard];
   
   NSInteger adjIndex = indexPath.item;
   if (_draggedItemIndex >= 0) {
@@ -147,27 +129,18 @@
 
 - (void)saveOptions
 {
-  NSMutableArray *newColors = [NSMutableArray array];
-  for (PTDBrushColorCollectionViewItem *item in _items) {
-    [newColors addObject:item.color];
-  }
-  PTDBrushTool.defaultColors = [newColors copy];
+  [self saveItems:_items];
 }
 
 
 - (void)loadOptions
 {
-  NSArray *colors = PTDBrushTool.defaultColors;
-  [_items removeAllObjects];
-  for (NSColor *color in colors) {
-    PTDBrushColorCollectionViewItem *item = [self createItemWithColor:color];
-    [_items addObject:item];
-  }
+  _items = [[self loadItems] mutableCopy];
   [self.collectionView reloadData];
 }
 
 
-- (void)colorChanged:(id)sender
+- (void)saveOptions:(id)sender
 {
   [self saveOptions];
 }
@@ -175,14 +148,14 @@
 
 - (IBAction)reset:(id)sender
 {
-  PTDBrushTool.defaultColors = nil;
+  [self reset];
   [self loadOptions];
 }
 
 
 - (IBAction)addItem:(id)sender
 {
-  PTDBrushColorCollectionViewItem *itm = [self createItemWithColor:[NSColor blackColor]];
+  NSCollectionViewItem *itm = [self newItemFromPasteboard:nil];
   [_items addObject:itm];
   [_collectionView insertItemsAtIndexPaths:[NSSet setWithObject:[NSIndexPath indexPathForItem:_items.count-1 inSection:0]]];
   [self saveOptions];
@@ -211,6 +184,51 @@
 - (BOOL)canDelete
 {
   return [_collectionView selectionIndexPaths].count > 0;
+}
+
+
+#pragma mark - Abstract Methods
+
+
++ (NSSize)itemSize
+{
+  PTDAbstract();
+}
+
+
+- (void)reset
+{
+  PTDAbstract();
+}
+
+
+- (void)saveItems:(NSMutableArray <NSCollectionViewItem *> *)items
+{
+  PTDAbstract();
+}
+
+
+- (NSMutableArray <NSCollectionViewItem *> *)loadItems
+{
+  PTDAbstract();
+}
+
+
+- (id<NSPasteboardWriting>)pasteboardWriterForItem:(NSCollectionViewItem *)item
+{
+  PTDAbstract();
+}
+
+
+- (void)updateItem:(NSCollectionViewItem *)item withPasteboard:(NSPasteboard *)pb
+{
+  PTDAbstract();
+}
+
+
+- (NSCollectionViewItem *)newItemFromPasteboard:(nullable NSPasteboard *)pb
+{
+  PTDAbstract();
 }
 
 

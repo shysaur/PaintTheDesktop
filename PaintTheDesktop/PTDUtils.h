@@ -1,6 +1,6 @@
 //
-// PTDPreferencesWindowController.m
-// PaintTheDesktop -- Created on 24/03/2021.
+// PTDUtils.h
+// PaintTheDesktop -- Created on 22/04/2021.
 //
 // Copyright (c) 2021 Daniele Cattaneo
 //
@@ -23,22 +23,14 @@
 // SOFTWARE.
 //
 
-#import "PTDPreferencesWindowController.h"
-#import "PTDBrushColorPrefsCollectionViewDelegate.h"
+#import <Cocoa/Cocoa.h>
 
+NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDPreferencesWindowController ()
-
-@end
-
-
-@implementation PTDPreferencesWindowController
-
-
-- (NSString *)windowNibName
+NS_INLINE __attribute__((noreturn)) void PTDAbstract(void)
 {
-  return @"PTDPreferencesWindow";
+  NSLog(@"invoked an abstract method!");
+  exit(1);
 }
 
-
-@end
+NS_ASSUME_NONNULL_END
