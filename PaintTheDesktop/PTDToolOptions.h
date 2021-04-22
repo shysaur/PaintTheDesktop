@@ -41,10 +41,11 @@ typedef BOOL (^PTDValidationBlock)(id value);
 
 + (PTDToolOptions *)sharedOptions;
 
-- (void)registerGlobalOption:(NSString *)optionId ofType:(Class)clss defaultValue:(id)value validationBlock:(nullable PTDValidationBlock)valid;
-- (void)registerOption:(NSString *)optionId ofToolClass:(nullable Class)toolClass ofType:(Class)clss defaultValue:(id)value validationBlock:(nullable PTDValidationBlock)valid;
+- (void)registerGlobalOption:(NSString *)optionId types:(NSArray <Class> *)clss defaultValue:(id)value validationBlock:(nullable PTDValidationBlock)valid;
+- (void)registerOption:(NSString *)optionId ofToolClass:(nullable Class)toolClass types:(NSArray <Class> *)clss defaultValue:(id)value validationBlock:(nullable PTDValidationBlock)valid;
 
 - (void)setObject:(id)object forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
+- (void)restoreDefaultForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
 
 - (id)objectForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool;
 

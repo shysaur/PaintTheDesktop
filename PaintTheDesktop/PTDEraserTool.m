@@ -48,7 +48,7 @@ NSString * const PTDEraserToolOptionSize = @"size";
 + (void)initialize
 {
   PTDToolOptions *o = PTDToolOptions.sharedOptions;
-  [o registerOption:PTDEraserToolOptionSize ofToolClass:self ofType:[NSNumber class] defaultValue:@(20) validationBlock:nil];
+  [o registerOption:PTDEraserToolOptionSize ofToolClass:self types:@[[NSNumber class]] defaultValue:@(20) validationBlock:nil];
 }
 
 

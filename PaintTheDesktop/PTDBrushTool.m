@@ -37,8 +37,9 @@ NSString * const PTDBrushToolOptionColor = @"brushColor";
 + (void)initialize
 {
   PTDToolOptions *o = PTDToolOptions.sharedOptions;
-  [o registerGlobalOption:PTDBrushToolOptionSize ofType:[NSNumber class] defaultValue:@(2.0) validationBlock:nil];
-  [o registerGlobalOption:PTDBrushToolOptionColor ofType:[NSColor class] defaultValue:[NSColor blackColor] validationBlock:nil];
+  
+  [o registerGlobalOption:PTDBrushToolOptionSize types:@[[NSNumber class]] defaultValue:@(2.0) validationBlock:nil];
+  [o registerGlobalOption:PTDBrushToolOptionColor types:@[[NSColor class]] defaultValue:[NSColor blackColor] validationBlock:nil];
 }
 
 

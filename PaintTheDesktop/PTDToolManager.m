@@ -54,7 +54,7 @@ NSString * const PTDToolManagerOptionToolIdentifier = @"toolId";
 + (void)initialize
 {
   PTDToolOptions *o = PTDToolOptions.sharedOptions;
-  [o registerGlobalOption:PTDToolManagerOptionToolIdentifier ofType:[NSString class] defaultValue:PTDToolIdentifierPencilTool validationBlock:^BOOL(id  _Nonnull value) {
+  [o registerGlobalOption:PTDToolManagerOptionToolIdentifier types:@[[NSString class]] defaultValue:PTDToolIdentifierPencilTool validationBlock:^BOOL(id  _Nonnull value) {
     return [[[self class] availableToolIdentifiers] containsObject:value];
   }];
 }
