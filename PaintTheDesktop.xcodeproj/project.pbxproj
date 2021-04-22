@@ -35,6 +35,7 @@
 		018CB0C424AA3C1B002ABD80 /* PTDScreenMenuItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 018CB0C324AA3C1B002ABD80 /* PTDScreenMenuItemView.m */; };
 		018CB0C624AA3CCB002ABD80 /* PTDScreenMenuItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 018CB0C524AA3CCB002ABD80 /* PTDScreenMenuItemView.xib */; };
 		018CB0C924AA421C002ABD80 /* NSNib+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 018CB0C824AA421C002ABD80 /* NSNib+PTD.m */; };
+		018E37632623C99E0009B7A4 /* PTDGraphics.m in Sources */ = {isa = PBXBuildFile; fileRef = 018E37622623C99E0009B7A4 /* PTDGraphics.m */; };
 		01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A213DE248EE94500B5EB9D /* PTDAppDelegate.m */; };
 		01A213E1248EE94600B5EB9D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01A213E0248EE94600B5EB9D /* Assets.xcassets */; };
 		01A213E4248EE94600B5EB9D /* PTDApp.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01A213E2248EE94600B5EB9D /* PTDApp.xib */; };
@@ -206,6 +207,8 @@
 		018CB0C524AA3CCB002ABD80 /* PTDScreenMenuItemView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PTDScreenMenuItemView.xib; sourceTree = "<group>"; };
 		018CB0C724AA421C002ABD80 /* NSNib+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSNib+PTD.h"; sourceTree = "<group>"; };
 		018CB0C824AA421C002ABD80 /* NSNib+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSNib+PTD.m"; sourceTree = "<group>"; };
+		018E37612623C99E0009B7A4 /* PTDGraphics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDGraphics.h; sourceTree = "<group>"; };
+		018E37622623C99E0009B7A4 /* PTDGraphics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDGraphics.m; sourceTree = "<group>"; };
 		01A213DA248EE94500B5EB9D /* PaintTheDesktop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PaintTheDesktop.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01A213DD248EE94500B5EB9D /* PTDAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDAppDelegate.h; sourceTree = "<group>"; };
 		01A213DE248EE94500B5EB9D /* PTDAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDAppDelegate.m; sourceTree = "<group>"; };
@@ -359,6 +362,8 @@
 				0177600E25BA340000317B4F /* PTDNoAnimeCALayer.m */,
 				01A31E4625BB35CA002BA7D4 /* NSBezierPath+PTD.h */,
 				01A31E4725BB35CA002BA7D4 /* NSBezierPath+PTD.m */,
+				018E37612623C99E0009B7A4 /* PTDGraphics.h */,
+				018E37622623C99E0009B7A4 /* PTDGraphics.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -611,6 +616,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				016D36C0249068F40086E96D /* PTDResetTool.m in Sources */,
+				018E37632623C99E0009B7A4 /* PTDGraphics.m in Sources */,
 				0164247B249FF71F000955D8 /* PTDOvalTool.m in Sources */,
 				0162BC97249A0DDA00DFECC9 /* PTDRingMenuSpring.m in Sources */,
 				01A213F5248EEA1D00B5EB9D /* PTDPaintView.m in Sources */,
