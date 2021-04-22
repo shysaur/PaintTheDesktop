@@ -31,6 +31,7 @@
 #import "NSScreen+PTD.h"
 #import "PTDScreenMenuItemView.h"
 #import "NSNib+PTD.h"
+#import "PTDPreferencesWindowController.h"
 
 
 @interface NSMenuItem ()
@@ -49,6 +50,8 @@
 
 @property (nonatomic) IBOutlet NSWindow *aboutWindow;
 @property (nonatomic) IBOutlet NSTextField *aboutWindowVersionLabel;
+
+@property (nonatomic) PTDPreferencesWindowController *preferencesWindowController;
 
 @end
 
@@ -187,12 +190,32 @@
   }
   
   [res addItem:[NSMenuItem separatorItem]];
+  
   [res addItemWithTitle:NSLocalizedString(@"About PaintTheDesktop", @"") action:@selector(orderFrontAboutWindow:) keyEquivalent:@""];
+  
+  [res addItem:[NSMenuItem separatorItem]];
+  
+  NSMenuItem *prefsMi = [res addItemWithTitle:NSLocalizedString(@"Preferences...", @"") action:@selector(openPreferences:) keyEquivalent:@""];
+  [prefsMi setTarget:self];
+  
   NSMenuItem *sparkleMi = [res addItemWithTitle:NSLocalizedString(@"Check for Updates...", @"") action:@selector(checkForUpdates:) keyEquivalent:@""];
   [sparkleMi setTarget:[SUUpdater sharedUpdater]];
+  
+  [res addItem:[NSMenuItem separatorItem]];
+  
   [res addItemWithTitle:NSLocalizedString(@"Quit", @"") action:@selector(terminate:) keyEquivalent:@""];
   
   return res;
+}
+
+
+- (void)openPreferences:(id)sender
+{
+  if (self.preferencesWindowController == nil) {
+    self.preferencesWindowController = [[PTDPreferencesWindowController alloc] init];
+  }
+  [NSApp activateIgnoringOtherApps:YES];
+  [self.preferencesWindowController showWindow:self];
 }
 
 
