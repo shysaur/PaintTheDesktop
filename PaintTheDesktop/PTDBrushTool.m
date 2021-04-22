@@ -150,37 +150,11 @@ NSString * const PTDBrushToolOptionSizeOptions = @"brushSizeOptions";
 
 - (PTDRingMenuItem *)menuItemForBrushSize:(CGFloat)size
 {
-  NSImage *img;
-  const CGFloat threshold = 16.0;
-  const CGFloat minBorder = 4.0;
-  const CGFloat maxBorder = 8.0;
-  
-  if (size < threshold) {
-    CGFloat imageSize = round(minBorder + (maxBorder - minBorder) * (threshold-size)/threshold) + size;
-    img = [NSImage imageWithSize:NSMakeSize(imageSize, imageSize) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-      [[NSColor blackColor] setStroke];
-      NSBezierPath *bp = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect((imageSize - size) / 2.0, (imageSize - size) / 2.0, size, size)];
-      [bp stroke];
-      return YES;
-    }];
-  } else {
-    CGFloat imageSize = threshold+minBorder;
-    NSMutableParagraphStyle *parastyle = [[NSMutableParagraphStyle alloc] init];
-    parastyle.alignment = NSTextAlignmentCenter;
-    NSDictionary *attrib = @{
-        NSParagraphStyleAttributeName: parastyle,
-        NSFontAttributeName: [NSFont systemFontOfSize:12.0]};
-    NSString *sizeStr = [NSString stringWithFormat:@"%d", (int)size];
-    NSRect realSizeRect = [sizeStr boundingRectWithSize:NSMakeSize(imageSize, imageSize) options:0 attributes:attrib context:nil];
-    
-    img = [NSImage imageWithSize:NSMakeSize(imageSize, imageSize) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-      [[NSColor blackColor] setStroke];
-      NSBezierPath *bp = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(minBorder/2.0-0.5, minBorder/2.0-0.5, threshold+1, threshold+1)];
-      [bp stroke];
-      [sizeStr drawInRect:NSMakeRect(0, (imageSize-realSizeRect.size.height)/2.0, imageSize, realSizeRect.size.height) withAttributes:attrib];
-      return YES;
-    }];
-  }
+  NSSize imgSize = PTDBrushSizeIndicatorMinimumSize(size);
+  NSImage *img = [NSImage imageWithSize:imgSize flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+    PTDDrawBrushSizeIndicator((NSRect){NSZeroPoint, imgSize}, size);
+    return YES;
+  }];
   img.template = YES;
   
   PTDRingMenuItem *itm = [PTDRingMenuItem itemWithImage:img target:self action:@selector(changeSize:)];

@@ -29,4 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 void PTDDrawCircularColorSwatch(NSRect rect, NSColor *color);
 
+NSSize PTDBrushSizeIndicatorMinimumSize(CGFloat size);
+void PTDDrawBrushSizeIndicator(NSRect rect, CGFloat size);
+
 NS_ASSUME_NONNULL_END

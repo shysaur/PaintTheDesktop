@@ -26,6 +26,11 @@
 #import "PTDGraphics.h"
 
 
+static const CGFloat _BrushSizeThreshold = 16.0;
+static const CGFloat _BrushSizeMinBorder = 4.0;
+static const CGFloat _BrushSizeMaxBorder = 8.0;
+
+
 void PTDDrawCircularColorSwatch(NSRect rect, NSColor *color)
 {
   [color setFill];
@@ -46,5 +51,46 @@ void PTDDrawCircularColorSwatch(NSRect rect, NSColor *color)
   NSBezierPath *border = [NSBezierPath bezierPathWithOvalInRect:borderRect];
   [borderColor setStroke];
   [border stroke];
+}
+
+
+NSSize PTDBrushSizeIndicatorMinimumSize(CGFloat size)
+{
+  CGFloat imageSize;
+  if (size < _BrushSizeThreshold) {
+    imageSize = round(_BrushSizeMinBorder + (_BrushSizeMaxBorder - _BrushSizeMinBorder) * (_BrushSizeThreshold - size) / _BrushSizeThreshold) + size;
+  } else {
+    imageSize = _BrushSizeThreshold + _BrushSizeMinBorder;
+  }
+  return NSMakeSize(imageSize, imageSize);
+}
+
+
+void PTDDrawBrushSizeIndicator(NSRect rect, CGFloat size)
+{
+  NSSize imageXYSize = PTDBrushSizeIndicatorMinimumSize(size);
+  CGFloat imageSize = imageXYSize.width;
+  NSPoint offset = rect.origin;
+  offset.x += floor((rect.size.width - imageSize) / 2.0);
+  offset.y += floor((rect.size.height - imageSize) / 2.0);
+  
+  if (size < _BrushSizeThreshold) {
+    [[NSColor blackColor] setStroke];
+    NSBezierPath *bp = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(offset.x + (imageSize - size) / 2.0, offset.y + (imageSize - size) / 2.0, size, size)];
+    [bp stroke];
+  } else {
+    NSMutableParagraphStyle *parastyle = [[NSMutableParagraphStyle alloc] init];
+    parastyle.alignment = NSTextAlignmentCenter;
+    NSDictionary *attrib = @{
+        NSParagraphStyleAttributeName: parastyle,
+        NSFontAttributeName: [NSFont systemFontOfSize:12.0]};
+    NSString *sizeStr = [NSString stringWithFormat:@"%d", (int)size];
+    NSRect realSizeRect = [sizeStr boundingRectWithSize:NSMakeSize(imageSize, imageSize) options:0 attributes:attrib context:nil];
+    
+    [[NSColor blackColor] setStroke];
+    NSBezierPath *bp = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(offset.x + _BrushSizeMinBorder/2.0-0.5, offset.y + _BrushSizeMinBorder/2.0-0.5, _BrushSizeThreshold+1, _BrushSizeThreshold+1)];
+    [bp stroke];
+    [sizeStr drawInRect:NSMakeRect(offset.x, offset.y + (imageSize-realSizeRect.size.height)/2.0, imageSize, realSizeRect.size.height) withAttributes:attrib];
+  }
 }
 
