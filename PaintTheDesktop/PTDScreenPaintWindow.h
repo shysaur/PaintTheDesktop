@@ -1,8 +1,8 @@
 //
-// PTDPaintWindow.h
-// PaintTheDesktop -- Created on 08/06/2020.
+// PTDScreenPaintWindow.h
+// PaintTheDesktop -- Created on 23/04/2021.
 //
-// Copyright (c) 2020 Daniele Cattaneo
+// Copyright (c) 2021 Daniele Cattaneo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,22 +23,15 @@
 // SOFTWARE.
 //
 
-#import <Cocoa/Cocoa.h>
+#import "PTDPaintWindow.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol PTDToolInterface;
-@class PTDPaintView;
+@interface PTDScreenPaintWindow : PTDPaintWindow
 
-@interface PTDPaintWindow : NSWindowController <NSWindowDelegate>
+- (instancetype)initWithDisplay:(CGDirectDisplayID)display;
 
-@property IBOutlet PTDPaintView *paintView;
-
-@property (nonatomic) BOOL active;
-@property (nonatomic) NSString *displayName;
-
-- (NSBitmapImageRep *)snapshot;
-- (void)restoreFromSnapshot:(NSBitmapImageRep *)bitmap;
+@property (nonatomic) CGDirectDisplayID display;
 
 @end
 

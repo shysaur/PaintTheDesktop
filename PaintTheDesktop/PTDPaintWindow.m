@@ -39,8 +39,6 @@
 
 @interface PTDPaintWindow ()
 
-@property IBOutlet PTDPaintView *paintView;
-
 @property (nonatomic) PTDToolManager *toolManager;
 
 @property (nonatomic) BOOL mouseInWindow;
@@ -59,26 +57,16 @@
 }
 
 
-- (instancetype)initWithDisplay:(CGDirectDisplayID)display;
+- (instancetype)init
 {
   self = [super init];
   
   _toolManager = [[PTDToolManager alloc] init];
   
-  _display = display;
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-  io_service_t dispSvc = CGDisplayIOServicePort(display);
-  #pragma clang diagnostic pop
-  NSDictionary *properties = CFBridgingRelease(IODisplayCreateInfoDictionary(dispSvc, kIODisplayOnlyPreferredName));
-  _displayName = [[properties[@kDisplayProductName] allValues] firstObject];
+  _displayName = NSLocalizedString(@"untitled", @"");
   
   [_toolManager addObserver:self forKeyPath:@"currentTool.cursor" options:0 context:NULL];
   [_toolManager addObserver:self forKeyPath:@"currentTool" options:NSKeyValueObservingOptionPrior context:NULL];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenConfigurationDidChange:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
-  
-  /* If we don't do this, Cocoa will muck around with our window positioning */
-  self.shouldCascadeWindows = NO;
   
   _systemCursorVisibility = YES;
   
@@ -90,7 +78,6 @@
 {
   [_toolManager removeObserver:self forKeyPath:@"currentTool.cursor"];
   [_toolManager removeObserver:self forKeyPath:@"currentTool"];
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 
@@ -104,21 +91,9 @@
 {
   [super windowDidLoad];
   
-  self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:0.0];
-  self.window.opaque = NO;
-  self.window.hasShadow = NO;
+  self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:1.0];
+  self.window.title = self.displayName;
   self.window.level = kCGMaximumWindowLevelKey;
-  self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary;
-  
-  if ([[NSUserDefaults standardUserDefaults] boolForKey:@"debug"]) {
-    self.window.movable = YES;
-    self.window.styleMask = self.window.styleMask | NSWindowStyleMaskTitled;
-  } else {
-    self.window.movable = NO;
-  }
-  
-  self.display = _display;
-  [self.window orderFrontRegardless];
   
   NSTrackingAreaOptions options = NSTrackingActiveAlways |
     NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited |
@@ -131,7 +106,14 @@
   [self currentToolDidChange];
   self.currentCursor = self.toolManager.currentTool.cursor;
   
-  self.active = NO;
+  self.active = YES;
+}
+
+
+- (void)setDisplayName:(NSString *)displayName
+{
+  _displayName = displayName;
+  self.window.title = _displayName;
 }
 
 
@@ -150,35 +132,6 @@
   } else {
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
   }
-}
-
-
-- (void)setDisplay:(CGDirectDisplayID)display
-{
-  CGRect dispFrame = CGDisplayBounds(display);
-  
-  if (CGDisplayIsActive(display) && (dispFrame.size.width > 0) && (dispFrame.size.height > 0)) {
-    /* translate from CG reference coords to NS ones */
-    dispFrame.origin.y += dispFrame.size.height;
-    CGRect zeroScreenRect = CGDisplayBounds(CGMainDisplayID());
-    dispFrame.origin.y = -dispFrame.origin.y + zeroScreenRect.size.height;
-    
-    self.window.isVisible = YES;
-    [self.window setFrame:dispFrame display:NO];
-    
-    CGFloat scale = self.window.screen.backingScaleFactor;
-    self.paintView.backingScaleFactor = NSMakeSize(scale, scale);
-  } else {
-    self.window.isVisible = NO;
-  }
-  
-  _display = display;
-}
-
-
-- (void)screenConfigurationDidChange:(NSNotification *)notification
-{
-  self.display = _display;
 }
 
 

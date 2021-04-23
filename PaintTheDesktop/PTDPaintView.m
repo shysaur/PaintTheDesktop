@@ -88,6 +88,12 @@
 }
 
 
+- (void)viewDidEndLiveResize
+{
+  [self updateBackingImages];
+}
+
+
 - (void)viewDidChangeBackingProperties
 {
   [self updateBackingImages];

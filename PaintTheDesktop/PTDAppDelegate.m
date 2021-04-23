@@ -28,6 +28,7 @@
 #import "PTDTool.h"
 #import "PTDAppDelegate.h"
 #import "PTDPaintWindow.h"
+#import "PTDScreenPaintWindow.h"
 #import "NSScreen+PTD.h"
 #import "PTDScreenMenuItemView.h"
 #import "NSNib+PTD.h"
@@ -75,7 +76,7 @@
   [self _setupMenu];
 
   for (NSScreen *screen in NSScreen.screens) {
-    PTDPaintWindow *thisWindow = [[PTDPaintWindow alloc] initWithDisplay:[screen ptd_displayID]];
+    PTDScreenPaintWindow *thisWindow = [[PTDScreenPaintWindow alloc] initWithDisplay:[screen ptd_displayID]];
     [self.paintWindowControllers addObject:thisWindow];
     thisWindow.active = self.active;
   }
@@ -109,14 +110,14 @@
     
     BOOL alreadyHandled = NO;
     for (PTDPaintWindow *window in self.paintWindowControllers) {
-      if (dispId == window.display) {
+      if ([window isKindOfClass:[PTDScreenPaintWindow class]] && dispId == ((PTDScreenPaintWindow *)window).display) {
         alreadyHandled = YES;
         break;
       }
     }
     
     if (!alreadyHandled) {
-      PTDPaintWindow *thisWindow = [[PTDPaintWindow alloc] initWithDisplay:dispId];
+      PTDScreenPaintWindow *thisWindow = [[PTDScreenPaintWindow alloc] initWithDisplay:dispId];
       [self.paintWindowControllers addObject:thisWindow];
       thisWindow.active = self.active;
     }
