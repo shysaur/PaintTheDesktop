@@ -190,6 +190,8 @@
     mi.submenu = submenu;
   }
   
+  [res addItemWithTitle:NSLocalizedString(@"New Blank Canvas", @"") action:@selector(newCanvasWindow:) keyEquivalent:@""];
+  
   [res addItem:[NSMenuItem separatorItem]];
   
   [res addItemWithTitle:NSLocalizedString(@"About PaintTheDesktop", @"") action:@selector(orderFrontAboutWindow:) keyEquivalent:@""];
@@ -207,6 +209,14 @@
   [res addItemWithTitle:NSLocalizedString(@"Quit", @"") action:@selector(terminate:) keyEquivalent:@""];
   
   return res;
+}
+
+
+- (void)newCanvasWindow:(id)sender
+{
+  PTDPaintWindow *thisWindow = [[PTDPaintWindow alloc] init];
+  [self.paintWindowControllers addObject:thisWindow];
+  [thisWindow showWindow:self];
 }
 
 
