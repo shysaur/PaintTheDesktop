@@ -45,9 +45,6 @@
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenConfigurationDidChange:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
   
-  /* If we don't do this, Cocoa will muck around with our window positioning */
-  self.shouldCascadeWindows = NO;
-  
   return self;
 }
 
@@ -60,6 +57,9 @@
 
 - (void)windowDidLoad
 {
+  /* If we don't do this, Cocoa will muck around with our window positioning */
+  self.shouldCascadeWindows = NO;
+  
   [super windowDidLoad];
   
   self.window.styleMask = NSWindowStyleMaskBorderless | NSWindowStyleMaskNonactivatingPanel;

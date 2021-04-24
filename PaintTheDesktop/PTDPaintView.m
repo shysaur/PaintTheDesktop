@@ -329,4 +329,12 @@
 }
 
 
+- (void)rightMouseDown:(NSEvent *)event
+{
+  /* Ensure that mouseUp events reach PTDPaintWindow instead of being engulfed
+   * by NSNextStepFrame when in debug mode */
+  [self.window rightMouseDown:event];
+}
+
+
 @end
