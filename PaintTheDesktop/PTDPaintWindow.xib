@@ -8,7 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PTDPaintWindow">
             <connections>
-                <outlet property="paintView" destination="se5-gp-TjO" id="t2Z-U0-Av8"/>
+                <outlet property="paintViewController" destination="gO0-w3-p2T" id="UDe-dR-zTn"/>
                 <outlet property="window" destination="F0z-JX-Cv5" id="gIp-Ho-8D9"/>
             </connections>
         </customObject>
@@ -29,5 +29,10 @@
             </connections>
             <point key="canvasLocation" x="142.5" y="112"/>
         </window>
+        <customObject id="gO0-w3-p2T" customClass="PTDPaintViewController">
+            <connections>
+                <outlet property="view" destination="se5-gp-TjO" id="BqH-bi-veo"/>
+            </connections>
+        </customObject>
     </objects>
 </document>

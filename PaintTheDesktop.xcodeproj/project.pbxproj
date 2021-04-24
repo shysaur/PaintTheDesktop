@@ -59,6 +59,7 @@
 		01EE4620260BAD3400CF4CFF /* PTDPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EE461E260BAD3400CF4CFF /* PTDPreferencesWindowController.m */; };
 		01EE4621260BAD3400CF4CFF /* PTDPreferencesWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01EE461F260BAD3400CF4CFF /* PTDPreferencesWindow.xib */; };
 		01EE4624260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EE4623260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m */; };
+		01F0320F2634C6B10045B622 /* PTDPaintViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F0320E2634C6B10045B622 /* PTDPaintViewController.m */; };
 		F7023C1B24C72D6E00B54623 /* NSWindow+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */; };
 /* End PBXBuildFile section */
 
@@ -263,6 +264,8 @@
 		01EE461F260BAD3400CF4CFF /* PTDPreferencesWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PTDPreferencesWindow.xib; sourceTree = "<group>"; };
 		01EE4622260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDBrushColorCollectionViewItem.h; sourceTree = "<group>"; };
 		01EE4623260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDBrushColorCollectionViewItem.m; sourceTree = "<group>"; };
+		01F0320D2634C6B10045B622 /* PTDPaintViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDPaintViewController.h; sourceTree = "<group>"; };
+		01F0320E2634C6B10045B622 /* PTDPaintViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPaintViewController.m; sourceTree = "<group>"; };
 		F7023C1924C72D6E00B54623 /* NSWindow+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSWindow+PTD.h"; sourceTree = "<group>"; };
 		F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+PTD.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -411,6 +414,8 @@
 				01A213F0248EE9F600B5EB9D /* PTDPaintWindow.xib */,
 				01484B1326323E4800B0518F /* PTDScreenPaintWindow.h */,
 				01484B1426323E4800B0518F /* PTDScreenPaintWindow.m */,
+				01F0320D2634C6B10045B622 /* PTDPaintViewController.h */,
+				01F0320E2634C6B10045B622 /* PTDPaintViewController.m */,
 				01A213F3248EEA1D00B5EB9D /* PTDPaintView.h */,
 				01A213F4248EEA1D00B5EB9D /* PTDPaintView.m */,
 				011426B224968916005363E8 /* PTDOpenGLBufferedTexture.h */,
@@ -688,6 +693,7 @@
 				016AD9A524978132004E3749 /* NSView+PTD.m in Sources */,
 				016A928C24993FFD006C9678 /* PTDRingMenuWindow.m in Sources */,
 				0162BCA0249A9BC000DFECC9 /* NSColor+PTD.m in Sources */,
+				01F0320F2634C6B10045B622 /* PTDPaintViewController.m in Sources */,
 				F7023C1B24C72D6E00B54623 /* NSWindow+PTD.m in Sources */,
 				011426B424968916005363E8 /* PTDOpenGLBufferedTexture.m in Sources */,
 				016D36C324907BBB0086E96D /* PTDCursor.m in Sources */,
