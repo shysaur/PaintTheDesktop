@@ -62,7 +62,7 @@
 {
   [super windowDidLoad];
   
-  self.window.styleMask = NSWindowStyleMaskBorderless;
+  self.window.styleMask = NSWindowStyleMaskBorderless | NSWindowStyleMaskNonactivatingPanel;
   self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:0.0];
   self.window.opaque = NO;
   self.window.hasShadow = NO;
@@ -94,9 +94,6 @@
     
     self.window.isVisible = YES;
     [self.window setFrame:dispFrame display:NO];
-    
-    CGFloat scale = self.window.screen.backingScaleFactor;
-    self.paintView.backingScaleFactor = NSMakeSize(scale, scale);
   } else {
     self.window.isVisible = NO;
   }

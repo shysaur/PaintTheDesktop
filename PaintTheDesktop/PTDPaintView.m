@@ -77,14 +77,24 @@
 - (void)setFrame:(NSRect)frame
 {
   [super setFrame:frame];
-  [self updateBackingImages];
+  if (!self.inLiveResize)
+    [self updateBackingImages];
+}
+
+
+- (void)setFrameSize:(NSSize)newSize
+{
+  [super setFrameSize:newSize];
+  if (!self.inLiveResize)
+    [self updateBackingImages];
 }
 
 
 - (void)setBounds:(NSRect)frame
 {
   [super setBounds:frame];
-  [self updateBackingImages];
+  if (!self.inLiveResize)
+    [self updateBackingImages];
 }
 
 
@@ -96,7 +106,9 @@
 
 - (void)viewDidChangeBackingProperties
 {
-  [self updateBackingImages];
+  CGFloat scale = self.window.screen.backingScaleFactor;
+  NSSize oldScaleFactor = self.backingScaleFactor;
+  self.backingScaleFactor = NSMakeSize(MAX(oldScaleFactor.width, scale), MAX(oldScaleFactor.height, scale));
 }
 
 
@@ -104,6 +116,7 @@
 {
   _backingScaleFactor = backingScaleFactor;
   [self updateBackingImages];
+  [self update];
 }
 
 
