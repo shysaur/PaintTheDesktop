@@ -31,8 +31,6 @@
 
 @interface PTDPaintWindow ()
 
-@property (nonatomic) IBOutlet PTDPaintViewController *paintViewController;
-
 @end
 
 
@@ -59,9 +57,6 @@
   
   self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:1.0];
   self.window.title = self.displayName;
-  self.window.level = kCGMaximumWindowLevelKey;
-  
-  self.active = YES;
 }
 
 
@@ -70,19 +65,6 @@
   _displayName = displayName;
   if (self.windowLoaded)
     self.window.title = _displayName;
-}
-
-
-- (void)setActive:(BOOL)active
-{
-  if (active) {
-    self.window.ignoresMouseEvents = NO;
-    [self.window makeKeyAndOrderFront:nil];
-  } else {
-    self.window.ignoresMouseEvents = YES;
-  }
-  _active = active;
-  self.paintViewController.active = active;
 }
 
 

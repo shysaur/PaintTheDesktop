@@ -79,6 +79,8 @@
   
   [self currentToolDidChange];
   self.currentCursor = self.toolManager.currentTool.cursor;
+  
+  self.active = YES;
 }
 
 

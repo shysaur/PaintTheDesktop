@@ -66,7 +66,8 @@
   self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:0.0];
   self.window.opaque = NO;
   self.window.hasShadow = NO;
-  self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary;
+  self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary | NSWindowCollectionBehaviorIgnoresCycle;
+  self.window.level = kCGMaximumWindowLevelKey;
   
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"debug"]) {
     self.window.movable = YES;
@@ -105,6 +106,19 @@
 - (void)screenConfigurationDidChange:(NSNotification *)notification
 {
   self.display = _display;
+}
+
+
+- (void)setActive:(BOOL)active
+{
+  if (active) {
+    self.window.ignoresMouseEvents = NO;
+    [self.window makeKeyAndOrderFront:nil];
+  } else {
+    self.window.ignoresMouseEvents = YES;
+  }
+  _active = active;
+  self.paintViewController.active = active;
 }
 
 

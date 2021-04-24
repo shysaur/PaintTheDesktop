@@ -24,16 +24,15 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "PTDPaintViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol PTDToolInterface;
-@class PTDPaintView;
-
 @interface PTDPaintWindow : NSWindowController <NSWindowDelegate>
 
-@property (nonatomic) BOOL active;
 @property (nonatomic) NSString *displayName;
+
+@property (nonatomic) IBOutlet PTDPaintViewController *paintViewController;
 
 - (NSBitmapImageRep *)snapshot;
 - (void)restoreFromSnapshot:(NSBitmapImageRep *)bitmap;

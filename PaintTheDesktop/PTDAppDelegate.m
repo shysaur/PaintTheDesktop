@@ -151,7 +151,8 @@
 {
   if (active != _active) {
     for (PTDPaintWindow *wc in self.paintWindowControllers) {
-      wc.active = active;
+      if ([wc isKindOfClass:[PTDScreenPaintWindow class]])
+        ((PTDScreenPaintWindow *)wc).active = active;
     }
     if (active) {
       self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIconOn"];

@@ -32,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithDisplay:(CGDirectDisplayID)display;
 
 @property (nonatomic) CGDirectDisplayID display;
+@property (nonatomic) BOOL active;
 
 @end
 
