@@ -1,8 +1,8 @@
 //
-// PTDEraserTool.h
-// PaintTheDesktop -- Created on 10/06/2020.
+// PTDEraserSizePrefsCollectionViewDelegate.h
+// PaintTheDesktop -- Created on 22/04/2021.
 //
-// Copyright (c) 2020 Daniele Cattaneo
+// Copyright (c) 2021 Daniele Cattaneo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,16 +23,11 @@
 // SOFTWARE.
 //
 
-#import <Cocoa/Cocoa.h>
-#import "PTDTool.h"
+#import "PTDAbstractPrefsCollectionViewDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString * const PTDToolIdentifierEraserTool;
-
-@interface PTDEraserTool : PTDTool
-
-@property (nonatomic, class, null_resettable) NSArray <NSNumber *> *defaultSizes;
+@interface PTDEraserSizePrefsCollectionViewDelegate : PTDAbstractPrefsCollectionViewDelegate
 
 @end
 

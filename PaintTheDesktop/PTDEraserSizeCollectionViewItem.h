@@ -1,8 +1,8 @@
 //
-// PTDEraserTool.h
-// PaintTheDesktop -- Created on 10/06/2020.
+// PTDBrushSizeCollectionViewItem.h
+// PaintTheDesktop -- Created on 22/04/2021.
 //
-// Copyright (c) 2020 Daniele Cattaneo
+// Copyright (c) 2021 Daniele Cattaneo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,18 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "PTDTool.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString * const PTDToolIdentifierEraserTool;
+@interface PTDEraserSizeCollectionViewItem : NSCollectionViewItem
 
-@interface PTDEraserTool : PTDTool
+- (instancetype)initWithSize:(CGFloat)size;
 
-@property (nonatomic, class, null_resettable) NSArray <NSNumber *> *defaultSizes;
+@property (nonatomic, readonly, class) NSSize size;
+
+@property (nonatomic) CGFloat size;
+
+@property (nullable, weak) id target;
 
 @end
 

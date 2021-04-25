@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 void PTDDrawCircularColorSwatch(NSRect rect, NSColor *color);
 NSImage *PTDBrushSizeIndicatorImage(CGFloat size);
+NSImage *PTDEraserSizeIndicatorImage(CGFloat size);
 
 NSImage *PTDCrosshairWithBrushOutlineImage(CGFloat size, NSColor *color);
 NSImage *PTDCrosshairImage(CGFloat size, NSColor *color);
