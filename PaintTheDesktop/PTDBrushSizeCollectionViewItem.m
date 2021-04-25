@@ -29,6 +29,7 @@
 #import "PTDSizeEditorPopover.h"
 #import "PTDGraphics.h"
 #import "NSColor+PTD.h"
+#import "NSGeometry+PTD.h"
 
 
 static const CGFloat _Width = 28.0;
@@ -138,7 +139,7 @@ static const CGFloat _Height = 28.0;
   vc.textField.target = self;
   vc.textField.action = @selector(finishEditing:);
 
-  [_editPopover showRelativeToRect:NSZeroRect ofView:self.view preferredEdge:NSMaxYEdge];
+  [_editPopover showRelativeToRect:(NSRect){PTD_NSRectCenter(self.view.bounds), NSMakeSize(1, 1)} ofView:self.view preferredEdge:NSMaxYEdge];
 }
 
 
