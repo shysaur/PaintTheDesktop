@@ -28,7 +28,7 @@
 #import "PTDDrawingSurface.h"
 #import "PTDTool.h"
 #import "PTDCursor.h"
-#import "NSColor+PTD.h"
+#import "PTDGraphics.h"
 
 
 NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
@@ -77,51 +77,9 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 
 - (void)updateCursor
 {
-  NSColor *color = self.color;
-  NSColor *borderColor = [color ptd_contrastingCursorBorderColor];
   PTDCursor *cursor = [[PTDCursor alloc] init];
-  
-  const CGFloat outlineSize = 3.0;
-  const CGFloat lineSize = 1.0;
-  const CGFloat circleXhairDist = 2.0;
-  const CGFloat minXhairLen = 2.0;
-  CGFloat circleSize = self.size;
-  CGFloat cursorSize = MAX(21.0, circleSize + 2.0 * (circleXhairDist + minXhairLen) + outlineSize);
-  CGFloat xhairLen = (cursorSize - circleSize - 2.0 * circleXhairDist - outlineSize) / 2.0;
-  
-  CGFloat center = cursorSize / 2.0;
-  CGFloat circleOrigin = center - circleSize / 2.0;
-  CGFloat xhairOriginFromCenter = circleSize / 2.0 + circleXhairDist;
-  
-  cursor.image = [NSImage
-      imageWithSize:NSMakeSize(cursorSize, cursorSize)
-      flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-    NSBezierPath *path = [NSBezierPath bezierPath];
-    
-    NSRect circleRect = NSMakeRect(circleOrigin, circleOrigin, circleSize, circleSize);
-    [path appendBezierPathWithOvalInRect:circleRect];
-    
-    [path moveToPoint:NSMakePoint(center - xhairOriginFromCenter, center)];
-    [path lineToPoint:NSMakePoint(center - xhairOriginFromCenter - xhairLen, center)];
-    [path moveToPoint:NSMakePoint(center, center + xhairOriginFromCenter)];
-    [path lineToPoint:NSMakePoint(center, center + xhairOriginFromCenter + xhairLen)];
-    [path moveToPoint:NSMakePoint(center + xhairOriginFromCenter, center)];
-    [path lineToPoint:NSMakePoint(center + xhairOriginFromCenter + xhairLen, center)];
-    [path moveToPoint:NSMakePoint(center, center - xhairOriginFromCenter)];
-    [path lineToPoint:NSMakePoint(center, center - xhairOriginFromCenter - xhairLen)];
-    
-    path.lineCapStyle = NSLineCapStyleSquare;
-    path.lineWidth = outlineSize;
-    [borderColor setStroke];
-    [path stroke];
-    path.lineCapStyle = NSLineCapStyleSquare;
-    path.lineWidth = lineSize+0.001; // Quartz ignores lineCapStyle if lineWidth <= 1.0
-    [color setStroke];
-    [path stroke];
-    return YES;
-  }];
-  cursor.hotspot = NSMakePoint(center, center);
-  
+  cursor.image = PTDCrosshairWithBrushOutlineImage(self.size, self.color);
+  cursor.hotspot = NSMakePoint(cursor.image.size.width / 2.0, cursor.image.size.height / 2.0);
   self.cursor = cursor;
 }
 

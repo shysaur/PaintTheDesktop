@@ -31,7 +31,7 @@
 #import "PTDCursor.h"
 #import "NSGeometry+PTD.h"
 #import "NSBezierPath+PTD.h"
-#import "NSColor+PTD.h"
+#import "PTDGraphics.h"
 
 
 #define SIGN(x) ((x) < 0.0 ? -1.0 : 1.0)
@@ -127,34 +127,9 @@
 
 - (void)updateCursor
 {
-  CGFloat size = floor((self.size + 8.0) / 2.0) * 2.0 + 1.0;
-  NSColor *color = self.color;
-  NSColor *borderColor = [color ptd_contrastingCursorBorderColor];
   PTDCursor *cursor = [[PTDCursor alloc] init];
-  
-  cursor.image = [NSImage
-      imageWithSize:NSMakeSize(size+2.0, size+2.0)
-      flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-    NSBezierPath *cross = [NSBezierPath bezierPath];
-    [cross moveToPoint:NSMakePoint(1.0         , 1.0+size/2.0)];
-    [cross lineToPoint:NSMakePoint(1.0+size    , 1.0+size/2.0)];
-    [cross moveToPoint:NSMakePoint(1.0+size/2.0, 1.0         )];
-    [cross lineToPoint:NSMakePoint(1.0+size/2.0, 1.0+size    )];
-    
-    cross.lineWidth = 3.0;
-    cross.lineCapStyle = NSLineCapStyleSquare;
-    [borderColor setStroke];
-    [cross stroke];
-    
-    cross.lineWidth = 1.0;
-    cross.lineCapStyle = NSLineCapStyleButt;
-    [color setStroke];
-    [cross stroke];
-    
-    return YES;
-  }];
-  cursor.hotspot = NSMakePoint(size/2.0+1.0, size/2.0+1.0);
-  
+  cursor.image = PTDCrosshairImage(self.size, self.color);
+  cursor.hotspot = NSMakePoint(cursor.image.size.width/2.0, cursor.image.size.height/2.0);
   self.cursor = cursor;
 }
 

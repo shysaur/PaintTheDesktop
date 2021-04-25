@@ -24,6 +24,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "PTDCursor.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -31,5 +32,8 @@ void PTDDrawCircularColorSwatch(NSRect rect, NSColor *color);
 
 NSSize PTDBrushSizeIndicatorMinimumSize(CGFloat size);
 void PTDDrawBrushSizeIndicator(NSRect rect, CGFloat size);
+
+NSImage *PTDCrosshairWithBrushOutlineImage(CGFloat size, NSColor *color);
+NSImage *PTDCrosshairImage(CGFloat size, NSColor *color);
 
 NS_ASSUME_NONNULL_END

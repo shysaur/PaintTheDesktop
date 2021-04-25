@@ -24,6 +24,7 @@
 //
 
 #import "PTDGraphics.h"
+#import "NSColor+PTD.h"
 
 
 static const CGFloat _BrushSizeThreshold = 16.0;
@@ -92,5 +93,80 @@ void PTDDrawBrushSizeIndicator(NSRect rect, CGFloat size)
     [bp stroke];
     [sizeStr drawInRect:NSMakeRect(offset.x, offset.y + (imageSize-realSizeRect.size.height)/2.0, imageSize, realSizeRect.size.height) withAttributes:attrib];
   }
+}
+
+
+NSImage *PTDCrosshairWithBrushOutlineImage(CGFloat size, NSColor *color)
+{
+  NSColor *borderColor = [color ptd_contrastingCursorBorderColor];
+  
+  const CGFloat outlineSize = 3.0;
+  const CGFloat lineSize = 1.0;
+  const CGFloat circleXhairDist = 2.0;
+  const CGFloat minXhairLen = 2.0;
+  CGFloat circleSize = size;
+  CGFloat cursorSize = MAX(21.0, circleSize + 2.0 * (circleXhairDist + minXhairLen) + outlineSize);
+  CGFloat xhairLen = (cursorSize - circleSize - 2.0 * circleXhairDist - outlineSize) / 2.0;
+  
+  CGFloat center = cursorSize / 2.0;
+  CGFloat circleOrigin = center - circleSize / 2.0;
+  CGFloat xhairOriginFromCenter = circleSize / 2.0 + circleXhairDist;
+  
+  return [NSImage
+      imageWithSize:NSMakeSize(cursorSize, cursorSize)
+      flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    
+    NSRect circleRect = NSMakeRect(circleOrigin, circleOrigin, circleSize, circleSize);
+    [path appendBezierPathWithOvalInRect:circleRect];
+    
+    [path moveToPoint:NSMakePoint(center - xhairOriginFromCenter, center)];
+    [path lineToPoint:NSMakePoint(center - xhairOriginFromCenter - xhairLen, center)];
+    [path moveToPoint:NSMakePoint(center, center + xhairOriginFromCenter)];
+    [path lineToPoint:NSMakePoint(center, center + xhairOriginFromCenter + xhairLen)];
+    [path moveToPoint:NSMakePoint(center + xhairOriginFromCenter, center)];
+    [path lineToPoint:NSMakePoint(center + xhairOriginFromCenter + xhairLen, center)];
+    [path moveToPoint:NSMakePoint(center, center - xhairOriginFromCenter)];
+    [path lineToPoint:NSMakePoint(center, center - xhairOriginFromCenter - xhairLen)];
+    
+    path.lineCapStyle = NSLineCapStyleSquare;
+    path.lineWidth = outlineSize;
+    [borderColor setStroke];
+    [path stroke];
+    path.lineCapStyle = NSLineCapStyleSquare;
+    path.lineWidth = lineSize+0.001; // Quartz ignores lineCapStyle if lineWidth <= 1.0
+    [color setStroke];
+    [path stroke];
+    return YES;
+  }];
+}
+
+
+NSImage *PTDCrosshairImage(CGFloat size, NSColor *color)
+{
+  size = floor((size + 8.0) / 2.0) * 2.0 + 1.0;
+  NSColor *borderColor = [color ptd_contrastingCursorBorderColor];
+  
+  return [NSImage
+      imageWithSize:NSMakeSize(size+2.0, size+2.0)
+      flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+    NSBezierPath *cross = [NSBezierPath bezierPath];
+    [cross moveToPoint:NSMakePoint(1.0         , 1.0+size/2.0)];
+    [cross lineToPoint:NSMakePoint(1.0+size    , 1.0+size/2.0)];
+    [cross moveToPoint:NSMakePoint(1.0+size/2.0, 1.0         )];
+    [cross lineToPoint:NSMakePoint(1.0+size/2.0, 1.0+size    )];
+    
+    cross.lineWidth = 3.0;
+    cross.lineCapStyle = NSLineCapStyleSquare;
+    [borderColor setStroke];
+    [cross stroke];
+    
+    cross.lineWidth = 1.0;
+    cross.lineCapStyle = NSLineCapStyleButt;
+    [color setStroke];
+    [cross stroke];
+    
+    return YES;
+  }];
 }
 
