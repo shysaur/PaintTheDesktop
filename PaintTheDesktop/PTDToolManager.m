@@ -32,6 +32,7 @@
 #import "PTDOvalTool.h"
 #import "PTDRoundRectTool.h"
 #import "PTDSelectionTool.h"
+#import "PTDLineTool.h"
 #import "PTDToolOptions.h"
 
 
@@ -68,6 +69,7 @@ NSString * const PTDToolManagerOptionToolIdentifier = @"toolId";
   _toolClasses = @{
       PTDToolIdentifierPencilTool: [PTDPencilTool class],
       PTDToolIdentifierEraserTool: [PTDEraserTool class],
+      PTDToolIdentifierLineTool: [PTDLineTool class],
       PTDToolIdentifierRectangleTool: [PTDRectangleTool class],
       PTDToolIdentifierOvalTool: [PTDOvalTool class],
       PTDToolIdentifierRoundRectTool: [PTDRoundRectTool class],
@@ -95,6 +97,7 @@ NSString * const PTDToolManagerOptionToolIdentifier = @"toolId";
   return @[
     PTDToolIdentifierPencilTool,
     PTDToolIdentifierEraserTool,
+    PTDToolIdentifierLineTool,
     PTDToolIdentifierRectangleTool,
     PTDToolIdentifierOvalTool,
     PTDToolIdentifierRoundRectTool,

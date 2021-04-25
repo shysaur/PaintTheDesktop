@@ -60,6 +60,7 @@
 		01EE4621260BAD3400CF4CFF /* PTDPreferencesWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01EE461F260BAD3400CF4CFF /* PTDPreferencesWindow.xib */; };
 		01EE4624260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EE4623260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m */; };
 		01F0320F2634C6B10045B622 /* PTDPaintViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F0320E2634C6B10045B622 /* PTDPaintViewController.m */; };
+		01F032122634EC810045B622 /* PTDLineTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F032112634EC810045B622 /* PTDLineTool.m */; };
 		F7023C1B24C72D6E00B54623 /* NSWindow+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */; };
 /* End PBXBuildFile section */
 
@@ -266,6 +267,8 @@
 		01EE4623260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDBrushColorCollectionViewItem.m; sourceTree = "<group>"; };
 		01F0320D2634C6B10045B622 /* PTDPaintViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDPaintViewController.h; sourceTree = "<group>"; };
 		01F0320E2634C6B10045B622 /* PTDPaintViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPaintViewController.m; sourceTree = "<group>"; };
+		01F032102634EC810045B622 /* PTDLineTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDLineTool.h; sourceTree = "<group>"; };
+		01F032112634EC810045B622 /* PTDLineTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDLineTool.m; sourceTree = "<group>"; };
 		F7023C1924C72D6E00B54623 /* NSWindow+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSWindow+PTD.h"; sourceTree = "<group>"; };
 		F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+PTD.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -318,6 +321,8 @@
 			children = (
 				016D36B22490584E0086E96D /* PTDPencilTool.h */,
 				016D36B32490584E0086E96D /* PTDPencilTool.m */,
+				01F032102634EC810045B622 /* PTDLineTool.h */,
+				01F032112634EC810045B622 /* PTDLineTool.m */,
 				01642477249FF58D000955D8 /* PTDShapeTool.h */,
 				01642476249FF58D000955D8 /* PTDShapeTool.m */,
 				0169E17D2607F542008F986B /* Shape Tools */,
@@ -707,6 +712,7 @@
 				01EE4624260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m in Sources */,
 				01B63BA6249C2F3400D9DFBF /* PTDRingMenuRing.m in Sources */,
 				0162BC91249A0CAE00DFECC9 /* PTDRingMenu.m in Sources */,
+				01F032122634EC810045B622 /* PTDLineTool.m in Sources */,
 				01484AFF263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m in Sources */,
 				016AD9A8249790B3004E3749 /* PTDDrawingSurface.m in Sources */,
 				016D36B42490584E0086E96D /* PTDPencilTool.m in Sources */,
