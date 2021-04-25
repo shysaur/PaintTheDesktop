@@ -33,6 +33,7 @@
 NSString * const PTDToolIdentifierEraserTool = @"PTDToolIdentifierEraserTool";
 
 NSString * const PTDEraserToolOptionSize = @"size";
+NSString * const PTDEraserToolOptionSizeOptions = @"sizes";
 
 
 @interface PTDEraserTool ()
@@ -49,6 +50,19 @@ NSString * const PTDEraserToolOptionSize = @"size";
 {
   PTDToolOptions *o = PTDToolOptions.sharedOptions;
   [o registerOption:PTDEraserToolOptionSize ofToolClass:self types:@[[NSNumber class]] defaultValue:@(20) validationBlock:nil];
+  
+  [o registerOption:PTDEraserToolOptionSizeOptions ofToolClass:self types:@[[NSArray class], [NSNumber class]] defaultValue:@[
+      @(20), @(70), @(120), @(170)
+    ] validationBlock:^BOOL(id  _Nonnull value) {
+      if (![value isKindOfClass:[NSArray class]])
+        return NO;
+      NSArray *a = (NSArray *)value;
+      for (id v in a) {
+        if (![v isKindOfClass:[NSNumber class]])
+          return NO;
+      }
+      return YES;
+    }];
 }
 
 
@@ -116,9 +130,10 @@ NSString * const PTDEraserToolOptionSize = @"size";
   PTDRingMenuRing *res = [PTDRingMenuRing ring];
   
   [res beginGravityMassGroupWithAngle:M_PI_2];
-  for (int i=20; i<200; i += 50) {
-    PTDRingMenuItem *itm = [self menuItemForEraserSize:i];
-    if (i == self.size)
+  NSArray <NSNumber *> *sizes = [[PTDToolOptions sharedOptions] objectForOption:PTDEraserToolOptionSizeOptions ofTool:self];
+  for (NSNumber *size in sizes) {
+    PTDRingMenuItem *itm = [self menuItemForEraserSize:size.doubleValue];
+    if (size.doubleValue == self.size)
       itm.state = NSControlStateValueOn;
     [res addItem:itm];
   }
