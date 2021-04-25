@@ -121,7 +121,7 @@ NSString * const PTDBrushToolOptionSizeOptions = @"brushSizeOptions";
   }
   [res endGravityMassGroup];
   
-  [res addSpringWithElasticity:0.5];
+  [res addSpringWithElasticity:1000];
   
   NSArray <NSColor *> *colors = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionColorOptions ofTool:nil];
   for (NSColor *color in colors) {
@@ -129,7 +129,7 @@ NSString * const PTDBrushToolOptionSizeOptions = @"brushSizeOptions";
     [res addItem:item];
   }
   
-  [res addSpringWithElasticity:0.5];
+  [res addSpringWithElasticity:1000];
   return res;
 }
 

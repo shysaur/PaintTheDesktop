@@ -209,7 +209,7 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 - (CGFloat)maximumSide
 {
-  return MAX(self.item.image.size.width, self.item.image.size.height);
+  return MAX(self.item.image.size.width, self.item.image.size.height) + 5.0;
 }
 
 
