@@ -133,7 +133,7 @@ NSString * const PTDToolManagerOptionToolIdentifier = @"toolId";
 
 - (void)changeTool:(NSString *)newIdentifier
 {
-  [PTDToolOptions.sharedOptions setObject:newIdentifier forOption:PTDToolManagerOptionToolIdentifier ofTool:nil];
+  [PTDToolOptions.sharedOptions setObject:newIdentifier forOption:PTDToolManagerOptionToolIdentifier ofToolClass:nil];
 }
 
 
@@ -152,7 +152,7 @@ NSString * const PTDToolManagerOptionToolIdentifier = @"toolId";
 
 - (void)reloadOptions
 {
-  NSString *savedToolIdent = [PTDToolOptions.sharedOptions objectForOption:PTDToolManagerOptionToolIdentifier ofTool:nil];
+  NSString *savedToolIdent = [PTDToolOptions.sharedOptions objectForOption:PTDToolManagerOptionToolIdentifier ofToolClass:nil];
   if ([self.availableToolIdentifiers containsObject:savedToolIdent]) {
     [self _changeTool:savedToolIdent];
   } else {

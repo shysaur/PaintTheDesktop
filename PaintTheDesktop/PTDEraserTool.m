@@ -68,7 +68,7 @@ NSString * const PTDEraserToolOptionSizeOptions = @"sizes";
 
 - (void)reloadOptions
 {
-  self.size = [[[PTDToolOptions sharedOptions] objectForOption:PTDEraserToolOptionSize ofTool:self] integerValue];
+  self.size = [[[PTDToolOptions sharedOptions] objectForOption:PTDEraserToolOptionSize ofToolClass:self.class] integerValue];
   [self updateCursor];
 }
 
@@ -130,7 +130,7 @@ NSString * const PTDEraserToolOptionSizeOptions = @"sizes";
   PTDRingMenuRing *res = [PTDRingMenuRing ring];
   
   [res beginGravityMassGroupWithAngle:M_PI_2];
-  NSArray <NSNumber *> *sizes = [[PTDToolOptions sharedOptions] objectForOption:PTDEraserToolOptionSizeOptions ofTool:self];
+  NSArray <NSNumber *> *sizes = [[PTDToolOptions sharedOptions] objectForOption:PTDEraserToolOptionSizeOptions ofToolClass:self.class];
   for (NSNumber *size in sizes) {
     PTDRingMenuItem *itm = [self menuItemForEraserSize:size.doubleValue];
     if (size.doubleValue == self.size)
@@ -187,7 +187,7 @@ NSString * const PTDEraserToolOptionSizeOptions = @"sizes";
 
 - (void)changeSize:(id)sender
 {
-  [[PTDToolOptions sharedOptions] setObject:@([(NSMenuItem *)sender tag]) forOption:PTDEraserToolOptionSize ofTool:self];
+  [[PTDToolOptions sharedOptions] setObject:@([(NSMenuItem *)sender tag]) forOption:PTDEraserToolOptionSize ofToolClass:self.class];
 }
 
 

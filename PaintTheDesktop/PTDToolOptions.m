@@ -106,9 +106,9 @@ NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey = @"object";
 }
 
 
-- (void)setObject:(id)object forOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
+- (void)setObject:(id)object forOption:(NSString *)optionId ofToolClass:(nullable Class)tool
 {
-  NSString *dictKey = [self dictionaryKeyForOption:optionId ofToolClass:tool.class];
+  NSString *dictKey = [self dictionaryKeyForOption:optionId ofToolClass:tool];
   PTDToolOptionData *optionData = [_optionData objectForKey:dictKey];
   NSAssert(optionData, @"Option dictKey %@ not properly registered", dictKey);
   
@@ -145,17 +145,17 @@ NSString * const PTDToolOptionsChangedNotificationUserInfoObjectKey = @"object";
 }
 
 
-- (void)restoreDefaultForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
+- (void)restoreDefaultForOption:(NSString *)optionId ofToolClass:(nullable Class)tool
 {
-  NSString *dictKey = [self dictionaryKeyForOption:optionId ofToolClass:tool.class];
+  NSString *dictKey = [self dictionaryKeyForOption:optionId ofToolClass:tool];
   PTDToolOptionData *optionData = [_optionData objectForKey:dictKey];
-  [self setObject:optionData.defaultValue forOption:optionId ofTool:tool];
+  [self setObject:optionData.defaultValue forOption:optionId ofToolClass:tool];
 }
 
 
-- (id)objectForOption:(NSString *)optionId ofTool:(nullable PTDTool *)tool
+- (id)objectForOption:(NSString *)optionId ofToolClass:(nullable Class)tool
 {
-  NSString *dictKey = [self dictionaryKeyForOption:optionId ofToolClass:tool.class];
+  NSString *dictKey = [self dictionaryKeyForOption:optionId ofToolClass:tool];
   PTDToolOptionData *optionData = [_optionData objectForKey:dictKey];
   NSAssert(optionData, @"Option dictKey %@ not properly registered", dictKey);
   

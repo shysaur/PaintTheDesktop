@@ -74,38 +74,38 @@ NSString * const PTDBrushToolOptionSizeOptions = @"brushSizeOptions";
 
 + (NSArray <NSColor *> *)defaultColors
 {
-  return [PTDToolOptions.sharedOptions objectForOption:PTDBrushToolOptionColorOptions ofTool:nil];
+  return [PTDToolOptions.sharedOptions objectForOption:PTDBrushToolOptionColorOptions ofToolClass:nil];
 }
 
 
 + (void)setDefaultColors:(NSArray<NSColor *> *)defaultColors
 {
   if (!defaultColors)
-    [PTDToolOptions.sharedOptions restoreDefaultForOption:PTDBrushToolOptionColorOptions ofTool:nil];
+    [PTDToolOptions.sharedOptions restoreDefaultForOption:PTDBrushToolOptionColorOptions ofToolClass:nil];
   else
-    [PTDToolOptions.sharedOptions setObject:defaultColors forOption:PTDBrushToolOptionColorOptions ofTool:nil];
+    [PTDToolOptions.sharedOptions setObject:defaultColors forOption:PTDBrushToolOptionColorOptions ofToolClass:nil];
 }
 
 
 + (NSArray <NSNumber *> *)defaultSizes
 {
-  return [PTDToolOptions.sharedOptions objectForOption:PTDBrushToolOptionSizeOptions ofTool:nil];
+  return [PTDToolOptions.sharedOptions objectForOption:PTDBrushToolOptionSizeOptions ofToolClass:nil];
 }
 
 
 + (void)setDefaultSizes:(NSArray<NSNumber *> *)defaultSizes
 {
   if (!defaultSizes)
-    [PTDToolOptions.sharedOptions restoreDefaultForOption:PTDBrushToolOptionSizeOptions ofTool:nil];
+    [PTDToolOptions.sharedOptions restoreDefaultForOption:PTDBrushToolOptionSizeOptions ofToolClass:nil];
   else
-    [PTDToolOptions.sharedOptions setObject:defaultSizes forOption:PTDBrushToolOptionSizeOptions ofTool:nil];
+    [PTDToolOptions.sharedOptions setObject:defaultSizes forOption:PTDBrushToolOptionSizeOptions ofToolClass:nil];
 }
 
 
 - (void)reloadOptions
 {
-  self.size = [[[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionSize ofTool:nil] integerValue];
-  self.color = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionColor ofTool:nil];
+  self.size = [[[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionSize ofToolClass:nil] integerValue];
+  self.color = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionColor ofToolClass:nil];
 }
 
 
@@ -114,7 +114,7 @@ NSString * const PTDBrushToolOptionSizeOptions = @"brushSizeOptions";
   PTDRingMenuRing *res = [PTDRingMenuRing ring];
   
   [res beginGravityMassGroupWithAngle:M_PI_2];
-  NSArray <NSNumber *> *sizes = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionSizeOptions ofTool:nil];
+  NSArray <NSNumber *> *sizes = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionSizeOptions ofToolClass:nil];
   for (NSNumber *size in sizes) {
     PTDRingMenuItem *item = [self menuItemForBrushSize:size.integerValue];
     [res addItem:item];
@@ -123,7 +123,7 @@ NSString * const PTDBrushToolOptionSizeOptions = @"brushSizeOptions";
   
   [res addSpringWithElasticity:1000];
   
-  NSArray <NSColor *> *colors = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionColorOptions ofTool:nil];
+  NSArray <NSColor *> *colors = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionColorOptions ofToolClass:nil];
   for (NSColor *color in colors) {
     PTDRingMenuItem *item = [self menuItemForBrushColor:color];
     [res addItem:item];
@@ -163,13 +163,13 @@ NSString * const PTDBrushToolOptionSizeOptions = @"brushSizeOptions";
 
 - (void)changeSize:(id)sender
 {
-  [[PTDToolOptions sharedOptions] setObject:@([(NSMenuItem *)sender tag]) forOption:PTDBrushToolOptionSize ofTool:nil];
+  [[PTDToolOptions sharedOptions] setObject:@([(NSMenuItem *)sender tag]) forOption:PTDBrushToolOptionSize ofToolClass:nil];
 }
 
 
 - (void)changeColor:(id)sender
 {
-  [[PTDToolOptions sharedOptions] setObject:sender forOption:PTDBrushToolOptionColor ofTool:nil];
+  [[PTDToolOptions sharedOptions] setObject:sender forOption:PTDBrushToolOptionColor ofToolClass:nil];
 }
 
 
