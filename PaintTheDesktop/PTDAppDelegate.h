@@ -24,9 +24,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "PTDPaintWindow.h"
 
-@interface PTDAppDelegate : NSObject <NSApplicationDelegate>
-
+@interface PTDAppDelegate : NSObject <NSApplicationDelegate, PTDPaintWindowDelegate>
 
 @end
 

@@ -217,7 +217,14 @@
 {
   PTDPaintWindow *thisWindow = [[PTDPaintWindow alloc] init];
   [self.paintWindowControllers addObject:thisWindow];
+  thisWindow.delegate = self;
   [thisWindow showWindow:self];
+}
+
+
+- (void)paintWindowWillClose:(PTDPaintWindow *)windowCtl
+{
+  [self.paintWindowControllers removeObject:windowCtl];
 }
 
 

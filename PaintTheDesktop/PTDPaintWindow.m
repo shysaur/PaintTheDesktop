@@ -68,6 +68,12 @@
 }
 
 
+- (void)windowWillClose:(NSNotification *)notification
+{
+  [self.delegate paintWindowWillClose:self];
+}
+
+
 - (NSBitmapImageRep *)snapshot
 {
   return self.paintViewController.view.snapshot;

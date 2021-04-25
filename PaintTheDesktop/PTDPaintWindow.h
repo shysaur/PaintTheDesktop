@@ -28,14 +28,24 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDPaintWindow : NSWindowController <NSWindowDelegate>
+@protocol PTDPaintWindowDelegate;
 
-@property (nonatomic) NSString *displayName;
+@interface PTDPaintWindow : NSWindowController <NSWindowDelegate>
 
 @property (nonatomic) IBOutlet PTDPaintViewController *paintViewController;
 
+@property (nonatomic, weak) id<PTDPaintWindowDelegate> delegate;
+
+@property (nonatomic) NSString *displayName;
+
 - (NSBitmapImageRep *)snapshot;
 - (void)restoreFromSnapshot:(NSBitmapImageRep *)bitmap;
+
+@end
+
+@protocol PTDPaintWindowDelegate <NSObject>
+
+- (void)paintWindowWillClose:(PTDPaintWindow *)windowCtl;
 
 @end
 
