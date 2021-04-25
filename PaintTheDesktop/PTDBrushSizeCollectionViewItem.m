@@ -138,6 +138,8 @@ static const CGFloat _Height = 28.0;
   _editPopover.contentViewController = vc;
   _editPopover.animates = YES;
   
+  vc.formatter.maximum = @(99);
+  vc.formatter.allowsFloats = NO;
   vc.textField.doubleValue = self.size;
   vc.textField.target = self;
   vc.textField.action = @selector(finishEditing:);
