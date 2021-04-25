@@ -57,7 +57,7 @@ NSString * const PTDBrushToolOptionSizeOptions = @"brushSizeOptions";
       }
       return YES;
     }];
-  [o registerGlobalOption:PTDBrushToolOptionSizeOptions types:@[[NSArray class], [NSColor class]] defaultValue:@[
+  [o registerGlobalOption:PTDBrushToolOptionSizeOptions types:@[[NSArray class], [NSNumber class]] defaultValue:@[
       @(2), @(4), @(6), @(8), @(10), @(15), @(20)
     ] validationBlock:^BOOL(id  _Nonnull value) {
       if (![value isKindOfClass:[NSArray class]])
