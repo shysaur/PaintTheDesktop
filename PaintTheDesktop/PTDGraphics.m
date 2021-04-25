@@ -27,11 +27,6 @@
 #import "NSColor+PTD.h"
 
 
-static const CGFloat _BrushSizeThreshold = 16.0;
-static const CGFloat _BrushSizeMinBorder = 4.0;
-static const CGFloat _BrushSizeMaxBorder = 8.0;
-
-
 void PTDDrawCircularColorSwatch(NSRect rect, NSColor *color)
 {
   [color setFill];
@@ -55,31 +50,23 @@ void PTDDrawCircularColorSwatch(NSRect rect, NSColor *color)
 }
 
 
-NSSize PTDBrushSizeIndicatorMinimumSize(CGFloat size)
+NSImage *PTDBrushSizeIndicatorImage(CGFloat size)
 {
-  CGFloat imageSize;
-  if (size < _BrushSizeThreshold) {
-    imageSize = round(_BrushSizeMinBorder + (_BrushSizeMaxBorder - _BrushSizeMinBorder) * (_BrushSizeThreshold - size) / _BrushSizeThreshold) + size;
-  } else {
-    imageSize = _BrushSizeThreshold + _BrushSizeMinBorder;
-  }
-  return NSMakeSize(imageSize, imageSize);
-}
-
-
-void PTDDrawBrushSizeIndicator(NSRect rect, CGFloat size)
-{
-  NSSize imageXYSize = PTDBrushSizeIndicatorMinimumSize(size);
-  CGFloat imageSize = imageXYSize.width;
-  NSPoint offset = rect.origin;
-  offset.x += floor((rect.size.width - imageSize) / 2.0);
-  offset.y += floor((rect.size.height - imageSize) / 2.0);
+  NSImage *img;
+  const CGFloat threshold = 16.0;
+  const CGFloat minBorder = 4.0;
+  const CGFloat maxBorder = 8.0;
   
-  if (size < _BrushSizeThreshold) {
-    [[NSColor blackColor] setStroke];
-    NSBezierPath *bp = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(offset.x + (imageSize - size) / 2.0, offset.y + (imageSize - size) / 2.0, size, size)];
-    [bp stroke];
+  if (size < threshold) {
+    CGFloat imageSize = round(minBorder + (maxBorder - minBorder) * (threshold-size)/threshold) + size;
+    img = [NSImage imageWithSize:NSMakeSize(imageSize, imageSize) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+      [[NSColor blackColor] setStroke];
+      NSBezierPath *bp = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect((imageSize - size) / 2.0, (imageSize - size) / 2.0, size, size)];
+      [bp stroke];
+      return YES;
+    }];
   } else {
+    CGFloat imageSize = threshold+minBorder;
     NSMutableParagraphStyle *parastyle = [[NSMutableParagraphStyle alloc] init];
     parastyle.alignment = NSTextAlignmentCenter;
     NSDictionary *attrib = @{
@@ -88,11 +75,16 @@ void PTDDrawBrushSizeIndicator(NSRect rect, CGFloat size)
     NSString *sizeStr = [NSString stringWithFormat:@"%d", (int)size];
     NSRect realSizeRect = [sizeStr boundingRectWithSize:NSMakeSize(imageSize, imageSize) options:0 attributes:attrib context:nil];
     
-    [[NSColor blackColor] setStroke];
-    NSBezierPath *bp = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(offset.x + _BrushSizeMinBorder/2.0-0.5, offset.y + _BrushSizeMinBorder/2.0-0.5, _BrushSizeThreshold+1, _BrushSizeThreshold+1)];
-    [bp stroke];
-    [sizeStr drawInRect:NSMakeRect(offset.x, offset.y + (imageSize-realSizeRect.size.height)/2.0, imageSize, realSizeRect.size.height) withAttributes:attrib];
+    img = [NSImage imageWithSize:NSMakeSize(imageSize, imageSize) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+      [[NSColor blackColor] setStroke];
+      NSBezierPath *bp = [NSBezierPath bezierPathWithOvalInRect:NSMakeRect(minBorder/2.0-0.5, minBorder/2.0-0.5, threshold+1, threshold+1)];
+      [bp stroke];
+      [sizeStr drawInRect:NSMakeRect(0, (imageSize-realSizeRect.size.height)/2.0, imageSize, realSizeRect.size.height) withAttributes:attrib];
+      return YES;
+    }];
   }
+  
+  return img;
 }
 
 

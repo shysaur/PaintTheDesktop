@@ -71,9 +71,12 @@ static const CGFloat _Height = 28.0;
 
 - (NSImage *)image
 {
-  CGFloat size = _size;
   NSCollectionViewItemHighlightState highlight = self.highlightState;
   BOOL isSelected = self.isSelected && highlight != NSCollectionViewItemHighlightForDeselection;
+  
+  NSImage *baseImage = PTDBrushSizeIndicatorImage(self.size);
+  CGFloat baseImageX = floor((_Width - baseImage.size.width) / 2.0);
+  CGFloat baseImageY = floor((_Height - baseImage.size.height) / 2.0);
   
   NSImage *res = [NSImage imageWithSize:NSMakeSize(_Width, _Height) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
     if (highlight == NSCollectionViewItemHighlightForSelection || isSelected) {
@@ -81,7 +84,7 @@ static const CGFloat _Height = 28.0;
       NSRectFill(NSMakeRect(0, 0, _Width, _Height));
     }
     
-    PTDDrawBrushSizeIndicator((NSRect){NSZeroPoint, NSMakeSize(_Width, _Height)}, size);
+    [baseImage drawInRect:(NSRect){{baseImageX, baseImageY}, baseImage.size}];
     return YES;
   }];
   return res;

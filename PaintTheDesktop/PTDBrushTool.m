@@ -150,11 +150,7 @@ NSString * const PTDBrushToolOptionSizeOptions = @"brushSizeOptions";
 
 - (PTDRingMenuItem *)menuItemForBrushSize:(CGFloat)size
 {
-  NSSize imgSize = PTDBrushSizeIndicatorMinimumSize(size);
-  NSImage *img = [NSImage imageWithSize:imgSize flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-    PTDDrawBrushSizeIndicator((NSRect){NSZeroPoint, imgSize}, size);
-    return YES;
-  }];
+  NSImage *img = PTDBrushSizeIndicatorImage(size);
   img.template = YES;
   
   PTDRingMenuItem *itm = [PTDRingMenuItem itemWithImage:img target:self action:@selector(changeSize:)];
