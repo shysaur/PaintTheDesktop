@@ -9,13 +9,11 @@
 /* Begin PBXBuildFile section */
 		011426B424968916005363E8 /* PTDOpenGLBufferedTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */; };
 		013C9A03249AD17E0033120A /* PTDNSPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 013C9A02249AD17E0033120A /* PTDNSPanel.m */; };
-		01469D9C26362BB3009C5AFA /* PTDEraserSizeCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 01469D9926362BB2009C5AFA /* PTDEraserSizeCollectionViewItem.m */; };
-		01469D9D26362BB3009C5AFA /* PTDEraserSizePrefsCollectionViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01469D9A26362BB2009C5AFA /* PTDEraserSizePrefsCollectionViewDelegate.m */; };
 		0146EBAB24FB319400B3785C /* Sparkle.framework in Copy Bundle Frameworks */ = {isa = PBXBuildFile; fileRef = 0146EB9324FB316300B3785C /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		01484AE62631AC1A00B0518F /* PTDCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484AE52631AC1A00B0518F /* PTDCollectionViewFlowLayout.m */; };
 		01484AFF263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484AFE263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m */; };
-		01484B0426321F1800B0518F /* PTDBrushSizePrefsCollectionViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484B0326321F1800B0518F /* PTDBrushSizePrefsCollectionViewDelegate.m */; };
-		01484B0726321F4900B0518F /* PTDBrushSizeCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484B0626321F4900B0518F /* PTDBrushSizeCollectionViewItem.m */; };
+		01484B0426321F1800B0518F /* PTDAbstractSizePrefsCollectionViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484B0326321F1800B0518F /* PTDAbstractSizePrefsCollectionViewDelegate.m */; };
+		01484B0726321F4900B0518F /* PTDAbstractSizeCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484B0626321F4900B0518F /* PTDAbstractSizeCollectionViewItem.m */; };
 		01484B112632321100B0518F /* PTDSizeEditorPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484B0F2632321100B0518F /* PTDSizeEditorPopover.m */; };
 		01484B122632321100B0518F /* PTDSizeEditorPopover.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01484B102632321100B0518F /* PTDSizeEditorPopover.xib */; };
 		01484B1526323E4800B0518F /* PTDScreenPaintWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484B1426323E4800B0518F /* PTDScreenPaintWindow.m */; };
@@ -172,20 +170,16 @@
 		011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDOpenGLBufferedTexture.m; sourceTree = "<group>"; };
 		013C9A01249AD17E0033120A /* PTDNSPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDNSPanel.h; sourceTree = "<group>"; };
 		013C9A02249AD17E0033120A /* PTDNSPanel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDNSPanel.m; sourceTree = "<group>"; };
-		01469D8826362BB2009C5AFA /* PTDEraserSizeCollectionViewItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDEraserSizeCollectionViewItem.h; sourceTree = "<group>"; };
-		01469D9926362BB2009C5AFA /* PTDEraserSizeCollectionViewItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDEraserSizeCollectionViewItem.m; sourceTree = "<group>"; };
-		01469D9A26362BB2009C5AFA /* PTDEraserSizePrefsCollectionViewDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDEraserSizePrefsCollectionViewDelegate.m; sourceTree = "<group>"; };
-		01469D9B26362BB3009C5AFA /* PTDEraserSizePrefsCollectionViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDEraserSizePrefsCollectionViewDelegate.h; sourceTree = "<group>"; };
 		0146EB8024FB316200B3785C /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		01484AE42631AC1A00B0518F /* PTDCollectionViewFlowLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDCollectionViewFlowLayout.h; sourceTree = "<group>"; };
 		01484AE52631AC1A00B0518F /* PTDCollectionViewFlowLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDCollectionViewFlowLayout.m; sourceTree = "<group>"; };
 		01484AFD263213E900B0518F /* PTDAbstractPrefsCollectionViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDAbstractPrefsCollectionViewDelegate.h; sourceTree = "<group>"; };
 		01484AFE263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDAbstractPrefsCollectionViewDelegate.m; sourceTree = "<group>"; };
 		01484B012632197300B0518F /* PTDUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDUtils.h; sourceTree = "<group>"; };
-		01484B0226321F1800B0518F /* PTDBrushSizePrefsCollectionViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDBrushSizePrefsCollectionViewDelegate.h; sourceTree = "<group>"; };
-		01484B0326321F1800B0518F /* PTDBrushSizePrefsCollectionViewDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDBrushSizePrefsCollectionViewDelegate.m; sourceTree = "<group>"; };
-		01484B0526321F4900B0518F /* PTDBrushSizeCollectionViewItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDBrushSizeCollectionViewItem.h; sourceTree = "<group>"; };
-		01484B0626321F4900B0518F /* PTDBrushSizeCollectionViewItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDBrushSizeCollectionViewItem.m; sourceTree = "<group>"; };
+		01484B0226321F1800B0518F /* PTDAbstractSizePrefsCollectionViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDAbstractSizePrefsCollectionViewDelegate.h; sourceTree = "<group>"; };
+		01484B0326321F1800B0518F /* PTDAbstractSizePrefsCollectionViewDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDAbstractSizePrefsCollectionViewDelegate.m; sourceTree = "<group>"; };
+		01484B0526321F4900B0518F /* PTDAbstractSizeCollectionViewItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDAbstractSizeCollectionViewItem.h; sourceTree = "<group>"; };
+		01484B0626321F4900B0518F /* PTDAbstractSizeCollectionViewItem.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDAbstractSizeCollectionViewItem.m; sourceTree = "<group>"; };
 		01484B0E2632321100B0518F /* PTDSizeEditorPopover.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDSizeEditorPopover.h; sourceTree = "<group>"; };
 		01484B0F2632321100B0518F /* PTDSizeEditorPopover.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDSizeEditorPopover.m; sourceTree = "<group>"; };
 		01484B102632321100B0518F /* PTDSizeEditorPopover.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PTDSizeEditorPopover.xib; sourceTree = "<group>"; };
@@ -490,14 +484,10 @@
 				019AB4872622571F008F85A7 /* PTDBrushColorPrefsCollectionViewDelegate.m */,
 				01EE4622260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.h */,
 				01EE4623260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m */,
-				01484B0226321F1800B0518F /* PTDBrushSizePrefsCollectionViewDelegate.h */,
-				01484B0326321F1800B0518F /* PTDBrushSizePrefsCollectionViewDelegate.m */,
-				01484B0526321F4900B0518F /* PTDBrushSizeCollectionViewItem.h */,
-				01484B0626321F4900B0518F /* PTDBrushSizeCollectionViewItem.m */,
-				01469D9B26362BB3009C5AFA /* PTDEraserSizePrefsCollectionViewDelegate.h */,
-				01469D9A26362BB2009C5AFA /* PTDEraserSizePrefsCollectionViewDelegate.m */,
-				01469D8826362BB2009C5AFA /* PTDEraserSizeCollectionViewItem.h */,
-				01469D9926362BB2009C5AFA /* PTDEraserSizeCollectionViewItem.m */,
+				01484B0226321F1800B0518F /* PTDAbstractSizePrefsCollectionViewDelegate.h */,
+				01484B0326321F1800B0518F /* PTDAbstractSizePrefsCollectionViewDelegate.m */,
+				01484B0526321F4900B0518F /* PTDAbstractSizeCollectionViewItem.h */,
+				01484B0626321F4900B0518F /* PTDAbstractSizeCollectionViewItem.m */,
 				01484B0E2632321100B0518F /* PTDSizeEditorPopover.h */,
 				01484B0F2632321100B0518F /* PTDSizeEditorPopover.m */,
 				01484B102632321100B0518F /* PTDSizeEditorPopover.xib */,
@@ -707,7 +697,6 @@
 				016AD9AB2497A902004E3749 /* PTDRectangleTool.m in Sources */,
 				016AD9A524978132004E3749 /* NSView+PTD.m in Sources */,
 				016A928C24993FFD006C9678 /* PTDRingMenuWindow.m in Sources */,
-				01469D9C26362BB3009C5AFA /* PTDEraserSizeCollectionViewItem.m in Sources */,
 				0162BCA0249A9BC000DFECC9 /* NSColor+PTD.m in Sources */,
 				01F0320F2634C6B10045B622 /* PTDPaintViewController.m in Sources */,
 				F7023C1B24C72D6E00B54623 /* NSWindow+PTD.m in Sources */,
@@ -727,7 +716,6 @@
 				01484AFF263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m in Sources */,
 				016AD9A8249790B3004E3749 /* PTDDrawingSurface.m in Sources */,
 				016D36B42490584E0086E96D /* PTDPencilTool.m in Sources */,
-				01469D9D26362BB3009C5AFA /* PTDEraserSizePrefsCollectionViewDelegate.m in Sources */,
 				015A50CC24A13F4B0008AAB1 /* PTDRoundRectTool.m in Sources */,
 				01484AE62631AC1A00B0518F /* PTDCollectionViewFlowLayout.m in Sources */,
 				01484B112632321100B0518F /* PTDSizeEditorPopover.m in Sources */,
@@ -736,8 +724,8 @@
 				01D68A5825AB9D1A00536CD6 /* PTDSelectionTool.m in Sources */,
 				01A213E7248EE94600B5EB9D /* main.m in Sources */,
 				013C9A03249AD17E0033120A /* PTDNSPanel.m in Sources */,
-				01484B0726321F4900B0518F /* PTDBrushSizeCollectionViewItem.m in Sources */,
-				01484B0426321F1800B0518F /* PTDBrushSizePrefsCollectionViewDelegate.m in Sources */,
+				01484B0726321F4900B0518F /* PTDAbstractSizeCollectionViewItem.m in Sources */,
+				01484B0426321F1800B0518F /* PTDAbstractSizePrefsCollectionViewDelegate.m in Sources */,
 				01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */,
 				01A31E4825BB35CA002BA7D4 /* NSBezierPath+PTD.m in Sources */,
 				016D36B724905E280086E96D /* PTDToolManager.m in Sources */,

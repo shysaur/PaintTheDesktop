@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15705" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15705"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -26,7 +25,7 @@
                         <rect key="frame" x="150" y="226" width="201" height="50"/>
                         <clipView key="contentView" id="Hlv-Un-QTa">
                             <rect key="frame" x="1" y="1" width="199" height="48"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <collectionView id="PgB-gI-Lui">
                                     <rect key="frame" x="0.0" y="0.0" width="199" height="48"/>
@@ -127,7 +126,7 @@
                         <rect key="frame" x="150" y="134" width="201" height="50"/>
                         <clipView key="contentView" id="ZIQ-We-3Dp">
                             <rect key="frame" x="1" y="1" width="199" height="48"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <collectionView id="hBD-Cw-HCc">
                                     <rect key="frame" x="0.0" y="0.0" width="199" height="48"/>
@@ -228,7 +227,7 @@
                         <rect key="frame" x="150" y="42" width="201" height="50"/>
                         <clipView key="contentView" id="bO9-sb-Fri">
                             <rect key="frame" x="1" y="1" width="199" height="48"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <autoresizingMask key="autoresizingMask"/>
                             <subviews>
                                 <collectionView id="pcS-QE-0KO">
                                     <rect key="frame" x="0.0" y="0.0" width="199" height="48"/>

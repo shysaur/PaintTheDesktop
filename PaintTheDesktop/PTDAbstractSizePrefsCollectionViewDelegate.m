@@ -1,5 +1,5 @@
 //
-// PTDBrushSizePrefsCollectionViewDelegate.m
+// PTDAbstractSizePrefsCollectionViewDelegate.m
 // PaintTheDesktop -- Created on 22/04/2021.
 //
 // Copyright (c) 2021 Daniele Cattaneo
@@ -23,12 +23,14 @@
 // SOFTWARE.
 //
 
-#import "PTDBrushSizePrefsCollectionViewDelegate.h"
-#import "PTDBrushSizeCollectionViewItem.h"
+#import "PTDAbstractSizePrefsCollectionViewDelegate.h"
+#import "PTDAbstractSizeCollectionViewItem.h"
+#import "PTDUtils.h"
 #import "PTDBrushTool.h"
+#import "PTDEraserTool.h"
 
 
-@implementation PTDBrushSizePrefsCollectionViewDelegate
+@implementation PTDAbstractSizePrefsCollectionViewDelegate
 
 
 - (void)setCollectionView:(NSCollectionView *)collectionView
@@ -41,11 +43,9 @@
 }
 
 
-- (PTDBrushSizeCollectionViewItem *)createItemWithSize:(CGFloat)size
+- (PTDAbstractSizeCollectionViewItem *)createItemWithSize:(CGFloat)size
 {
-  PTDBrushSizeCollectionViewItem *item = [[PTDBrushSizeCollectionViewItem alloc] initWithSize:size];
-  item.target = self;
-  return item;
+  PTDAbstract();
 }
 
 
@@ -59,6 +59,37 @@
 }
 
 
+- (id<NSPasteboardWriting>)pasteboardWriterForItem:(PTDAbstractSizeCollectionViewItem *)item
+{
+  return [NSString stringWithFormat:@"%lf", item.size];
+}
+
+
+- (void)updateItem:(PTDAbstractSizeCollectionViewItem *)item withPasteboard:(NSPasteboard *)pb
+{
+  NSString *string = [pb readObjectsForClasses:@[[NSString class]] options:nil][0];
+  item.size = MAX(2.0, string.doubleValue);
+}
+
+
+- (PTDAbstractSizeCollectionViewItem *)newItemFromPasteboard:(nullable NSPasteboard *)pb
+{
+  NSString *string;
+  if (pb) {
+    string = [pb readObjectsForClasses:@[[NSString class]] options:nil][0];
+  } else {
+    string = @"12.0";
+  }
+  return [self createItemWithSize:string.doubleValue];
+}
+
+
+@end
+
+
+@implementation PTDBrushSizePrefsCollectionViewDelegate
+
+
 + (NSSize)itemSize
 {
   return PTDBrushSizeCollectionViewItem.size;
@@ -68,6 +99,14 @@
 - (void)reset
 {
   PTDBrushTool.defaultSizes = nil;
+}
+
+
+- (PTDBrushSizeCollectionViewItem *)createItemWithSize:(CGFloat)size
+{
+  PTDBrushSizeCollectionViewItem *item = [[PTDBrushSizeCollectionViewItem alloc] initWithSize:size];
+  item.target = self;
+  return item;
 }
 
 
@@ -93,28 +132,51 @@
 }
 
 
-- (id<NSPasteboardWriting>)pasteboardWriterForItem:(PTDBrushSizeCollectionViewItem *)item
+@end
+
+
+@implementation PTDEraserSizePrefsCollectionViewDelegate
+
+
++ (NSSize)itemSize
 {
-  return [NSString stringWithFormat:@"%lf", item.size];
+  return PTDEraserSizeCollectionViewItem.size;
 }
 
 
-- (void)updateItem:(PTDBrushSizeCollectionViewItem *)item withPasteboard:(NSPasteboard *)pb
+- (void)reset
 {
-  NSString *string = [pb readObjectsForClasses:@[[NSString class]] options:nil][0];
-  item.size = MAX(2.0, string.doubleValue);
+  PTDEraserTool.defaultSizes = nil;
 }
 
 
-- (PTDBrushSizeCollectionViewItem *)newItemFromPasteboard:(nullable NSPasteboard *)pb
+- (PTDEraserSizeCollectionViewItem *)createItemWithSize:(CGFloat)size
 {
-  NSString *string;
-  if (pb) {
-    string = [pb readObjectsForClasses:@[[NSString class]] options:nil][0];
-  } else {
-    string = @"12.0";
+  PTDEraserSizeCollectionViewItem *item = [[PTDEraserSizeCollectionViewItem alloc] initWithSize:size];
+  item.target = self;
+  return item;
+}
+
+
+- (void)saveItems:(NSArray <PTDEraserSizeCollectionViewItem *> *)items
+{
+  NSMutableArray *newSizes = [NSMutableArray array];
+  for (PTDEraserSizeCollectionViewItem *item in items) {
+    [newSizes addObject:@(item.size)];
   }
-  return [self createItemWithSize:string.doubleValue];
+  PTDEraserTool.defaultSizes = [newSizes copy];
+}
+
+
+- (NSArray <PTDEraserSizeCollectionViewItem *> *)loadItems
+{
+  NSArray *sizes = PTDEraserTool.defaultSizes;
+  NSMutableArray <PTDEraserSizeCollectionViewItem *> *res = [NSMutableArray array];
+  for (NSNumber *size in sizes) {
+    PTDEraserSizeCollectionViewItem *item = [self createItemWithSize:size.doubleValue];
+    [res addObject:item];
+  }
+  return res;
 }
 
 

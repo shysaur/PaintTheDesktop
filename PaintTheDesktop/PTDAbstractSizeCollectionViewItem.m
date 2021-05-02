@@ -1,5 +1,5 @@
 //
-// PTDBrushSizeCollectionViewItem.m
+// PTDAbstractSizeCollectionViewItem.m
 // PaintTheDesktop -- Created on 22/04/2021.
 //
 // Copyright (c) 2021 Daniele Cattaneo
@@ -24,10 +24,11 @@
 //
 
 #import <Carbon/Carbon.h>
-#import "PTDBrushSizeCollectionViewItem.h"
-#import "PTDBrushSizePrefsCollectionViewDelegate.h"
+#import "PTDAbstractSizeCollectionViewItem.h"
+#import "PTDAbstractSizePrefsCollectionViewDelegate.h"
 #import "PTDSizeEditorPopover.h"
 #import "PTDGraphics.h"
+#import "PTDUtils.h"
 #import "NSColor+PTD.h"
 #import "NSGeometry+PTD.h"
 
@@ -36,7 +37,7 @@ static const CGFloat _Width = 28.0;
 static const CGFloat _Height = 28.0;
 
 
-@implementation PTDBrushSizeCollectionViewItem {
+@implementation PTDAbstractSizeCollectionViewItem {
   NSImageView *_imageView;
   NSPopover *_editPopover;
 }
@@ -71,23 +72,7 @@ static const CGFloat _Height = 28.0;
 
 - (NSImage *)image
 {
-  NSCollectionViewItemHighlightState highlight = self.highlightState;
-  BOOL isSelected = self.isSelected && highlight != NSCollectionViewItemHighlightForDeselection;
-  
-  NSImage *baseImage = PTDBrushSizeIndicatorImage(self.size);
-  CGFloat baseImageX = floor((_Width - baseImage.size.width) / 2.0);
-  CGFloat baseImageY = floor((_Height - baseImage.size.height) / 2.0);
-  
-  NSImage *res = [NSImage imageWithSize:NSMakeSize(_Width, _Height) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-    if (highlight == NSCollectionViewItemHighlightForSelection || isSelected) {
-      [[NSColor selectedTextBackgroundColor] set];
-      NSRectFill(NSMakeRect(0, 0, _Width, _Height));
-    }
-    
-    [baseImage drawInRect:(NSRect){{baseImageX, baseImageY}, baseImage.size}];
-    return YES;
-  }];
-  return res;
+  PTDAbstract();
 }
 
 
@@ -128,6 +113,12 @@ static const CGFloat _Height = 28.0;
 }
 
 
+- (void)setupNumberFormatter:(NSNumberFormatter *)formatter
+{
+  PTDAbstract();
+}
+
+
 - (void)doEdit
 {
   PTDSizeEditorPopover *vc = [[PTDSizeEditorPopover alloc] initWithNibName:nil bundle:nil];
@@ -138,8 +129,7 @@ static const CGFloat _Height = 28.0;
   _editPopover.contentViewController = vc;
   _editPopover.animates = YES;
   
-  vc.formatter.maximum = @(99);
-  vc.formatter.allowsFloats = NO;
+  [self setupNumberFormatter:vc.formatter];
   vc.textField.doubleValue = self.size;
   vc.textField.target = self;
   vc.textField.action = @selector(finishEditing:);
@@ -167,3 +157,74 @@ static const CGFloat _Height = 28.0;
 
 
 @end
+
+
+@implementation PTDBrushSizeCollectionViewItem
+
+
+- (NSImage *)image
+{
+  NSCollectionViewItemHighlightState highlight = self.highlightState;
+  BOOL isSelected = self.isSelected && highlight != NSCollectionViewItemHighlightForDeselection;
+  
+  NSImage *baseImage = PTDBrushSizeIndicatorImage(self.size);
+  CGFloat baseImageX = floor((_Width - baseImage.size.width) / 2.0);
+  CGFloat baseImageY = floor((_Height - baseImage.size.height) / 2.0);
+  
+  NSImage *res = [NSImage imageWithSize:NSMakeSize(_Width, _Height) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+    if (highlight == NSCollectionViewItemHighlightForSelection || isSelected) {
+      [[NSColor selectedTextBackgroundColor] set];
+      NSRectFill(NSMakeRect(0, 0, _Width, _Height));
+    }
+    
+    [baseImage drawInRect:(NSRect){{baseImageX, baseImageY}, baseImage.size}];
+    return YES;
+  }];
+  return res;
+}
+
+
+- (void)setupNumberFormatter:(NSNumberFormatter *)formatter
+{
+  formatter.maximum = @(99);
+  formatter.allowsFloats = NO;
+}
+
+
+@end
+
+
+@implementation PTDEraserSizeCollectionViewItem
+
+
+- (NSImage *)image
+{
+  NSCollectionViewItemHighlightState highlight = self.highlightState;
+  BOOL isSelected = self.isSelected && highlight != NSCollectionViewItemHighlightForDeselection;
+  
+  NSImage *baseImage = PTDEraserSizeIndicatorImage(self.size);
+  CGFloat baseImageX = floor((_Width - baseImage.size.width) / 2.0);
+  CGFloat baseImageY = floor((_Height - baseImage.size.height) / 2.0);
+  
+  NSImage *res = [NSImage imageWithSize:NSMakeSize(_Width, _Height) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+    if (highlight == NSCollectionViewItemHighlightForSelection || isSelected) {
+      [[NSColor selectedTextBackgroundColor] set];
+      NSRectFill(NSMakeRect(0, 0, _Width, _Height));
+    }
+    
+    [baseImage drawInRect:(NSRect){{baseImageX, baseImageY}, baseImage.size}];
+    return YES;
+  }];
+  return res;
+}
+
+
+- (void)setupNumberFormatter:(NSNumberFormatter *)formatter
+{
+  formatter.maximum = @(999);
+  formatter.allowsFloats = NO;
+}
+
+
+@end
+

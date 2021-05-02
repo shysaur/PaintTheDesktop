@@ -1,5 +1,5 @@
 //
-// PTDBrushSizeCollectionViewItem.h
+// PTDAbstractSizePrefsCollectionViewDelegate.h
 // PaintTheDesktop -- Created on 22/04/2021.
 //
 // Copyright (c) 2021 Daniele Cattaneo
@@ -23,19 +23,19 @@
 // SOFTWARE.
 //
 
-#import <Cocoa/Cocoa.h>
+#import "PTDAbstractPrefsCollectionViewDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDBrushSizeCollectionViewItem : NSCollectionViewItem
+@interface PTDAbstractSizePrefsCollectionViewDelegate : PTDAbstractPrefsCollectionViewDelegate
 
-- (instancetype)initWithSize:(CGFloat)size;
+@end
 
-@property (nonatomic, readonly, class) NSSize size;
+@interface PTDBrushSizePrefsCollectionViewDelegate : PTDAbstractSizePrefsCollectionViewDelegate
 
-@property (nonatomic) CGFloat size;
+@end
 
-@property (nullable, weak) id target;
+@interface PTDEraserSizePrefsCollectionViewDelegate : PTDAbstractSizePrefsCollectionViewDelegate
 
 @end
 
