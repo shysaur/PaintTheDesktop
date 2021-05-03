@@ -179,15 +179,7 @@
     [mi _setViewHandlesEvents:NO];
     [view setFrameSize:view.fittingSize];
     
-    NSMenu *submenu = [[NSMenu alloc] init];
-    NSMenuItem *tmp;
-    tmp = [submenu addItemWithTitle:NSLocalizedString(@"Save As...", @"Menu item for saving a drawing to file") action:@selector(saveWindow:) keyEquivalent:@""];
-    tmp.target = self;
-    tmp.representedObject = paintw;
-    tmp = [submenu addItemWithTitle:NSLocalizedString(@"Restore...", @"Menu item for loading a drawing from file") action:@selector(loadWindow:) keyEquivalent:@""];
-    tmp.target = self;
-    tmp.representedObject = paintw;
-    
+    NSMenu *submenu = [paintw windowMenu];
     mi.submenu = submenu;
   }
   
@@ -235,53 +227,6 @@
   }
   [NSApp activateIgnoringOtherApps:YES];
   [self.preferencesWindowController showWindow:self];
-}
-
-
-- (void)saveWindow:(NSMenuItem *)sender
-{
-  BOOL oldActive = self.active;
-  self.active = NO;
-  PTDPaintWindow *window = (PTDPaintWindow *)sender.representedObject;
-  
-  NSSavePanel *savePanel = [[NSSavePanel alloc] init];
-  savePanel.allowedFileTypes = @[@"png"];
-  NSModalResponse resp = [savePanel runModal];
-  if (resp == NSModalResponseCancel)
-    return;
-  
-  NSBitmapImageRep *snapshot = [window snapshot];
-  NSURL *file = savePanel.URL;
-  NSData *dataToSave;
-  dataToSave = [snapshot representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
-  [dataToSave writeToURL:file atomically:NO];
-  
-  self.active = oldActive;
-}
-
-
-- (void)loadWindow:(NSMenuItem *)sender
-{
-  BOOL oldActive = self.active;
-  self.active = NO;
-  PTDPaintWindow *window = (PTDPaintWindow *)sender.representedObject;
-  
-  NSOpenPanel *openPanel = [[NSOpenPanel alloc] init];
-  openPanel.allowedFileTypes = @[
-    (__bridge NSString *)kUTTypePNG,
-    (__bridge NSString *)kUTTypeTIFF,
-    (__bridge NSString *)kUTTypeBMP,
-    (__bridge NSString *)kUTTypeJPEG,
-    (__bridge NSString *)kUTTypeGIF];
-  NSModalResponse resp = [openPanel runModal];
-  if (resp == NSModalResponseCancel)
-    return;
-    
-  NSData *imageData = [NSData dataWithContentsOfURL:openPanel.URL];
-  NSBitmapImageRep *image = [[NSBitmapImageRep alloc] initWithData:imageData];
-  [window restoreFromSnapshot:image];
-  
-  self.active = oldActive;
 }
 
 

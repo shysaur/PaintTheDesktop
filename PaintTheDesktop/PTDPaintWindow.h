@@ -38,6 +38,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) NSString *displayName;
 
+- (NSMenu *)windowMenu;
+- (void)saveImageAs:(id)sender;
+- (void)openImage:(id)sender;
+
 - (NSBitmapImageRep *)snapshot;
 - (void)restoreFromSnapshot:(NSBitmapImageRep *)bitmap;
 

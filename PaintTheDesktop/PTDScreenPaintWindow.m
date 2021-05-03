@@ -122,4 +122,22 @@
 }
 
 
+- (void)saveImageAs:(id)sender
+{
+  BOOL oldActive = self.active;
+  self.active = NO;
+  [super saveImageAs:sender];
+  self.active = oldActive;
+}
+
+
+- (void)openImage:(id)sender
+{
+  BOOL oldActive = self.active;
+  self.active = NO;
+  [super openImage:sender];
+  self.active = oldActive;
+}
+
+
 @end

@@ -92,4 +92,51 @@
 }
 
 
+- (NSMenu *)windowMenu
+{
+  NSMenu *submenu = [[NSMenu alloc] init];
+  NSMenuItem *tmp;
+  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Save As...", @"Menu item for saving a drawing to file") action:@selector(saveImageAs:) keyEquivalent:@""];
+  tmp.target = self;
+  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Restore...", @"Menu item for loading a drawing from file") action:@selector(openImage:) keyEquivalent:@""];
+  tmp.target = self;
+  return submenu;
+}
+
+
+- (void)saveImageAs:(id)sender
+{
+  NSSavePanel *savePanel = [[NSSavePanel alloc] init];
+  savePanel.allowedFileTypes = @[@"png"];
+  NSModalResponse resp = [savePanel runModal];
+  if (resp == NSModalResponseCancel)
+    return;
+  
+  NSBitmapImageRep *snapshot = [self snapshot];
+  NSURL *file = savePanel.URL;
+  NSData *dataToSave;
+  dataToSave = [snapshot representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
+  [dataToSave writeToURL:file atomically:NO];
+}
+
+
+- (void)openImage:(id)sender
+{
+  NSOpenPanel *openPanel = [[NSOpenPanel alloc] init];
+  openPanel.allowedFileTypes = @[
+    (__bridge NSString *)kUTTypePNG,
+    (__bridge NSString *)kUTTypeTIFF,
+    (__bridge NSString *)kUTTypeBMP,
+    (__bridge NSString *)kUTTypeJPEG,
+    (__bridge NSString *)kUTTypeGIF];
+  NSModalResponse resp = [openPanel runModal];
+  if (resp == NSModalResponseCancel)
+    return;
+    
+  NSData *imageData = [NSData dataWithContentsOfURL:openPanel.URL];
+  NSBitmapImageRep *image = [[NSBitmapImageRep alloc] initWithData:imageData];
+  [self restoreFromSnapshot:image];
+}
+
+
 @end
