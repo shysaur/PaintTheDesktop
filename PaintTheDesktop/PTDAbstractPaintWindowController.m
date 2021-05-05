@@ -70,7 +70,7 @@
 
 - (NSMenu *)windowMenu
 {
-  PTDAbstract();
+  return nil;
 }
 
 

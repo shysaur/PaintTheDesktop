@@ -168,7 +168,8 @@
     [view setFrameSize:view.fittingSize];
     
     NSMenu *submenu = [paintw windowMenu];
-    mi.submenu = submenu;
+    if (submenu)
+      mi.submenu = submenu;
   }
   
   [res addItemWithTitle:NSLocalizedString(@"New Blank Canvas", @"") action:@selector(newCanvasWindow:) keyEquivalent:@""];
