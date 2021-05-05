@@ -74,6 +74,13 @@
 }
 
 
+- (void)setLayer:(CALayer *)layer
+{
+  [super setLayer:layer];
+  [self initializeCursorLayer];
+}
+
+
 - (void)setFrame:(NSRect)frame
 {
   [super setFrame:frame];
@@ -231,28 +238,35 @@
 - (void)setCursorImage:(NSImage *)cursorImage
 {
   _cursorImage = cursorImage;
-  if (_cursorLayer)
-    [_cursorLayer removeFromSuperlayer];
-    
-  _cursorLayer = [CALayer layer];
-  [self.layer addSublayer:_cursorLayer];
-  _cursorLayer.zPosition = 100;
-  _cursorLayer.contents = cursorImage;
-  _cursorLayer.anchorPoint = NSZeroPoint;
-  
-  _cursorLayer.frame = (NSRect){
-      [self ptd_backingAlignedPoint:self.cursorPosition],
-      cursorImage.size};
+  if (self.layer)
+    [self initializeCursorLayer];
 }
 
 
 - (void)setCursorPosition:(NSPoint)cursorPosition
 {
   _cursorPosition = cursorPosition;
-  [CATransaction begin];
-  [CATransaction setDisableActions:YES];
-  _cursorLayer.position = [self ptd_backingAlignedPoint:_cursorPosition];
-  [CATransaction commit];
+  if (_cursorLayer) {
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    _cursorLayer.position = [self ptd_backingAlignedPoint:_cursorPosition];
+    [CATransaction commit];
+  }
+}
+
+
+- (void)initializeCursorLayer
+{
+  if (_cursorLayer)
+    [_cursorLayer removeFromSuperlayer];
+    
+  _cursorLayer = [CALayer layer];
+  [self.layer addSublayer:_cursorLayer];
+  _cursorLayer.zPosition = 100;
+  _cursorLayer.contents = self.cursorImage;
+  _cursorLayer.anchorPoint = NSZeroPoint;
+  _cursorLayer.bounds = (NSRect){NSZeroPoint, self.cursorImage.size};
+  _cursorLayer.position = [self ptd_backingAlignedPoint:self.cursorPosition];
 }
 
 
