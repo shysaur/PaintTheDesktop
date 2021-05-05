@@ -31,7 +31,7 @@
 #import "PTDScreenPaintWindowController.h"
 #import "PTDSimpleCanvasPaintWindowController.h"
 #import "NSScreen+PTD.h"
-#import "PTDScreenMenuItemView.h"
+#import "PTDThumbnailMenuItemView.h"
 #import "NSNib+PTD.h"
 #import "PTDPreferencesWindowController.h"
 #import "PTDPDFPresentationPaintWindowController.h"

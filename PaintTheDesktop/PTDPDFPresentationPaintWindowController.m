@@ -29,7 +29,7 @@
 #import "PTDAppDelegate.h"
 #import "PTDAnnotationOverlayPDFPage.h"
 #import "NSGeometry+PTD.h"
-#import "PTDScreenMenuItemView.h"
+#import "PTDThumbnailMenuItemView.h"
 
 
 @interface PTDPDFPresentationPaintWindowController ()

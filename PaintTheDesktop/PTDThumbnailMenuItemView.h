@@ -1,5 +1,5 @@
 //
-// PTDScreenMenuItemView.h
+// PTDThumbnailMenuItemView.h
 // PaintTheDesktop -- Created on 29/06/2020.
 //
 // Copyright (c) 2020 Daniele Cattaneo
@@ -27,9 +27,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDScreenMenuItemView : NSView
+@interface PTDThumbnailMenuItemView : NSView
 
-@property (nonatomic) IBOutlet NSTextField *screenName;
+@property (nonatomic) IBOutlet NSTextField *label;
 @property (nonatomic) IBOutlet NSLayoutConstraint *leftBorderConstraint;
 
 @property (nonatomic, readonly) CGFloat thumbnailArea;

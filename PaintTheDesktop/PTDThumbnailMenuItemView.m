@@ -1,5 +1,5 @@
 //
-// PTDScreenMenuItemView.m
+// PTDThumbnailMenuItemView.m
 // PaintTheDesktop -- Created on 29/06/2020.
 //
 // Copyright (c) 2020 Daniele Cattaneo
@@ -23,12 +23,12 @@
 // SOFTWARE.
 //
 
-#import "PTDScreenMenuItemView.h"
+#import "PTDThumbnailMenuItemView.h"
 #import "NSGeometry+PTD.h"
 #import "NSNib+PTD.h"
 
 
-@interface PTDScreenMenuItemView ()
+@interface PTDThumbnailMenuItemView ()
 
 @property (nonatomic) IBOutlet NSImageView *screenThumbnail;
 @property (nonatomic) IBOutlet NSBox *thumbnailBox;
@@ -38,7 +38,7 @@
 @end
 
 
-@implementation PTDScreenMenuItemView
+@implementation PTDThumbnailMenuItemView
 
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -62,17 +62,17 @@
   if (@available(macOS 10.16, *)) {
     self.leftBorderConstraint.constant = 10;
   }
-  self.screenName.font = [NSFont menuFontOfSize:0];
+  self.label.font = [NSFont menuFontOfSize:0];
 }
 
 
 - (void)drawRect:(NSRect)dirtyRect
 {
   if (self.enclosingMenuItem.isHighlighted) {
-    self.screenName.textColor = [NSColor selectedMenuItemTextColor];
+    self.label.textColor = [NSColor selectedMenuItemTextColor];
     self.thumbnailBox.borderColor = [NSColor selectedMenuItemTextColor];
   } else {
-    self.screenName.textColor = [NSColor labelColor];
+    self.label.textColor = [NSColor labelColor];
     self.thumbnailBox.borderColor = [NSColor labelColor];
   }
   [super drawRect:dirtyRect];
@@ -129,12 +129,12 @@
   static NSNib *viewNib;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    viewNib = [[NSNib alloc] initWithNibNamed:@"PTDScreenMenuItemView" bundle:[NSBundle mainBundle]];
+    viewNib = [[NSNib alloc] initWithNibNamed:@"PTDThumbnailMenuItemView" bundle:[NSBundle mainBundle]];
   });
 
-  PTDScreenMenuItemView *view = [viewNib ptd_instantiateObjectWithIdentifier:@"screenMenuItem" withOwner:nil];
+  PTDThumbnailMenuItemView *view = [viewNib ptd_instantiateObjectWithIdentifier:@"screenMenuItem" withOwner:nil];
   NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle:label action:nil keyEquivalent:@""];
-  view.screenName.stringValue = label;
+  view.label.stringValue = label;
   if (area >= 1)
     view.thumbnailArea = area;
   [view setThumbnail:thumb];
