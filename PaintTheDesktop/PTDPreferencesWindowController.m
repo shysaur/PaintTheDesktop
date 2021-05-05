@@ -25,6 +25,7 @@
 
 #import "PTDPreferencesWindowController.h"
 #import "PTDBrushColorPrefsCollectionViewDelegate.h"
+#import "PTDAppDelegate.h"
 
 
 @implementation PTDPreferencesWindowController
@@ -39,6 +40,19 @@
 - (void)windowDidLoad
 {
   self.window.canHide = NO;
+}
+
+
+- (void)showWindow:(id)sender
+{
+  [PTDAppDelegate.appDelegate pushAppShouldShowInDock];
+  [super showWindow:sender];
+}
+
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+  [PTDAppDelegate.appDelegate popAppShouldShowInDock];
 }
 
 

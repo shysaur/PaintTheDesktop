@@ -27,7 +27,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDPreferencesWindowController : NSWindowController
+@interface PTDPreferencesWindowController : NSWindowController <NSWindowDelegate>
 
 @end
 
