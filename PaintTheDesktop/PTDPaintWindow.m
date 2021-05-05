@@ -29,19 +29,44 @@
 #import "PTDAppDelegate.h"
 
 
-@implementation PTDPaintWindow
+@implementation PTDPaintWindow {
+  BOOL _windowLoaded;
+}
 
 
-- (NSString *)windowNibName
+- (BOOL)isWindowLoaded
 {
-  return @"PTDPaintWindow";
+  return _windowLoaded;
+}
+
+
+- (void)loadWindow
+{
+  NSRect screenRect = NSScreen.mainScreen.frame;
+  CGFloat offset = screenRect.size.height / 3.0;
+  CGFloat defaultWidth = 768;
+  NSRect contentRect = NSMakeRect(screenRect.origin.x + offset, screenRect.origin.y + offset, defaultWidth, defaultWidth * 10.0 / 16.0);
+  NSWindow *window = [[NSWindow alloc]
+      initWithContentRect:contentRect
+      styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable
+      backing:NSBackingStoreBuffered
+      defer:YES];
+  
+  window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:1.0];
+  
+  self.paintViewController = [[PTDPaintViewController alloc] init];
+  self.paintViewController.view = [[PTDPaintView alloc] init];
+  window.contentView = self.paintViewController.view;
+  [self.paintViewController viewDidLoad];
+  
+  _windowLoaded = YES;
+  self.window = window;
 }
 
 
 - (void)windowDidLoad
 {
   [super windowDidLoad];
-  self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:1.0];
   [PTDAppDelegate.appDelegate pushAppShouldShowInDock];
 }
 
