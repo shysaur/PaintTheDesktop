@@ -75,6 +75,8 @@
   [openPanel beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse result) {
     if (result != NSModalResponseOK)
       [self close];
+    self.displayName = openPanel.URL.lastPathComponent;
+    self.window.representedURL = openPanel.URL;
     self.theDocument = [[PDFDocument alloc] initWithURL:openPanel.URL];
   }];
 }
