@@ -32,7 +32,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) IBOutlet NSTextField *screenName;
 @property (nonatomic) IBOutlet NSLayoutConstraint *leftBorderConstraint;
 
-- (void)setThumbnail:(NSImage *)image;
+@property (nonatomic, readonly) CGFloat thumbnailArea;
+@property (nonatomic, readonly) NSImage *thumbnail;
+
+@end
+
+@interface NSMenuItem (PTDScreenMenuItemView)
+
++ (NSMenuItem *)ptd_menuItemWithLabel:(NSString *)label thumbnail:(NSImage *)thumb thumbnailArea:(CGFloat)area;
 
 @end
 

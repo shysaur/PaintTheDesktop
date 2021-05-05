@@ -25,6 +25,7 @@
 
 #import "PTDScreenMenuItemView.h"
 #import "NSGeometry+PTD.h"
+#import "NSNib+PTD.h"
 
 
 @interface PTDScreenMenuItemView ()
@@ -38,6 +39,22 @@
 
 
 @implementation PTDScreenMenuItemView
+
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+  self = [super initWithCoder:coder];
+  _thumbnailArea = 10000;
+  return self;
+}
+
+
+- (instancetype)initWithFrame:(NSRect)frame
+{
+  self = [super initWithFrame:frame];
+  _thumbnailArea = 10000;
+  return self;
+}
 
 
 - (void)awakeFromNib
@@ -62,17 +79,69 @@
 }
 
 
+- (void)setThumbnailArea:(CGFloat)thumbnailArea
+{
+  _thumbnailArea = thumbnailArea;
+  [self updateThumbnail];
+}
+
+
 - (void)setThumbnail:(NSImage *)img
 {
+  _thumbnail = img;
+  [self updateThumbnail];
+}
+
+
+- (void)updateThumbnail
+{
+  if (!_thumbnail)
+    return;
+  
   NSSize size;
-  img.size = size = PTD_NSSizePreservingAspectWithArea(img.size, 10000);
+  _thumbnail.size = size = PTD_NSSizePreservingAspectWithArea(_thumbnail.size, self.thumbnailArea);
   
   CGFloat wPad = self.widthThumbnailConstraint.constant - self.screenThumbnail.frame.size.width;
   CGFloat hPad = self.heightThumbnailConstraint.constant - self.screenThumbnail.frame.size.height;
   self.widthThumbnailConstraint.constant = size.width + wPad;
   self.heightThumbnailConstraint.constant = size.height + hPad;
   
-  self.screenThumbnail.image = img;
+  self.screenThumbnail.image = _thumbnail;
+}
+
+
+@end
+
+
+@interface NSMenuItem ()
+
+- (BOOL)_viewHandlesEvents;
+- (void)_setViewHandlesEvents:(BOOL)arg1;
+
+@end
+
+
+@implementation NSMenuItem (PTDScreenMenuItemView)
+
+
++ (NSMenuItem *)ptd_menuItemWithLabel:(NSString *)label thumbnail:(NSImage *)thumb thumbnailArea:(CGFloat)area
+{
+  static NSNib *viewNib;
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    viewNib = [[NSNib alloc] initWithNibNamed:@"PTDScreenMenuItemView" bundle:[NSBundle mainBundle]];
+  });
+
+  PTDScreenMenuItemView *view = [viewNib ptd_instantiateObjectWithIdentifier:@"screenMenuItem" withOwner:nil];
+  NSMenuItem *mi = [[NSMenuItem alloc] initWithTitle:label action:nil keyEquivalent:@""];
+  view.screenName.stringValue = label;
+  if (area >= 1)
+    view.thumbnailArea = area;
+  [view setThumbnail:thumb];
+  mi.view = view;
+  [mi _setViewHandlesEvents:NO];
+  [view setFrameSize:view.fittingSize];
+  return mi;
 }
 
 

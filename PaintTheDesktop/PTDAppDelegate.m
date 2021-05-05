@@ -81,11 +81,14 @@
 }
 
 
+#pragma mark - Application Lifecycle
+
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
   [SUUpdater sharedUpdater];
   
-  [self _setupMenu];
+  [self setupMenu];
   [self updateScreenPaintWindows];
   
   NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
@@ -93,26 +96,41 @@
   if (showAboutScreen == nil)
     [ud setBool:NO forKey:@"PTDAboutPanelDisplayOnLaunch"];
   if (showAboutScreen == nil || showAboutScreen.boolValue == YES) {
-    [self orderFrontAboutWindow:self];
+    [self openAboutWindow:self];
   }
 }
 
 
-- (IBAction)orderFrontAboutWindow:(id)sender
+- (void)pushAppShouldShowInDock
 {
-  NSString *version = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-  NSString *buildNum = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"];
-  self.aboutWindowVersionLabel.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Version %@ (%@)", @""), version, buildNum];
-  
-  self.active = NO;
-  [NSApp activateIgnoringOtherApps:YES];
-  self.aboutWindow.canHide = NO;
-  self.aboutWindow.level = kCGMaximumWindowLevelKey;
-  [self.aboutWindow makeKeyAndOrderFront:sender];
+  if (_dockRefCount == 0) {
+    [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+  }
+  _dockRefCount++;
 }
 
 
-- (void)_setupMenu
+- (void)popAppShouldShowInDock
+{
+  if (_dockRefCount > 0) {
+    _dockRefCount--;
+    if (_dockRefCount == 0)
+      [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
+  } else {
+    NSLog(@"calls to -popAppShouldShowInDock mismatched with -pushAppShouldShowInDock!");
+  }
+}
+
+
+- (void)applicationWillTerminate:(NSNotification *)aNotification
+{
+}
+
+
+#pragma mark - Menu
+
+
+- (void)setupMenu
 {
   NSStatusBar *menuBar = [NSStatusBar systemStatusBar];
   self.statusItem = [menuBar statusItemWithLength:20.0];
@@ -158,17 +176,11 @@
 - (NSMenu *)globalMenu
 {
   NSMenu *res = [[NSMenu alloc] init];
-  NSNib *viewNib = [[NSNib alloc] initWithNibNamed:@"PTDScreenMenuItemView" bundle:[NSBundle mainBundle]];
   
   for (PTDAbstractPaintWindowController *paintw in _paintWindowControllers) {
     NSString *title = [NSString stringWithFormat:@"%@", paintw.displayName];
-    PTDScreenMenuItemView *view = [viewNib ptd_instantiateObjectWithIdentifier:@"screenMenuItem" withOwner:nil];
-    NSMenuItem *mi = [res addItemWithTitle:title action:nil keyEquivalent:@""];
-    view.screenName.stringValue = title;
-    [view setThumbnail:paintw.thumbnail];
-    mi.view = view;
-    [mi _setViewHandlesEvents:NO];
-    [view setFrameSize:view.fittingSize];
+    NSMenuItem *mi = [NSMenuItem ptd_menuItemWithLabel:title thumbnail:paintw.thumbnail thumbnailArea:0];
+    [res addItem:mi];
     
     NSMenu *submenu = [paintw windowMenu];
     if (submenu)
@@ -180,7 +192,7 @@
   
   [res addItem:[NSMenuItem separatorItem]];
   
-  [res addItemWithTitle:NSLocalizedString(@"About PaintTheDesktop", @"") action:@selector(orderFrontAboutWindow:) keyEquivalent:@""];
+  [res addItemWithTitle:NSLocalizedString(@"About PaintTheDesktop", @"") action:@selector(openAboutWindow:) keyEquivalent:@""];
   
   [res addItem:[NSMenuItem separatorItem]];
   
@@ -222,6 +234,20 @@
 }
 
 
+- (void)openAboutWindow:(id)sender
+{
+  NSString *version = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+  NSString *buildNum = [NSBundle.mainBundle objectForInfoDictionaryKey:@"CFBundleVersion"];
+  self.aboutWindowVersionLabel.stringValue = [NSString stringWithFormat:NSLocalizedString(@"Version %@ (%@)", @""), version, buildNum];
+  
+  self.active = NO;
+  [NSApp activateIgnoringOtherApps:YES];
+  self.aboutWindow.canHide = NO;
+  self.aboutWindow.level = kCGMaximumWindowLevelKey;
+  [self.aboutWindow makeKeyAndOrderFront:sender];
+}
+
+
 - (void)openPreferences:(id)sender
 {
   if (self.preferencesWindowController == nil) {
@@ -229,32 +255,6 @@
   }
   [NSApp activateIgnoringOtherApps:YES];
   [self.preferencesWindowController showWindow:self];
-}
-
-
-- (void)pushAppShouldShowInDock
-{
-  if (_dockRefCount == 0) {
-    [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
-  }
-  _dockRefCount++;
-}
-
-
-- (void)popAppShouldShowInDock
-{
-  if (_dockRefCount > 0) {
-    _dockRefCount--;
-    if (_dockRefCount == 0)
-      [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
-  } else {
-    NSLog(@"calls to -popAppShouldShowInDock mismatched with -pushAppShouldShowInDock!");
-  }
-}
-
-
-- (void)applicationWillTerminate:(NSNotification *)aNotification
-{
 }
 
 
