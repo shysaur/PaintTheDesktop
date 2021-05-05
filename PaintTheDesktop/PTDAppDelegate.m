@@ -34,6 +34,7 @@
 #import "PTDScreenMenuItemView.h"
 #import "NSNib+PTD.h"
 #import "PTDPreferencesWindowController.h"
+#import "PTDPDFPresentationPaintWindowController.h"
 
 
 @interface NSMenuItem ()
@@ -173,6 +174,7 @@
   }
   
   [res addItemWithTitle:NSLocalizedString(@"New Blank Canvas", @"") action:@selector(newCanvasWindow:) keyEquivalent:@""];
+  [res addItemWithTitle:NSLocalizedString(@"New Presentation...", @"") action:@selector(newPDFWindow:) keyEquivalent:@""];
   
   [res addItem:[NSMenuItem separatorItem]];
   
@@ -197,6 +199,15 @@
 - (void)newCanvasWindow:(id)sender
 {
   PTDAbstractPaintWindowController *thisWindow = [[PTDSimpleCanvasPaintWindowController alloc] init];
+  [self.paintWindowControllers addObject:thisWindow];
+  thisWindow.delegate = self;
+  [thisWindow showWindow:self];
+}
+
+
+- (void)newPDFWindow:(id)sender
+{
+  PTDPDFPresentationPaintWindowController *thisWindow = [[PTDPDFPresentationPaintWindowController alloc] init];
   [self.paintWindowControllers addObject:thisWindow];
   thisWindow.delegate = self;
   [thisWindow showWindow:self];
