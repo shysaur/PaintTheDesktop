@@ -64,6 +64,7 @@
   
   self.window.styleMask = NSWindowStyleMaskBorderless | NSWindowStyleMaskNonactivatingPanel;
   self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:0.0];
+  self.window.canHide = NO;
   self.window.opaque = NO;
   self.window.hasShadow = NO;
   self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary | NSWindowCollectionBehaviorIgnoresCycle;

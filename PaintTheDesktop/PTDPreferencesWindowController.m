@@ -27,17 +27,18 @@
 #import "PTDBrushColorPrefsCollectionViewDelegate.h"
 
 
-@interface PTDPreferencesWindowController ()
-
-@end
-
-
 @implementation PTDPreferencesWindowController
 
 
 - (NSString *)windowNibName
 {
   return @"PTDPreferencesWindow";
+}
+
+
+- (void)windowDidLoad
+{
+  self.window.canHide = NO;
 }
 
 

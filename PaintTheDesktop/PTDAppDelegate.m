@@ -99,6 +99,7 @@
   
   self.active = NO;
   [NSApp activateIgnoringOtherApps:YES];
+  self.aboutWindow.canHide = NO;
   [self.aboutWindow makeKeyAndOrderFront:sender];
 }
 
