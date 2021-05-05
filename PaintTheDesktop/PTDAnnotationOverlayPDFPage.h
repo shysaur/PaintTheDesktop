@@ -1,5 +1,5 @@
 //
-// PTDPDFPresentationPaintWindowController.h
+// PTDAnnotationOverlayPDFPage.h
 // PaintTheDesktop -- Created on 05/05/2021.
 //
 // Copyright (c) 2021 Daniele Cattaneo
@@ -23,14 +23,13 @@
 // SOFTWARE.
 //
 
-#import "PTDSimpleAbstractPaintWindowController.h"
-
+#import <PDFKit/PDFKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDPDFPresentationPaintWindowController : PTDSimpleAbstractPaintWindowController <NSWindowDelegate>
+@interface PTDAnnotationOverlayPDFPage : PDFPage
 
-- (void)saveAnnotatedDocumentAs:(id)sender;
+- (instancetype)initWithPDFPage:(PDFPage *)origPage overlay:(NSData *)imageData;
 
 @end
 

@@ -27,6 +27,7 @@
 #import "PTDPDFPresentationPaintWindowController.h"
 #import "PTDPDFPageView.h"
 #import "PTDAppDelegate.h"
+#import "PTDAnnotationOverlayPDFPage.h"
 #import "NSGeometry+PTD.h"
 
 
@@ -209,6 +210,58 @@
     [baseThumb drawInRect:destRect fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0];
     [snapshot drawInRect:destRect fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0 respectFlipped:NO hints:nil];
     return YES;
+  }];
+}
+
+
+- (NSMenu *)windowMenu
+{
+  NSMenu *submenu = [[NSMenu alloc] init];
+  NSMenuItem *tmp;
+  
+  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Save Page Annotations As...", @"Menu item for saving a drawing to file") action:@selector(saveImageAs:) keyEquivalent:@""];
+  tmp.target = self;
+  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Restore Page Annotations...", @"Menu item for loading a drawing from file") action:@selector(openImage:) keyEquivalent:@""];
+  tmp.target = self;
+  
+  [submenu addItem:[NSMenuItem separatorItem]];
+  
+  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Save Annotated PDF...", @"Menu item for saving a drawing to file") action:@selector(saveAnnotatedDocumentAs:) keyEquivalent:@""];
+  tmp.target = self;
+  return submenu;
+}
+
+
+- (PDFDocument *)annotatedPDFDocument
+{
+  [self stashCanvas];
+  
+  PDFDocument *newDocument = [[PDFDocument alloc] init];
+  NSInteger pageCount = self.theDocument.pageCount;
+  for (NSInteger i=0; i<pageCount; i++) {
+    PDFPage *origPage = [self.theDocument pageAtIndex:i];
+    NSData *image = _annotationPages[i];
+    if (image.length > 0) {
+      PTDAnnotationOverlayPDFPage *page = [[PTDAnnotationOverlayPDFPage alloc] initWithPDFPage:origPage overlay:image];
+      [newDocument insertPage:page atIndex:i];
+    } else {
+      [newDocument insertPage:origPage atIndex:i];
+    }
+  }
+  return newDocument;
+}
+
+
+- (void)saveAnnotatedDocumentAs:(id)sender
+{
+  NSSavePanel *savePanel = [[NSSavePanel alloc] init];
+  savePanel.allowedFileTypes = @[@"pdf"];
+  [savePanel beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse result) {
+    if (result == NSModalResponseCancel)
+      return;
+      
+    PDFDocument *doc = [self annotatedPDFDocument];
+    [doc writeToURL:savePanel.URL];
   }];
 }
 
