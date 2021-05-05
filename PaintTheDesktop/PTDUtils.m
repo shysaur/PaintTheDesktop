@@ -28,6 +28,13 @@
 #import "PTDUtils.h"
 
 
+void PTDAbstract(void)
+{
+  NSLog(@"invoked an abstract method!");
+  __builtin_trap();
+}
+
+
 void PTDSwizzleInstanceMethod(id self, SEL originalSelector, SEL swizzledSelector)
 {
   Class class = [self class];
