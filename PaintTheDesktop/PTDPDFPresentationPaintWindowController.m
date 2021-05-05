@@ -29,6 +29,7 @@
 #import "PTDAppDelegate.h"
 #import "PTDAnnotationOverlayPDFPage.h"
 #import "NSGeometry+PTD.h"
+#import "PTDScreenMenuItemView.h"
 
 
 @interface PTDPDFPresentationPaintWindowController ()
@@ -197,18 +198,38 @@
 
 - (NSImage *)thumbnail
 {
-  PDFPage *page = [self.theDocument pageAtIndex:self.pageIndex];
+  [self stashCanvas];
+  return [self thumbnailOfPageIndex:self.pageIndex withArea:10000];
+}
+
+
+- (NSImage *)thumbnailOfPageIndex:(NSInteger)pageIndex withArea:(CGFloat)area
+{
+  if (pageIndex < 0 || pageIndex >= self.theDocument.pageCount) {
+    NSSize size = self.pageView.bounds.size;
+    return [NSImage imageWithSize:size flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+      [[NSColor blackColor] setFill];
+      NSRectFill(dstRect);
+      return YES;
+    }];
+  }
+  
+  PDFPage *page = [self.theDocument pageAtIndex:pageIndex];
   NSRect box = [page boundsForBox:kPDFDisplayBoxMediaBox];
-  NSSize destSize = PTD_NSSizePreservingAspectWithArea(box.size, 10000);
+  NSSize destSize = PTD_NSSizePreservingAspectWithArea(box.size, area);
   NSImage *baseThumb = [page thumbnailOfSize:destSize forBox:kPDFDisplayBoxMediaBox];
-  NSBitmapImageRep *snapshot = self.snapshot;
+  NSData *snapshotData =_annotationPages[pageIndex];
+  NSBitmapImageRep *snapshot;
+  if (snapshotData.length > 0)
+    snapshot = [[NSBitmapImageRep alloc] initWithData:snapshotData];
   NSRect destRect = (NSRect){NSZeroPoint, destSize};
   
   return [NSImage imageWithSize:destSize flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
     [[NSColor whiteColor] setFill];
     NSRectFill(destRect);
     [baseThumb drawInRect:destRect fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0];
-    [snapshot drawInRect:destRect fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0 respectFlipped:NO hints:nil];
+    if (snapshot)
+      [snapshot drawInRect:destRect fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0 respectFlipped:NO hints:nil];
     return YES;
   }];
 }
@@ -228,6 +249,24 @@
   
   tmp = [submenu addItemWithTitle:NSLocalizedString(@"Save Annotated PDF...", @"Menu item for saving a drawing to file") action:@selector(saveAnnotatedDocumentAs:) keyEquivalent:@""];
   tmp.target = self;
+  
+  [submenu addItem:[NSMenuItem separatorItem]];
+  
+  [submenu addItemWithTitle:NSLocalizedString(@"Skip to page", @"Menu item label for PDF page selection") action:nil keyEquivalent:@""];
+  NSInteger pageCount = self.theDocument.pageCount;
+  for (NSInteger i=0; i<pageCount; i++) {
+    PDFPage *page = [self.theDocument pageAtIndex:i];
+    NSString *label = [NSString stringWithFormat:@"%@ (%ld / %ld)", page.label, i+1, pageCount];
+    NSImage *thumb = [self thumbnailOfPageIndex:i withArea:2500];
+    
+    tmp = [NSMenuItem ptd_menuItemWithLabel:label thumbnail:thumb thumbnailArea:5000];
+    tmp.tag = i;
+    tmp.action = @selector(skipToPage:);
+    tmp.target = self;
+    
+    [submenu addItem:tmp];
+  }
+  
   return submenu;
 }
 
@@ -263,6 +302,14 @@
     PDFDocument *doc = [self annotatedPDFDocument];
     [doc writeToURL:savePanel.URL];
   }];
+}
+
+
+- (void)skipToPage:(id)sender
+{
+  NSInteger pageIndex = [sender tag];
+  if (pageIndex >= 0 && pageIndex < self.theDocument.pageCount)
+    self.pageIndex = pageIndex;
 }
 
 
