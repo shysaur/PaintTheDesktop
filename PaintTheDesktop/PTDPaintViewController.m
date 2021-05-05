@@ -126,18 +126,24 @@
 }
 
 
+- (NSPoint)locationForEvent:(NSEvent *)event
+{
+  return [self.view convertPoint:event.locationInWindow fromView:nil];
+}
+
+
 - (void)mouseDown:(NSEvent *)event
 {
   self.mouseInView = YES;
   self.mouseIsDragging = YES;
-  self.lastMousePosition = event.locationInWindow;
+  self.lastMousePosition = [self locationForEvent:event];
   
   @autoreleasepool {
     PTDDrawingSurface *surf = [self drawingSurface];
     PTDTool *tool = [self initializeToolWithSurface:surf];
     [tool dragDidStartAtPoint:self.lastMousePosition];
   }
-  [self updateCursorAtPoint:event.locationInWindow];
+  [self updateCursorAtPoint:[self locationForEvent:event]];
 }
 
 
@@ -152,12 +158,12 @@
       [tool dragDidStartAtPoint:self.lastMousePosition];
       self.mouseIsDragging = YES;
     } else {
-      [tool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
+      [tool dragDidContinueFromPoint:self.lastMousePosition toPoint:[self locationForEvent:event]];
     }
   }
   
-  self.lastMousePosition = event.locationInWindow;
-  [self updateCursorAtPoint:event.locationInWindow];
+  self.lastMousePosition = [self locationForEvent:event];
+  [self updateCursorAtPoint:[self locationForEvent:event]];
 }
 
 
@@ -169,8 +175,8 @@
     @autoreleasepool {
       PTDDrawingSurface *surf = [self drawingSurface];
       PTDTool *tool = [self initializeToolWithSurface:surf];
-      [tool dragDidContinueFromPoint:self.lastMousePosition toPoint:event.locationInWindow];
-      [tool dragDidEndAtPoint:event.locationInWindow];
+      [tool dragDidContinueFromPoint:self.lastMousePosition toPoint:[self locationForEvent:event]];
+      [tool dragDidEndAtPoint:[self locationForEvent:event]];
     }
   }
   
@@ -178,11 +184,11 @@
     @autoreleasepool {
       PTDDrawingSurface *surf = [self drawingSurface];
       PTDTool *tool = [self initializeToolWithSurface:surf];
-      [tool mouseClickedAtPoint:event.locationInWindow];
+      [tool mouseClickedAtPoint:[self locationForEvent:event]];
     }
   }
   
-  [self updateCursorAtPoint:event.locationInWindow];
+  [self updateCursorAtPoint:[self locationForEvent:event]];
   
   self.mouseIsDragging = NO;
 }
@@ -198,21 +204,21 @@
 - (void)mouseMoved:(NSEvent *)event
 {
   self.mouseInView = YES;
-  [self updateCursorAtPoint:event.locationInWindow];
+  [self updateCursorAtPoint:[self locationForEvent:event]];
 }
 
 
 - (void)mouseEntered:(NSEvent *)event
 {
   self.mouseInView = YES;
-  [self updateCursorAtPoint:event.locationInWindow];
+  [self updateCursorAtPoint:[self locationForEvent:event]];
 }
 
 
 - (void)mouseExited:(NSEvent *)event
 {
   self.mouseInView = NO;
-  [self updateCursorAtPoint:event.locationInWindow];
+  [self updateCursorAtPoint:[self locationForEvent:event]];
 }
 
 
@@ -251,7 +257,7 @@
     if (optMenu)
       [ringMenu addRing:optMenu];
     
-    [tool willOpenOptionMenuAtPoint:event.locationInWindow];
+    [tool willOpenOptionMenuAtPoint:[self locationForEvent:event]];
     self.systemCursorVisibility = YES;
     [ringMenu popUpMenuWithEvent:event forView:self.view];
   }
