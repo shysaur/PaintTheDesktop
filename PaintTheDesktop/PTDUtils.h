@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 NS_INLINE __attribute__((noreturn)) void PTDAbstract(void)
 {
   NSLog(@"invoked an abstract method!");
+  __builtin_trap();
   exit(1);
 }
 
