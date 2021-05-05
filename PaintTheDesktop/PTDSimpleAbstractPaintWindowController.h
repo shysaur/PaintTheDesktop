@@ -32,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) IBOutlet PTDPaintViewController *paintViewController;
 
+- (NSBitmapImageRep *)snapshot;
 - (void)restoreFromSnapshot:(NSBitmapImageRep *)bitmap;
 
 - (void)saveImageAs:(id)sender;

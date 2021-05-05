@@ -35,6 +35,15 @@
 }
 
 
+- (NSImage *)thumbnail
+{
+  NSBitmapImageRep *rep = self.snapshot;
+  NSImage *image = [[NSImage alloc] initWithSize:rep.size];
+  [image addRepresentation:rep];
+  return image;
+}
+
+
 - (void)restoreFromSnapshot:(NSBitmapImageRep *)bitmap
 {
   @autoreleasepool {

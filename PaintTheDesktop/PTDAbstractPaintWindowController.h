@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) NSString *displayName;
 
 - (nullable NSMenu *)windowMenu;
-- (NSBitmapImageRep *)snapshot;
+@property (nonatomic, readonly, copy) NSImage *thumbnail;
 
 - (void)applicationDidEnableDrawing;
 - (void)applicationDidDisableDrawing;

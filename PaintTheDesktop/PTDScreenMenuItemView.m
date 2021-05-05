@@ -24,6 +24,7 @@
 //
 
 #import "PTDScreenMenuItemView.h"
+#import "NSGeometry+PTD.h"
 
 
 @interface PTDScreenMenuItemView ()
@@ -61,21 +62,15 @@
 }
 
 
-- (void)setThumbnail:(NSBitmapImageRep *)imagerep
+- (void)setThumbnail:(NSImage *)img
 {
-  const CGFloat area = 10000;
-  CGFloat scale = sqrt(area / (imagerep.pixelsHigh * imagerep.pixelsWide));
-  CGFloat w = imagerep.pixelsWide * scale;
-  CGFloat h = imagerep.pixelsHigh * scale;
-  
-  NSImage *img = [[NSImage alloc] init];
-  img.size = NSMakeSize(w, h);
-  [img addRepresentation:imagerep];
+  NSSize size;
+  img.size = size = PTD_NSSizePreservingAspectWithArea(img.size, 10000);
   
   CGFloat wPad = self.widthThumbnailConstraint.constant - self.screenThumbnail.frame.size.width;
   CGFloat hPad = self.heightThumbnailConstraint.constant - self.screenThumbnail.frame.size.height;
-  self.widthThumbnailConstraint.constant = w + wPad;
-  self.heightThumbnailConstraint.constant = h + hPad;
+  self.widthThumbnailConstraint.constant = size.width + wPad;
+  self.heightThumbnailConstraint.constant = size.height + hPad;
   
   self.screenThumbnail.image = img;
 }

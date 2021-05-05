@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) IBOutlet NSTextField *screenName;
 @property (nonatomic) IBOutlet NSLayoutConstraint *leftBorderConstraint;
 
-- (void)setThumbnail:(NSBitmapImageRep *)image;
+- (void)setThumbnail:(NSImage *)image;
 
 @end
 

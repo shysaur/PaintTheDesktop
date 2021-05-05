@@ -62,4 +62,12 @@ NS_INLINE NSRect PTD_NSNormalizedRect(NSRect rect)
   return rect;
 }
 
+NS_INLINE NSSize PTD_NSSizePreservingAspectWithArea(NSSize origSize, CGFloat area)
+{
+  CGFloat scale = sqrt(area / (origSize.height * origSize.width));
+  CGFloat w = round(origSize.width * scale);
+  CGFloat h = round(origSize.height * scale);
+  return NSMakeSize(w, h);
+}
+
 NS_ASSUME_NONNULL_END

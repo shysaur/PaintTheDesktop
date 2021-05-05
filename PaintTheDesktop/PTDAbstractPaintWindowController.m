@@ -74,7 +74,7 @@
 }
 
 
-- (NSBitmapImageRep *)snapshot
+- (NSImage *)thumbnail
 {
   PTDAbstract();
 }

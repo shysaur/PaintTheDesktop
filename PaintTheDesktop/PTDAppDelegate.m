@@ -165,7 +165,7 @@
     PTDScreenMenuItemView *view = [viewNib ptd_instantiateObjectWithIdentifier:@"screenMenuItem" withOwner:nil];
     NSMenuItem *mi = [res addItemWithTitle:title action:nil keyEquivalent:@""];
     view.screenName.stringValue = title;
-    [view setThumbnail:[paintw snapshot]];
+    [view setThumbnail:paintw.thumbnail];
     mi.view = view;
     [mi _setViewHandlesEvents:NO];
     [view setFrameSize:view.fittingSize];
