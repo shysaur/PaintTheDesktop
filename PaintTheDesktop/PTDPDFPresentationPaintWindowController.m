@@ -158,6 +158,9 @@
     return NO;
   
   NSData *pngPainting = _annotationPages[_pageIndex];
+  if (pngPainting.length == 0)
+    return NO;
+    
   NSBitmapImageRep *painting = [NSBitmapImageRep imageRepWithData:pngPainting];
   [self restoreFromSnapshot:painting];
   return YES;
