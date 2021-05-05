@@ -38,14 +38,6 @@
 #import "NSWindow+PTD.h"
 
 
-@interface NSMenuItem ()
-
-- (BOOL)_viewHandlesEvents;
-- (void)_setViewHandlesEvents:(BOOL)arg1;
-
-@end
-
-
 @interface PTDAppDelegate ()
 
 @property (nonatomic) NSMutableArray<PTDAbstractPaintWindowController *> *paintWindowControllers;
