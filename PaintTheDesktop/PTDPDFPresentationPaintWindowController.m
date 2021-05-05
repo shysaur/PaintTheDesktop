@@ -27,6 +27,7 @@
 #import "PTDPDFPresentationPaintWindowController.h"
 #import "PTDPDFPageView.h"
 #import "PTDAppDelegate.h"
+#import "NSGeometry+PTD.h"
 
 
 @interface PTDPDFPresentationPaintWindowController ()
@@ -187,6 +188,25 @@
     }
     self.pageIndex = page;
   }
+}
+
+
+- (NSImage *)thumbnail
+{
+  PDFPage *page = [self.theDocument pageAtIndex:self.pageIndex];
+  NSRect box = [page boundsForBox:kPDFDisplayBoxMediaBox];
+  NSSize destSize = PTD_NSSizePreservingAspectWithArea(box.size, 10000);
+  NSImage *baseThumb = [page thumbnailOfSize:destSize forBox:kPDFDisplayBoxMediaBox];
+  NSBitmapImageRep *snapshot = self.snapshot;
+  NSRect destRect = (NSRect){NSZeroPoint, destSize};
+  
+  return [NSImage imageWithSize:destSize flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+    [[NSColor whiteColor] setFill];
+    NSRectFill(destRect);
+    [baseThumb drawInRect:destRect fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0];
+    [snapshot drawInRect:destRect fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0 respectFlipped:NO hints:nil];
+    return YES;
+  }];
 }
 
 
