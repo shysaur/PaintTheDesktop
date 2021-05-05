@@ -101,6 +101,7 @@
 - (void)setPdfPage:(PDFPage *)pdfPage
 {
   _pdfPage = pdfPage;
+  [self setNeedsLayout:YES];
   [self setNeedsDisplay:YES];
 }
 
