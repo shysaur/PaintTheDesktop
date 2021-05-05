@@ -28,5 +28,8 @@
 
 @interface PTDAppDelegate : NSObject <NSApplicationDelegate, PTDPaintWindowDelegate>
 
+- (void)pushAppShouldShowInDock;
+- (void)popAppShouldShowInDock;
+
 @end
 

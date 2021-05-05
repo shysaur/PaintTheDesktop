@@ -57,7 +57,9 @@
 @end
 
 
-@implementation PTDAppDelegate
+@implementation PTDAppDelegate {
+  NSInteger _dockRefCount;
+}
 
 
 - (instancetype)init
@@ -65,6 +67,7 @@
   self = [super init];
   _paintWindowControllers = [@[] mutableCopy];
   _active = NO;
+  _dockRefCount = 0;
   return self;
 }
 
@@ -208,6 +211,7 @@
 
 - (void)newCanvasWindow:(id)sender
 {
+  [self pushAppShouldShowInDock];
   PTDPaintWindow *thisWindow = [[PTDPaintWindow alloc] init];
   [self.paintWindowControllers addObject:thisWindow];
   thisWindow.delegate = self;
@@ -217,6 +221,8 @@
 
 - (void)paintWindowWillClose:(PTDPaintWindow *)windowCtl
 {
+  if (![windowCtl isKindOfClass:[PTDScreenPaintWindow class]])
+    [self popAppShouldShowInDock];
   [self.paintWindowControllers removeObject:windowCtl];
 }
 
@@ -228,6 +234,26 @@
   }
   [NSApp activateIgnoringOtherApps:YES];
   [self.preferencesWindowController showWindow:self];
+}
+
+
+- (void)pushAppShouldShowInDock
+{
+  if (_dockRefCount == 0) {
+    [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+  }
+  _dockRefCount++;
+}
+
+
+- (void)popAppShouldShowInDock
+{
+  if (_dockRefCount > 0) {
+    [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
+    _dockRefCount--;
+  } else {
+    NSLog(@"calls to -popAppShouldShowInDock mismatched with -pushAppShouldShowInDock!");
+  }
 }
 
 
