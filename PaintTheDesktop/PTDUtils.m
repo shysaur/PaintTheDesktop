@@ -1,6 +1,6 @@
 //
-// PTDUtils.h
-// PaintTheDesktop -- Created on 22/04/2021.
+// PTDUtils.m
+// PaintTheDesktop -- Created on 05/05/2021.
 //
 // Copyright (c) 2021 Daniele Cattaneo
 //
@@ -24,16 +24,29 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <objc/runtime.h>
+#import "PTDUtils.h"
 
-NS_ASSUME_NONNULL_BEGIN
 
-NS_INLINE __attribute__((noreturn)) void PTDAbstract(void)
+void PTDSwizzleInstanceMethod(id self, SEL originalSelector, SEL swizzledSelector)
 {
-  NSLog(@"invoked an abstract method!");
-  __builtin_trap();
-  exit(1);
+  Class class = [self class];
+  
+  Method originalMethod = class_getInstanceMethod(class, originalSelector);
+  Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+  
+  BOOL didAddMethod = class_addMethod(class,
+      originalSelector,
+      method_getImplementation(swizzledMethod),
+      method_getTypeEncoding(swizzledMethod));
+  
+  if (didAddMethod) {
+    class_replaceMethod(class,
+        swizzledSelector,
+        method_getImplementation(originalMethod),
+        method_getTypeEncoding(originalMethod));
+  } else {
+    method_exchangeImplementations(originalMethod, swizzledMethod);
+  }
 }
 
-void PTDSwizzleInstanceMethod(id self, SEL originalSelector, SEL swizzledSelector);
-
-NS_ASSUME_NONNULL_END

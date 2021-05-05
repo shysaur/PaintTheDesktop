@@ -29,6 +29,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSWindow (PTD)
 
++ (void)ptd_pushForceTopLevel;
++ (void)ptd_popForceTopLevel;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -58,6 +58,7 @@
 		01B7AF482642D24500A3FF31 /* PTDPDFPresentationPaintWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01B7AF462642D24500A3FF31 /* PTDPDFPresentationPaintWindowController.xib */; };
 		01B7AF5B2642D50200A3FF31 /* PTDPDFPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B7AF5A2642D50200A3FF31 /* PTDPDFPageView.m */; };
 		01B7AF5E2642E10100A3FF31 /* NSAffineTransform+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B7AF5D2642E10100A3FF31 /* NSAffineTransform+PTD.m */; };
+		01B7AF602643129200A3FF31 /* PTDUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B7AF5F2643129200A3FF31 /* PTDUtils.m */; };
 		01C0D68C2492ED7100AECEAB /* NSScreen+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 01C0D68B2492ED7100AECEAB /* NSScreen+PTD.m */; };
 		01CFFD1924EB50580093D6BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01CFFD1B24EB50580093D6BA /* Localizable.strings */; };
 		01D68A5825AB9D1A00536CD6 /* PTDSelectionTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D68A5725AB9D1A00536CD6 /* PTDSelectionTool.m */; };
@@ -269,6 +270,7 @@
 		01B7AF5A2642D50200A3FF31 /* PTDPDFPageView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPDFPageView.m; sourceTree = "<group>"; };
 		01B7AF5C2642E10100A3FF31 /* NSAffineTransform+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSAffineTransform+PTD.h"; sourceTree = "<group>"; };
 		01B7AF5D2642E10100A3FF31 /* NSAffineTransform+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSAffineTransform+PTD.m"; sourceTree = "<group>"; };
+		01B7AF5F2643129200A3FF31 /* PTDUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDUtils.m; sourceTree = "<group>"; };
 		01C0D68A2492ED7100AECEAB /* NSScreen+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSScreen+PTD.h"; sourceTree = "<group>"; };
 		01C0D68B2492ED7100AECEAB /* NSScreen+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSScreen+PTD.m"; sourceTree = "<group>"; };
 		01CFFD1624EB4F6D0093D6BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PTDApp.strings; sourceTree = "<group>"; };
@@ -399,6 +401,7 @@
 			isa = PBXGroup;
 			children = (
 				01484B012632197300B0518F /* PTDUtils.h */,
+				01B7AF5F2643129200A3FF31 /* PTDUtils.m */,
 				01C0D68A2492ED7100AECEAB /* NSScreen+PTD.h */,
 				01C0D68B2492ED7100AECEAB /* NSScreen+PTD.m */,
 				016AD9A324978132004E3749 /* NSView+PTD.h */,
@@ -743,6 +746,7 @@
 				01F032122634EC810045B622 /* PTDLineTool.m in Sources */,
 				01484AFF263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m in Sources */,
 				016AD9A8249790B3004E3749 /* PTDDrawingSurface.m in Sources */,
+				01B7AF602643129200A3FF31 /* PTDUtils.m in Sources */,
 				016D36B42490584E0086E96D /* PTDPencilTool.m in Sources */,
 				015A50CC24A13F4B0008AAB1 /* PTDRoundRectTool.m in Sources */,
 				01B7AF472642D24500A3FF31 /* PTDPDFPresentationPaintWindowController.m in Sources */,

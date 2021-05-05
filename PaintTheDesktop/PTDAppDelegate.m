@@ -35,6 +35,7 @@
 #import "NSNib+PTD.h"
 #import "PTDPreferencesWindowController.h"
 #import "PTDPDFPresentationPaintWindowController.h"
+#import "NSWindow+PTD.h"
 
 
 @interface NSMenuItem ()
@@ -106,6 +107,7 @@
   self.active = NO;
   [NSApp activateIgnoringOtherApps:YES];
   self.aboutWindow.canHide = NO;
+  self.aboutWindow.level = kCGMaximumWindowLevelKey;
   [self.aboutWindow makeKeyAndOrderFront:sender];
 }
 

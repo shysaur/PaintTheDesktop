@@ -24,30 +24,17 @@
 //
 
 #import "NSWindow+PTD.h"
-#import <objc/runtime.h>
+#import "PTDUtils.h"
 
 
-void PTDSwizzleInstanceMethod(id self, SEL originalSelector, SEL swizzledSelector)
-{
-  Class class = [self class];
-  
-  Method originalMethod = class_getInstanceMethod(class, originalSelector);
-  Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
-  
-  BOOL didAddMethod = class_addMethod(class,
-      originalSelector,
-      method_getImplementation(swizzledMethod),
-      method_getTypeEncoding(swizzledMethod));
-  
-  if (didAddMethod) {
-    class_replaceMethod(class,
-        swizzledSelector,
-        method_getImplementation(originalMethod),
-        method_getTypeEncoding(originalMethod));
-  } else {
-    method_exchangeImplementations(originalMethod, swizzledMethod);
-  }
-}
+static NSInteger _forceTopLevelRefCount;
+
+
+@interface NSWindow ()
+
+- (void)_setWindowNumber:(NSInteger)wn;
+
+@end
 
 
 @implementation NSWindow (PTD)
@@ -58,13 +45,29 @@ void PTDSwizzleInstanceMethod(id self, SEL originalSelector, SEL swizzledSelecto
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     PTDSwizzleInstanceMethod(self, @selector(setLevel:), @selector(ptd_sw_setLevel:));
+    _forceTopLevelRefCount = 0;
   });
+}
+
+
++ (void)ptd_pushForceTopLevel
+{
+  _forceTopLevelRefCount++;
+}
+
+
++ (void)ptd_popForceTopLevel
+{
+  if (_forceTopLevelRefCount > 0)
+    _forceTopLevelRefCount--;
+  else
+    NSLog(@"calls to -ptd_popForceTopLevel mismatched with -ptd_pushForceTopLevel");
 }
 
 
 - (void)ptd_sw_setLevel:(NSWindowLevel)windowLevel
 {
-  if (windowLevel < kCGMaximumWindowLevelKey) {
+  if (_forceTopLevelRefCount > 0 && windowLevel < kCGMaximumWindowLevelKey) {
     NSLog(@"elevated window %ld (%@) level from %ld to %d",
         (long)self.windowNumber, self, (long)windowLevel, kCGMaximumWindowLevelKey);
     [self ptd_sw_setLevel:kCGMaximumWindowLevelKey];
