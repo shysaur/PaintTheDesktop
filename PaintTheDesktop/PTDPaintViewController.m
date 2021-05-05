@@ -135,6 +135,9 @@
 - (void)mouseDown:(NSEvent *)event
 {
   self.mouseInView = YES;
+  if (!self.active)
+    return;
+  
   self.mouseIsDragging = YES;
   self.lastMousePosition = [self locationForEvent:event];
   
@@ -150,6 +153,8 @@
 - (void)mouseDragged:(NSEvent *)event
 {
   self.mouseInView = YES;
+  if (!self.active)
+    return;
   
   @autoreleasepool {
     PTDDrawingSurface *surf = [self drawingSurface];
@@ -170,6 +175,8 @@
 - (void)mouseUp:(NSEvent *)event
 {
   self.mouseInView = YES;
+  if (!self.active)
+    return;
   
   if (self.mouseIsDragging) {
     @autoreleasepool {
@@ -197,6 +204,8 @@
 - (void)rightMouseDown:(NSEvent *)event
 {
   self.mouseInView = YES;
+  if (!self.active)
+    return;
   [self openContextMenuWithEvent:event];
 }
 
