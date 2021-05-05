@@ -32,6 +32,7 @@
 #import "NSGeometry+PTD.h"
 #import "NSBezierPath+PTD.h"
 #import "PTDGraphics.h"
+#import "PTDUtils.h"
 
 
 #define SIGN(x) ((x) < 0.0 ? -1.0 : 1.0)
@@ -52,8 +53,7 @@
 
 - (NSBezierPath *)shapeBezierPathInRect:(NSRect)rect
 {
-  [NSException raise:NSInternalInconsistencyException format:@"ABSTRACT METHOD: %s", __FUNCTION__];
-  return nil;
+  PTDAbstract();
 }
 
 

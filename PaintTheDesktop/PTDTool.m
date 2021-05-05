@@ -26,6 +26,7 @@
 #import "PTDTool.h"
 #import "PTDCursor.h"
 #import "PTDToolOptions.h"
+#import "PTDUtils.h"
 
 
 @implementation PTDTool {
@@ -61,8 +62,7 @@
 
 + (NSString *)toolIdentifier
 {
-  [NSException raise:NSInternalInconsistencyException format:@"ABSTRACT METHOD: %s", __FUNCTION__];
-  return nil;
+  PTDAbstract();
 }
 
 
