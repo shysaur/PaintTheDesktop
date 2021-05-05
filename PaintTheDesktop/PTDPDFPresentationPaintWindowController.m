@@ -215,9 +215,9 @@
   }
   
   PDFPage *page = [self.theDocument pageAtIndex:pageIndex];
-  NSRect box = [page boundsForBox:kPDFDisplayBoxMediaBox];
+  NSRect box = [page boundsForBox:kPDFDisplayBoxCropBox];
   NSSize destSize = PTD_NSSizePreservingAspectWithArea(box.size, area);
-  NSImage *baseThumb = [page thumbnailOfSize:destSize forBox:kPDFDisplayBoxMediaBox];
+  NSImage *baseThumb = [page thumbnailOfSize:destSize forBox:kPDFDisplayBoxCropBox];
   NSData *snapshotData =_annotationPages[pageIndex];
   NSBitmapImageRep *snapshot;
   if (snapshotData.length > 0)

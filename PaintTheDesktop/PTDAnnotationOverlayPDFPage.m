@@ -71,9 +71,9 @@
   [clip addClip];
   
   @autoreleasepool {
-    NSRect mediaBox = [self boundsForBox:kPDFDisplayBoxMediaBox];
+    NSRect cropBox = [self boundsForBox:kPDFDisplayBoxCropBox];
     NSBitmapImageRep *image = [[NSBitmapImageRep alloc] initWithData:_imageData];
-    [image drawInRect:mediaBox];
+    [image drawInRect:cropBox];
   }
   
   [NSGraphicsContext restoreGraphicsState];

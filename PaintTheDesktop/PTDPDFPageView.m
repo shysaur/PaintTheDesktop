@@ -51,7 +51,7 @@
 
 - (NSRect)pageFrame
 {
-  NSRect pageRect = [self.pdfPage boundsForBox:kPDFDisplayBoxMediaBox];
+  NSRect pageRect = [self.pdfPage boundsForBox:kPDFDisplayBoxCropBox];
   NSRect frame = self.frame;
   NSRect res = NSZeroRect;
   
@@ -81,7 +81,7 @@
   if (!page)
     return;
   
-  NSRect sourceRect = [page boundsForBox:kPDFDisplayBoxMediaBox];
+  NSRect sourceRect = [page boundsForBox:kPDFDisplayBoxCropBox];
   NSRect destRect = [self pageFrame];
   
   [NSGraphicsContext.currentContext saveGraphicsState];
@@ -92,7 +92,7 @@
   NSAffineTransform *at = [NSAffineTransform ptd_transformMappingRect:sourceRect toRect:destRect];
   [at concat];
   
-  [page drawWithBox:kPDFDisplayBoxMediaBox toContext:NSGraphicsContext.currentContext.CGContext];
+  [page drawWithBox:kPDFDisplayBoxCropBox toContext:NSGraphicsContext.currentContext.CGContext];
   
   [NSGraphicsContext.currentContext restoreGraphicsState];
 }
