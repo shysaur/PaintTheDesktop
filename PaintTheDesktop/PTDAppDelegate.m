@@ -27,8 +27,9 @@
 #import "PTDToolManager.h"
 #import "PTDTool.h"
 #import "PTDAppDelegate.h"
-#import "PTDPaintWindow.h"
+#import "PTDAbstractPaintWindowController.h"
 #import "PTDScreenPaintWindow.h"
+#import "PTDPaintWindow.h"
 #import "NSScreen+PTD.h"
 #import "PTDScreenMenuItemView.h"
 #import "NSNib+PTD.h"
@@ -45,7 +46,7 @@
 
 @interface PTDAppDelegate ()
 
-@property (nonatomic) NSMutableArray<PTDPaintWindow *> *paintWindowControllers;
+@property (nonatomic) NSMutableArray<PTDAbstractPaintWindowController *> *paintWindowControllers;
 @property (nonatomic) NSStatusItem *statusItem;
 @property (nonatomic) BOOL active;
 
@@ -59,6 +60,12 @@
 
 @implementation PTDAppDelegate {
   NSInteger _dockRefCount;
+}
+
+
++ (PTDAppDelegate *)appDelegate
+{
+  return (PTDAppDelegate *)NSApp.delegate;
 }
 
 
@@ -77,12 +84,7 @@
   [SUUpdater sharedUpdater];
   
   [self _setupMenu];
-
-  for (NSScreen *screen in NSScreen.screens) {
-    PTDScreenPaintWindow *thisWindow = [[PTDScreenPaintWindow alloc] initWithDisplay:[screen ptd_displayID]];
-    [self.paintWindowControllers addObject:thisWindow];
-    thisWindow.active = self.active;
-  }
+  [self updateScreenPaintWindows];
   
   NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
   NSNumber *showAboutScreen = [ud objectForKey:@"PTDAboutPanelDisplayOnLaunch"];
@@ -104,28 +106,6 @@
   [NSApp activateIgnoringOtherApps:YES];
   self.aboutWindow.canHide = NO;
   [self.aboutWindow makeKeyAndOrderFront:sender];
-}
-
-
-- (void)applicationDidChangeScreenParameters:(NSNotification *)notification
-{
-  for (NSScreen *screen in NSScreen.screens) {
-    CGDirectDisplayID dispId = [screen ptd_displayID];
-    
-    BOOL alreadyHandled = NO;
-    for (PTDPaintWindow *window in self.paintWindowControllers) {
-      if ([window isKindOfClass:[PTDScreenPaintWindow class]] && dispId == ((PTDScreenPaintWindow *)window).display) {
-        alreadyHandled = YES;
-        break;
-      }
-    }
-    
-    if (!alreadyHandled) {
-      PTDScreenPaintWindow *thisWindow = [[PTDScreenPaintWindow alloc] initWithDisplay:dispId];
-      [self.paintWindowControllers addObject:thisWindow];
-      thisWindow.active = self.active;
-    }
-  }
 }
 
 
@@ -154,17 +134,21 @@
 - (void)setActive:(BOOL)active
 {
   if (active != _active) {
-    for (PTDPaintWindow *wc in self.paintWindowControllers) {
-      if ([wc isKindOfClass:[PTDScreenPaintWindow class]])
-        ((PTDScreenPaintWindow *)wc).active = active;
-    }
+    _active = active;
+    
     if (active) {
       self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIconOn"];
     } else {
       self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIconOff"];
     }
+    
+    for (PTDAbstractPaintWindowController *wc in self.paintWindowControllers) {
+      if (active)
+        [wc applicationDidEnableDrawing];
+      else
+        [wc applicationDidDisableDrawing];
+    }
   }
-  _active = active;
 }
 
 
@@ -173,7 +157,7 @@
   NSMenu *res = [[NSMenu alloc] init];
   NSNib *viewNib = [[NSNib alloc] initWithNibNamed:@"PTDScreenMenuItemView" bundle:[NSBundle mainBundle]];
   
-  for (PTDPaintWindow *paintw in _paintWindowControllers) {
+  for (PTDAbstractPaintWindowController *paintw in _paintWindowControllers) {
     NSString *title = [NSString stringWithFormat:@"%@", paintw.displayName];
     PTDScreenMenuItemView *view = [viewNib ptd_instantiateObjectWithIdentifier:@"screenMenuItem" withOwner:nil];
     NSMenuItem *mi = [res addItemWithTitle:title action:nil keyEquivalent:@""];
@@ -211,8 +195,7 @@
 
 - (void)newCanvasWindow:(id)sender
 {
-  [self pushAppShouldShowInDock];
-  PTDPaintWindow *thisWindow = [[PTDPaintWindow alloc] init];
+  PTDAbstractPaintWindowController *thisWindow = [[PTDPaintWindow alloc] init];
   [self.paintWindowControllers addObject:thisWindow];
   thisWindow.delegate = self;
   [thisWindow showWindow:self];
@@ -221,8 +204,6 @@
 
 - (void)paintWindowWillClose:(PTDPaintWindow *)windowCtl
 {
-  if (![windowCtl isKindOfClass:[PTDScreenPaintWindow class]])
-    [self popAppShouldShowInDock];
   [self.paintWindowControllers removeObject:windowCtl];
 }
 
@@ -259,6 +240,40 @@
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
+}
+
+
+#pragma mark - Screen Paint Windows
+
+
+- (void)updateScreenPaintWindows
+{
+  for (NSScreen *screen in NSScreen.screens) {
+    CGDirectDisplayID dispId = [screen ptd_displayID];
+    
+    BOOL alreadyHandled = NO;
+    for (PTDAbstractPaintWindowController *window in self.paintWindowControllers) {
+      if ([window isKindOfClass:[PTDScreenPaintWindow class]] && dispId == ((PTDScreenPaintWindow *)window).display) {
+        alreadyHandled = YES;
+        break;
+      }
+    }
+    
+    if (!alreadyHandled) {
+      PTDScreenPaintWindow *thisWindow = [[PTDScreenPaintWindow alloc] initWithDisplay:dispId];
+      [self.paintWindowControllers addObject:thisWindow];
+      if (self.active)
+        [thisWindow applicationDidEnableDrawing];
+      else
+        [thisWindow applicationDidDisableDrawing];
+    }
+  }
+}
+
+
+- (void)applicationDidChangeScreenParameters:(NSNotification *)notification
+{
+  [self updateScreenPaintWindows];
 }
 
 

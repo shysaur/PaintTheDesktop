@@ -23,16 +23,15 @@
 // SOFTWARE.
 //
 
-#import "PTDPaintWindow.h"
+#import "PTDSimpleAbstractPaintWindowController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDScreenPaintWindow : PTDPaintWindow
+@interface PTDScreenPaintWindow : PTDSimpleAbstractPaintWindowController
 
 - (instancetype)initWithDisplay:(CGDirectDisplayID)display;
 
 @property (nonatomic) CGDirectDisplayID display;
-@property (nonatomic) BOOL active;
 
 @end
 

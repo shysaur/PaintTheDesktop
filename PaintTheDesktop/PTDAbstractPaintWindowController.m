@@ -1,8 +1,8 @@
 //
-// AppDelegate.h
-// PaintTheDesktop -- Created on 08/06/2020.
+// PTDAbstractPaintWindowController.m
+// PaintTheDesktop -- Created on 05/05/2021.
 //
-// Copyright (c) 2020 Daniele Cattaneo
+// Copyright (c) 2021 Daniele Cattaneo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,15 +23,55 @@
 // SOFTWARE.
 //
 
-#import <Cocoa/Cocoa.h>
 #import "PTDAbstractPaintWindowController.h"
+#import "PTDUtils.h"
 
-@interface PTDAppDelegate : NSObject <NSApplicationDelegate, PTDPaintWindowDelegate>
 
-+ (PTDAppDelegate *)appDelegate;
+@implementation PTDAbstractPaintWindowController
 
-- (void)pushAppShouldShowInDock;
-- (void)popAppShouldShowInDock;
+
+- (void)windowDidLoad
+{
+  [super windowDidLoad];
+  self.displayName = NSLocalizedString(@"untitled", @"");
+  self.window.delegate = self;
+}
+
+
+- (void)setDisplayName:(NSString *)displayName
+{
+  _displayName = displayName;
+  if (self.windowLoaded)
+    self.window.title = _displayName;
+}
+
+
+- (void)windowWillClose:(NSNotification *)notification
+{
+  [self.delegate paintWindowWillClose:self];
+}
+
+
+- (NSMenu *)windowMenu
+{
+  PTDAbstract();
+}
+
+
+- (NSBitmapImageRep *)snapshot
+{
+  PTDAbstract();
+}
+
+
+- (void)applicationDidEnableDrawing
+{
+}
+
+
+- (void)applicationDidDisableDrawing
+{
+}
+
 
 @end
-

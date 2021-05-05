@@ -1,8 +1,8 @@
 //
-// AppDelegate.h
-// PaintTheDesktop -- Created on 08/06/2020.
+// PTDAbstractPaintWindowController.h
+// PaintTheDesktop -- Created on 05/05/2021.
 //
-// Copyright (c) 2020 Daniele Cattaneo
+// Copyright (c) 2021 Daniele Cattaneo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,29 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "PTDAbstractPaintWindowController.h"
 
-@interface PTDAppDelegate : NSObject <NSApplicationDelegate, PTDPaintWindowDelegate>
+NS_ASSUME_NONNULL_BEGIN
 
-+ (PTDAppDelegate *)appDelegate;
+@protocol PTDPaintWindowDelegate;
 
-- (void)pushAppShouldShowInDock;
-- (void)popAppShouldShowInDock;
+@interface PTDAbstractPaintWindowController : NSWindowController <NSWindowDelegate>
+
+@property (nonatomic, weak) id<PTDPaintWindowDelegate> delegate;
+
+@property (nonatomic) NSString *displayName;
+
+- (NSMenu *)windowMenu;
+- (NSBitmapImageRep *)snapshot;
+
+- (void)applicationDidEnableDrawing;
+- (void)applicationDidDisableDrawing;
 
 @end
 
+@protocol PTDPaintWindowDelegate <NSObject>
+
+- (void)paintWindowWillClose:(PTDAbstractPaintWindowController *)windowCtl;
+
+@end
+
+NS_ASSUME_NONNULL_END

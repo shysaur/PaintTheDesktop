@@ -24,32 +24,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "PTDPaintViewController.h"
+#import "PTDSimpleAbstractPaintWindowController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol PTDPaintWindowDelegate;
-
-@interface PTDPaintWindow : NSWindowController <NSWindowDelegate>
-
-@property (nonatomic) IBOutlet PTDPaintViewController *paintViewController;
-
-@property (nonatomic, weak) id<PTDPaintWindowDelegate> delegate;
-
-@property (nonatomic) NSString *displayName;
-
-- (NSMenu *)windowMenu;
-- (void)saveImageAs:(id)sender;
-- (void)openImage:(id)sender;
-
-- (NSBitmapImageRep *)snapshot;
-- (void)restoreFromSnapshot:(NSBitmapImageRep *)bitmap;
-
-@end
-
-@protocol PTDPaintWindowDelegate <NSObject>
-
-- (void)paintWindowWillClose:(PTDPaintWindow *)windowCtl;
+@interface PTDPaintWindow : PTDSimpleAbstractPaintWindowController
 
 @end
 

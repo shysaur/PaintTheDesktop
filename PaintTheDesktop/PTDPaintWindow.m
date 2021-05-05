@@ -26,23 +26,10 @@
 #import "PTDPaintWindow.h"
 #import "PTDPaintViewController.h"
 #import "PTDPaintView.h"
-#import "NSScreen+PTD.h"
+#import "PTDAppDelegate.h"
 
 
-@interface PTDPaintWindow ()
-
-@end
-
-
-@implementation PTDPaintWindow 
-
-
-- (instancetype)init
-{
-  self = [super init];
-  _displayName = NSLocalizedString(@"untitled", @"");
-  return self;
-}
+@implementation PTDPaintWindow
 
 
 - (NSString *)windowNibName
@@ -54,41 +41,8 @@
 - (void)windowDidLoad
 {
   [super windowDidLoad];
-  
   self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:1.0];
-  self.window.title = self.displayName;
-}
-
-
-- (void)setDisplayName:(NSString *)displayName
-{
-  _displayName = displayName;
-  if (self.windowLoaded)
-    self.window.title = _displayName;
-}
-
-
-- (void)windowWillClose:(NSNotification *)notification
-{
-  [self.delegate paintWindowWillClose:self];
-}
-
-
-- (NSBitmapImageRep *)snapshot
-{
-  return self.paintViewController.view.snapshot;
-}
-
-
-- (void)restoreFromSnapshot:(NSBitmapImageRep *)bitmap
-{
-  @autoreleasepool {
-    [NSGraphicsContext saveGraphicsState];
-    NSGraphicsContext.currentContext = self.paintViewController.view.graphicsContext;
-    [bitmap drawInRect:self.paintViewController.view.paintRect];
-    [NSGraphicsContext restoreGraphicsState];
-    [self.paintViewController.view setNeedsDisplay:YES];
-  }
+  [PTDAppDelegate.appDelegate pushAppShouldShowInDock];
 }
 
 
@@ -104,38 +58,10 @@
 }
 
 
-- (void)saveImageAs:(id)sender
+- (void)windowWillClose:(NSNotification *)notification
 {
-  NSSavePanel *savePanel = [[NSSavePanel alloc] init];
-  savePanel.allowedFileTypes = @[@"png"];
-  NSModalResponse resp = [savePanel runModal];
-  if (resp == NSModalResponseCancel)
-    return;
-  
-  NSBitmapImageRep *snapshot = [self snapshot];
-  NSURL *file = savePanel.URL;
-  NSData *dataToSave;
-  dataToSave = [snapshot representationUsingType:NSBitmapImageFileTypePNG properties:@{}];
-  [dataToSave writeToURL:file atomically:NO];
-}
-
-
-- (void)openImage:(id)sender
-{
-  NSOpenPanel *openPanel = [[NSOpenPanel alloc] init];
-  openPanel.allowedFileTypes = @[
-    (__bridge NSString *)kUTTypePNG,
-    (__bridge NSString *)kUTTypeTIFF,
-    (__bridge NSString *)kUTTypeBMP,
-    (__bridge NSString *)kUTTypeJPEG,
-    (__bridge NSString *)kUTTypeGIF];
-  NSModalResponse resp = [openPanel runModal];
-  if (resp == NSModalResponseCancel)
-    return;
-    
-  NSData *imageData = [NSData dataWithContentsOfURL:openPanel.URL];
-  NSBitmapImageRep *image = [[NSBitmapImageRep alloc] initWithData:imageData];
-  [self restoreFromSnapshot:image];
+  [super windowWillClose:notification];
+  [PTDAppDelegate.appDelegate popAppShouldShowInDock];
 }
 
 

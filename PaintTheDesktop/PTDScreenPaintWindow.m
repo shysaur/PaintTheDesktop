@@ -28,7 +28,16 @@
 #import "PTDPaintView.h"
 
 
-@implementation PTDScreenPaintWindow
+@interface PTDScreenPaintWindow ()
+
+@property (nonatomic) BOOL active;
+
+@end
+
+
+@implementation PTDScreenPaintWindow {
+  BOOL _windowLoaded;
+}
 
 
 - (instancetype)initWithDisplay:(CGDirectDisplayID)display;
@@ -45,6 +54,9 @@
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenConfigurationDidChange:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
   
+  /* If we don't do this, Cocoa will muck around with our window positioning */
+  self.shouldCascadeWindows = NO;
+  
   return self;
 }
 
@@ -55,58 +67,102 @@
 }
 
 
-- (void)windowDidLoad
+- (BOOL)isWindowLoaded
 {
-  /* If we don't do this, Cocoa will muck around with our window positioning */
-  self.shouldCascadeWindows = NO;
+  return _windowLoaded;
+}
+
+
+- (void)loadWindow
+{
+  NSRect contentRect = [self displayRect];
+  NSWindow *window = [[NSWindow alloc]
+      initWithContentRect:contentRect
+      styleMask:NSWindowStyleMaskBorderless
+      backing:NSBackingStoreBuffered
+      defer:YES];
   
-  [super windowDidLoad];
-  
-  self.window.styleMask = NSWindowStyleMaskBorderless | NSWindowStyleMaskNonactivatingPanel;
-  self.window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:0.0];
-  self.window.canHide = NO;
-  self.window.opaque = NO;
-  self.window.hasShadow = NO;
-  self.window.collectionBehavior = NSWindowCollectionBehaviorCanJoinAllSpaces | NSWindowCollectionBehaviorFullScreenAuxiliary | NSWindowCollectionBehaviorIgnoresCycle;
-  self.window.level = kCGMaximumWindowLevelKey;
+  window.backgroundColor = [NSColor colorWithWhite:1.0 alpha:0.0];
+  window.canHide = NO;
+  window.opaque = NO;
+  window.hasShadow = NO;
+  window.collectionBehavior =
+      NSWindowCollectionBehaviorCanJoinAllSpaces |
+      NSWindowCollectionBehaviorFullScreenAuxiliary |
+      NSWindowCollectionBehaviorIgnoresCycle;
+  window.level = kCGMaximumWindowLevelKey;
   
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"debug"]) {
-    self.window.movable = YES;
-    self.window.styleMask = self.window.styleMask | NSWindowStyleMaskTitled;
+    window.movable = YES;
+    window.styleMask = window.styleMask | NSWindowStyleMaskTitled;
   } else {
-    self.window.movable = NO;
+    window.movable = NO;
   }
   
-  self.display = _display;
-  [self.window orderFrontRegardless];
+  self.paintViewController = [[PTDPaintViewController alloc] init];
+  self.paintViewController.view = [[PTDPaintView alloc] init];
+  window.contentView = self.paintViewController.view;
+  [self.paintViewController viewDidLoad];
   
-  self.active = NO;
+  _windowLoaded = YES;
+  self.window = window;
+}
+
+
+- (void)windowDidLoad
+{
+  [super windowDidLoad];
+  [self.window orderFrontRegardless];
 }
 
 
 - (void)setDisplay:(CGDirectDisplayID)display
 {
-  CGRect dispFrame = CGDisplayBounds(display);
-  
-  if (CGDisplayIsActive(display) && (dispFrame.size.width > 0) && (dispFrame.size.height > 0)) {
-    /* translate from CG reference coords to NS ones */
-    dispFrame.origin.y += dispFrame.size.height;
-    CGRect zeroScreenRect = CGDisplayBounds(CGMainDisplayID());
-    dispFrame.origin.y = -dispFrame.origin.y + zeroScreenRect.size.height;
-    
+  _display = display;
+
+  NSRect dispFrame = [self displayRect];
+  if (!NSIsEmptyRect(dispFrame)) {
     self.window.isVisible = YES;
     [self.window setFrame:dispFrame display:NO];
   } else {
     self.window.isVisible = NO;
   }
+}
+
+
+- (NSRect)displayRect
+{
+  if (!CGDisplayIsActive(self.display))
+    return NSZeroRect;
+    
+  CGRect dispFrame = CGDisplayBounds(self.display);
   
-  _display = display;
+  if (dispFrame.size.width <= 0 || dispFrame.size.height <= 0)
+    return NSZeroRect;
+  
+  /* translate from CG reference coords to NS ones */
+  dispFrame.origin.y += dispFrame.size.height;
+  CGRect zeroScreenRect = CGDisplayBounds(CGMainDisplayID());
+  dispFrame.origin.y = -dispFrame.origin.y + zeroScreenRect.size.height;
+  return dispFrame;
 }
 
 
 - (void)screenConfigurationDidChange:(NSNotification *)notification
 {
   self.display = _display;
+}
+
+
+- (void)applicationDidEnableDrawing
+{
+  self.active = YES;
+}
+
+
+- (void)applicationDidDisableDrawing
+{
+  self.active = NO;
 }
 
 
@@ -120,6 +176,18 @@
   }
   _active = active;
   self.paintViewController.active = active;
+}
+
+
+- (NSMenu *)windowMenu
+{
+  NSMenu *submenu = [[NSMenu alloc] init];
+  NSMenuItem *tmp;
+  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Save As...", @"Menu item for saving a drawing to file") action:@selector(saveImageAs:) keyEquivalent:@""];
+  tmp.target = self;
+  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Restore...", @"Menu item for loading a drawing from file") action:@selector(openImage:) keyEquivalent:@""];
+  tmp.target = self;
+  return submenu;
 }
 
 
