@@ -317,13 +317,16 @@
 
 - (void)setActive:(BOOL)active
 {
-  if (active) {
-    [self.toolManager.currentTool activate];
-  } else {
-    [self.toolManager.currentTool deactivate];
+  if (_active != active) {
+    if (active) {
+      [self.toolManager.currentTool activate];
+    } else {
+      [self.toolManager.currentTool deactivate];
+    }
   }
   _active = active;
-  [self updateCursorAtPoint:self.lastMousePosition];
+  NSPoint mousePositionInWindow = [self.view.window mouseLocationOutsideOfEventStream];
+  [self updateCursorAtPoint:[self.view convertPoint:mousePositionInWindow fromView:nil]];
 }
 
 
