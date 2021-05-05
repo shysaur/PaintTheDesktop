@@ -230,8 +230,9 @@
 - (void)popAppShouldShowInDock
 {
   if (_dockRefCount > 0) {
-    [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
     _dockRefCount--;
+    if (_dockRefCount == 0)
+      [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
   } else {
     NSLog(@"calls to -popAppShouldShowInDock mismatched with -pushAppShouldShowInDock!");
   }
