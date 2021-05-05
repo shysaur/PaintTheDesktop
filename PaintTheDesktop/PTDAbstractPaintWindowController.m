@@ -30,10 +30,26 @@
 @implementation PTDAbstractPaintWindowController
 
 
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+  self = [super initWithCoder:coder];
+  _displayName = NSLocalizedString(@"untitled", @"");
+  return self;
+}
+
+
+- (instancetype)initWithWindow:(NSWindow *)window
+{
+  self = [super initWithWindow:window];
+  _displayName = NSLocalizedString(@"untitled", @"");
+  return self;
+}
+
+
 - (void)windowDidLoad
 {
   [super windowDidLoad];
-  self.displayName = NSLocalizedString(@"untitled", @"");
+  self.displayName = _displayName;
   self.window.delegate = self;
 }
 
