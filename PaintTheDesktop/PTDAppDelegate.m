@@ -28,8 +28,8 @@
 #import "PTDTool.h"
 #import "PTDAppDelegate.h"
 #import "PTDAbstractPaintWindowController.h"
-#import "PTDScreenPaintWindow.h"
-#import "PTDPaintWindow.h"
+#import "PTDScreenPaintWindowController.h"
+#import "PTDSimpleCanvasPaintWindowController.h"
 #import "NSScreen+PTD.h"
 #import "PTDScreenMenuItemView.h"
 #import "NSNib+PTD.h"
@@ -195,14 +195,14 @@
 
 - (void)newCanvasWindow:(id)sender
 {
-  PTDAbstractPaintWindowController *thisWindow = [[PTDPaintWindow alloc] init];
+  PTDAbstractPaintWindowController *thisWindow = [[PTDSimpleCanvasPaintWindowController alloc] init];
   [self.paintWindowControllers addObject:thisWindow];
   thisWindow.delegate = self;
   [thisWindow showWindow:self];
 }
 
 
-- (void)paintWindowWillClose:(PTDPaintWindow *)windowCtl
+- (void)paintWindowWillClose:(PTDAbstractPaintWindowController *)windowCtl
 {
   [self.paintWindowControllers removeObject:windowCtl];
 }
@@ -254,14 +254,14 @@
     
     BOOL alreadyHandled = NO;
     for (PTDAbstractPaintWindowController *window in self.paintWindowControllers) {
-      if ([window isKindOfClass:[PTDScreenPaintWindow class]] && dispId == ((PTDScreenPaintWindow *)window).display) {
+      if ([window isKindOfClass:[PTDScreenPaintWindowController class]] && dispId == ((PTDScreenPaintWindowController *)window).display) {
         alreadyHandled = YES;
         break;
       }
     }
     
     if (!alreadyHandled) {
-      PTDScreenPaintWindow *thisWindow = [[PTDScreenPaintWindow alloc] initWithDisplay:dispId];
+      PTDScreenPaintWindowController *thisWindow = [[PTDScreenPaintWindowController alloc] initWithDisplay:dispId];
       [self.paintWindowControllers addObject:thisWindow];
       if (self.active)
         [thisWindow applicationDidEnableDrawing];

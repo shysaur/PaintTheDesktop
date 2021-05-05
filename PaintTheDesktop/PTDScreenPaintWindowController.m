@@ -1,5 +1,5 @@
 //
-// PTDScreenPaintWindow.m
+// PTDScreenPaintWindowController.m
 // PaintTheDesktop -- Created on 23/04/2021.
 //
 // Copyright (c) 2021 Daniele Cattaneo
@@ -23,19 +23,19 @@
 // SOFTWARE.
 //
 
-#import "PTDScreenPaintWindow.h"
+#import "PTDScreenPaintWindowController.h"
 #import "PTDToolManager.h"
 #import "PTDPaintView.h"
 
 
-@interface PTDScreenPaintWindow ()
+@interface PTDScreenPaintWindowController ()
 
 @property (nonatomic) BOOL active;
 
 @end
 
 
-@implementation PTDScreenPaintWindow {
+@implementation PTDScreenPaintWindowController {
   BOOL _windowLoaded;
 }
 

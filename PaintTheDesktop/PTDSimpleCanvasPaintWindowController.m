@@ -1,5 +1,5 @@
 //
-// PTDPaintWindow.m
+// PTDPaintWindowController.m
 // PaintTheDesktop -- Created on 08/06/2020.
 //
 // Copyright (c) 2020 Daniele Cattaneo
@@ -23,13 +23,13 @@
 // SOFTWARE.
 //
 
-#import "PTDPaintWindow.h"
+#import "PTDSimpleCanvasPaintWindowController.h"
 #import "PTDPaintViewController.h"
 #import "PTDPaintView.h"
 #import "PTDAppDelegate.h"
 
 
-@implementation PTDPaintWindow {
+@implementation PTDSimpleCanvasPaintWindowController {
   BOOL _windowLoaded;
 }
 
