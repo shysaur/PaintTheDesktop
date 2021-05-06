@@ -129,14 +129,17 @@
   
   self.statusItem.button.image = [NSImage imageNamed:@"PTDMenuIconOff"];
   self.statusItem.button.target = self;
-  self.statusItem.button.action = @selector(toggleDrawing:);
+  self.statusItem.button.action = @selector(statusItemAction:);
+  [self.statusItem.button sendActionOn:NSEventMaskLeftMouseUp | NSEventMaskRightMouseUp];
   self.statusItem.behavior = NSStatusItemBehaviorTerminationOnRemoval;
 }
 
 
-- (void)toggleDrawing:(id)sender
+- (void)statusItemAction:(id)sender
 {
-  if ([NSEvent modifierFlags] == NSEventModifierFlagOption) {
+  if (NSEvent.modifierFlags == NSEventModifierFlagOption ||
+        NSEvent.modifierFlags == NSEventModifierFlagControl ||
+        NSApp.currentEvent.type == NSEventTypeRightMouseUp) {
     [self.statusItem popUpStatusItemMenu:[self globalMenu]];
     return;
   }
