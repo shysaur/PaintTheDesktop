@@ -66,6 +66,13 @@
 }
 
 
+- (void)viewDidMoveToWindow
+{
+  [super viewDidMoveToWindow];
+  [self setFrameSize:self.fittingSize];
+}
+
+
 - (void)drawRect:(NSRect)dirtyRect
 {
   if (self.enclosingMenuItem.isHighlighted) {
@@ -140,7 +147,6 @@
   [view setThumbnail:thumb];
   mi.view = view;
   [mi _setViewHandlesEvents:NO];
-  [view setFrameSize:view.fittingSize];
   return mi;
 }
 
