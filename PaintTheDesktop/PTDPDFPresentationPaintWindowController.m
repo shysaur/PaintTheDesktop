@@ -240,14 +240,14 @@
   NSMenu *submenu = [[NSMenu alloc] init];
   NSMenuItem *tmp;
   
-  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Save Page Annotations As...", @"Menu item for saving a drawing to file") action:@selector(saveImageAs:) keyEquivalent:@""];
+  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Save Page Annotations As...", @"Menu item for saving single page annotations to file") action:@selector(saveImageAs:) keyEquivalent:@""];
   tmp.target = self;
-  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Restore Page Annotations...", @"Menu item for loading a drawing from file") action:@selector(openImage:) keyEquivalent:@""];
+  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Restore Page Annotations...", @"Menu item for loading single page annotations from file") action:@selector(openImage:) keyEquivalent:@""];
   tmp.target = self;
   
   [submenu addItem:[NSMenuItem separatorItem]];
   
-  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Save Annotated PDF...", @"Menu item for saving a drawing to file") action:@selector(saveAnnotatedDocumentAs:) keyEquivalent:@""];
+  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Save Annotated PDF...", @"Menu item for saving annotated PDFs to file") action:@selector(saveAnnotatedDocumentAs:) keyEquivalent:@""];
   tmp.target = self;
   
   [submenu addItem:[NSMenuItem separatorItem]];
@@ -256,7 +256,7 @@
   NSInteger pageCount = self.theDocument.pageCount;
   for (NSInteger i=0; i<pageCount; i++) {
     PDFPage *page = [self.theDocument pageAtIndex:i];
-    NSString *label = [NSString stringWithFormat:@"%@ (%ld / %ld)", page.label, i+1, pageCount];
+    NSString *label = [NSString stringWithFormat:NSLocalizedString(@"%@ (%ld / %ld)", @"Menu item format for PDF page selection"), page.label, i+1, pageCount];
     NSImage *thumb = [self thumbnailOfPageIndex:i withArea:2500];
     
     tmp = [NSMenuItem ptd_menuItemWithLabel:label thumbnail:thumb thumbnailArea:5000];
