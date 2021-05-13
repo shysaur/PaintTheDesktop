@@ -208,6 +208,16 @@
     tmp.target = self;
   }
   
+  [submenu addItem:[NSMenuItem separatorItem]];
+  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Main Display", @"Menu item for making a display main") action:@selector(makeDisplayMain:) keyEquivalent:@""];
+  tmp.target = self;
+  if (CGDisplayIsMain(self.display)) {
+    tmp.state = NSControlStateValueOn;
+  }
+  if (!CGDisplayIsActive(self.display)) {
+    tmp.enabled = NO;
+  }
+  
   return submenu;
 }
 
@@ -253,6 +263,74 @@
   
   if (resp == NSAlertFirstButtonReturn)
     [self close];
+}
+
+
+- (void)makeDisplayMain:(id)sender
+{
+  if (CGDisplayIsMain(self.display))
+    return;
+  if (!CGDisplayIsActive(self.display)) {
+    NSBeep();
+    return;
+  }
+  
+  if (!(NSEvent.modifierFlags & NSEventModifierFlagOption)) {
+    BOOL oldActive = PTDAppDelegate.appDelegate.active;
+    PTDAppDelegate.appDelegate.active = NO;
+    NSAlert *dispAlert = [[NSAlert alloc] init];
+    dispAlert.messageText = [NSString stringWithFormat:NSLocalizedString(@"Do you really want to make \"%@\" the main display?", @"Message text, main display change confirmation"), _displayProductName];
+    dispAlert.informativeText = NSLocalizedString(@"Window and dock locations will move around from the old main display to the new one.\n\nAll changes will be reversed when closing the app.", @"Informative text, main display change confirmation");
+    [dispAlert addButtonWithTitle:NSLocalizedString(@"Set Main Display", @"OK button, main display change confirmation")];
+    [dispAlert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel button, main display change confirmation")];
+    NSModalResponse resp = [dispAlert runModal];
+    if (resp != NSAlertFirstButtonReturn)
+      return;
+    [NSWindow ptd_popForceTopLevel];
+    PTDAppDelegate.appDelegate.active = oldActive;
+  }
+  
+  CGRect origBounds = CGDisplayBounds(self.display);
+  CGFloat dx = -origBounds.origin.x;
+  CGFloat dy = -origBounds.origin.y;
+  
+  CGDisplayConfigRef conf = NULL;
+  CGDirectDisplayID *displays = NULL;
+  CGError err = CGBeginDisplayConfiguration(&conf);
+  if (err != kCGErrorSuccess)
+    goto cancel;
+    
+  uint32_t dispCount = 0;
+  CGGetActiveDisplayList(0, NULL, &dispCount);
+  if (dispCount == 0)
+    goto cancel;
+  displays = calloc(dispCount, sizeof(CGDirectDisplayID));
+  err = CGGetActiveDisplayList(dispCount, displays, &dispCount);
+  if (err != kCGErrorSuccess)
+    goto cancel;
+  
+  for (uint32_t i=0; i<dispCount; i++) {
+    CGRect dispBounds = CGDisplayBounds(displays[i]);
+    int32_t x = dispBounds.origin.x + dx;
+    int32_t y = dispBounds.origin.y + dy;
+    err = CGConfigureDisplayOrigin(conf, displays[i], x, y);
+    if (err != kCGErrorSuccess)
+      goto cancel;
+  }
+  
+  err = CGCompleteDisplayConfiguration(conf, kCGConfigureForAppOnly);
+  if (err != kCGErrorSuccess)
+    goto cancel;
+  
+  free(displays);
+  return;
+  
+cancel:
+  NSLog(@"display configuration failed with code %d", err);
+  NSBeep();
+  if (conf)
+    CGCancelDisplayConfiguration(conf);
+  free(displays);
 }
 
 
