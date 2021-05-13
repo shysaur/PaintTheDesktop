@@ -263,6 +263,7 @@
     tmp.tag = i;
     tmp.action = @selector(skipToPage:);
     tmp.target = self;
+    tmp.state = i == self.pageIndex ? NSOnState : NSOffState;
     
     [submenu addItem:tmp];
   }
