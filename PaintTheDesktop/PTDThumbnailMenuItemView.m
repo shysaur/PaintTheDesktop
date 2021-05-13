@@ -26,6 +26,7 @@
 #import "PTDThumbnailMenuItemView.h"
 #import "NSGeometry+PTD.h"
 #import "NSNib+PTD.h"
+#import "NSImage+PTD.h"
 
 
 @interface PTDThumbnailMenuItemView ()
@@ -34,6 +35,7 @@
 @property (nonatomic) IBOutlet NSBox *thumbnailBox;
 @property (nonatomic) IBOutlet NSLayoutConstraint *widthThumbnailConstraint;
 @property (nonatomic) IBOutlet NSLayoutConstraint *heightThumbnailConstraint;
+@property (nonatomic) IBOutlet NSImageView *statusView;
 
 @end
 
@@ -75,13 +77,29 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-  if (self.enclosingMenuItem.isHighlighted) {
-    self.label.textColor = [NSColor selectedMenuItemTextColor];
-    self.thumbnailBox.borderColor = [NSColor selectedMenuItemTextColor];
+  NSColor *tintColor = [NSColor labelColor];
+  if (self.enclosingMenuItem.isHighlighted)
+    tintColor = [NSColor selectedMenuItemTextColor];
+  
+  self.label.textColor = tintColor;
+  self.thumbnailBox.borderColor = tintColor;
+  
+  NSControlStateValue state = self.enclosingMenuItem.state;
+  NSImage *statusImage;
+  if (state == NSOnState) {
+    statusImage = self.enclosingMenuItem.onStateImage;
+  } else if (state == NSMixedState) {
+    statusImage = self.enclosingMenuItem.mixedStateImage;
   } else {
-    self.label.textColor = [NSColor labelColor];
-    self.thumbnailBox.borderColor = [NSColor labelColor];
+    statusImage = self.enclosingMenuItem.offStateImage;
   }
+  if (statusImage) {
+    self.statusView.hidden = NO;
+    self.statusView.image = [statusImage ptd_imageByTintingWithColor:tintColor];
+  } else {
+    self.statusView.hidden = YES;
+  }
+  
   [super drawRect:dirtyRect];
 }
 

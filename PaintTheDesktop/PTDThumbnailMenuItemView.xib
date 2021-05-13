@@ -13,6 +13,14 @@
             <rect key="frame" x="0.0" y="0.0" width="240" height="157"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
+                <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="25h-al-DE7">
+                    <rect key="frame" x="3" y="63" width="16" height="16"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="16" id="Lgw-0M-od1"/>
+                        <constraint firstAttribute="height" constant="16" id="rmH-QQ-8LA"/>
+                    </constraints>
+                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" image="NSMenuOnStateTemplate" id="2GE-5E-r8v"/>
+                </imageView>
                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="qRT-kX-K5r">
                     <rect key="frame" x="18" y="140" width="105" height="17"/>
                     <textFieldCell key="cell" lineBreakMode="clipping" title="SCREEN_NAME" id="cVY-U9-uZ7">
@@ -41,7 +49,9 @@
                     </view>
                     <constraints>
                         <constraint firstAttribute="height" constant="135" id="3Mc-0Z-B87"/>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="16" id="VkT-dr-lGJ"/>
                         <constraint firstAttribute="width" constant="180" id="d55-fh-4W1"/>
+                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="16" id="rG1-PG-DBK"/>
                     </constraints>
                     <color key="borderColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                 </box>
@@ -51,6 +61,8 @@
                 <constraint firstItem="qRT-kX-K5r" firstAttribute="top" secondItem="c22-O7-iKe" secondAttribute="top" id="5kR-c8-34c"/>
                 <constraint firstAttribute="bottom" secondItem="cOl-6O-TGs" secondAttribute="bottom" constant="3" id="D8y-DC-myl"/>
                 <constraint firstItem="cOl-6O-TGs" firstAttribute="top" secondItem="qRT-kX-K5r" secondAttribute="bottom" constant="2" id="LsD-UX-nwu"/>
+                <constraint firstItem="25h-al-DE7" firstAttribute="centerY" secondItem="cOl-6O-TGs" secondAttribute="centerY" id="NwF-pE-nBD"/>
+                <constraint firstItem="cOl-6O-TGs" firstAttribute="leading" secondItem="25h-al-DE7" secondAttribute="trailing" constant="1" id="Y9P-ST-eom"/>
                 <constraint firstItem="qRT-kX-K5r" firstAttribute="leading" secondItem="c22-O7-iKe" secondAttribute="leading" constant="20" id="ZRA-Cm-oOJ"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="cOl-6O-TGs" secondAttribute="trailing" priority="750" constant="40" id="gED-16-3id"/>
                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="qRT-kX-K5r" secondAttribute="trailing" priority="750" constant="40" id="lZD-rE-6XE"/>
@@ -60,10 +72,14 @@
                 <outlet property="label" destination="qRT-kX-K5r" id="CM6-Jd-hey"/>
                 <outlet property="leftBorderConstraint" destination="ZRA-Cm-oOJ" id="UPG-ub-2Yw"/>
                 <outlet property="screenThumbnail" destination="KEe-Zo-vny" id="ie1-Og-1yf"/>
+                <outlet property="statusView" destination="25h-al-DE7" id="MdD-lx-zP3"/>
                 <outlet property="thumbnailBox" destination="cOl-6O-TGs" id="GTk-xI-FLm"/>
                 <outlet property="widthThumbnailConstraint" destination="d55-fh-4W1" id="WVT-bk-vOR"/>
             </connections>
             <point key="canvasLocation" x="8" y="78.5"/>
         </customView>
     </objects>
+    <resources>
+        <image name="NSMenuOnStateTemplate" width="12" height="12"/>
+    </resources>
 </document>
