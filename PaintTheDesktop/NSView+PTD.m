@@ -31,7 +31,10 @@
 
 - (NSPoint)ptd_backingAlignedPoint:(NSPoint)point
 {
-  CGFloat scale = self.window.screen.backingScaleFactor;
+  NSScreen *screen = self.window.screen;
+  if (!screen)
+    return point;
+  CGFloat scale = screen.backingScaleFactor;
   return NSMakePoint(
       round(point.x * scale) / scale,
       round(point.y * scale) / scale);
