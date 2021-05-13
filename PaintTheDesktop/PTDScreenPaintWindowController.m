@@ -39,6 +39,7 @@
 
 @implementation PTDScreenPaintWindowController {
   BOOL _windowLoaded;
+  NSString *_displayProductName;
 }
 
 
@@ -52,7 +53,7 @@
   io_service_t dispSvc = CGDisplayIOServicePort(display);
   #pragma clang diagnostic pop
   NSDictionary *properties = CFBridgingRelease(IODisplayCreateInfoDictionary(dispSvc, kIODisplayOnlyPreferredName));
-  self.displayName = [[properties[@kDisplayProductName] allValues] firstObject];
+  _displayProductName = [[properties[@kDisplayProductName] allValues] firstObject];
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenConfigurationDidChange:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
   
@@ -114,6 +115,7 @@
 - (void)windowDidLoad
 {
   [super windowDidLoad];
+  [self updateAfterScreenConfigurationChange];
   [self.window orderFrontRegardless];
 }
 
@@ -121,14 +123,7 @@
 - (void)setDisplay:(CGDirectDisplayID)display
 {
   _display = display;
-
-  NSRect dispFrame = [self displayRect];
-  if (!NSIsEmptyRect(dispFrame)) {
-    self.window.isVisible = YES;
-    [self.window setFrame:dispFrame display:NO];
-  } else {
-    self.window.isVisible = NO;
-  }
+  [self updateAfterScreenConfigurationChange];
 }
 
 
@@ -152,7 +147,24 @@
 
 - (void)screenConfigurationDidChange:(NSNotification *)notification
 {
-  self.display = _display;
+  [self updateAfterScreenConfigurationChange];
+}
+
+
+- (void)updateAfterScreenConfigurationChange
+{
+  NSRect dispFrame = [self displayRect];
+  if (!NSIsEmptyRect(dispFrame)) {
+    self.displayName = _displayProductName;
+    self.window.isVisible = YES;
+    [self.window setFrame:dispFrame display:NO];
+  } else {
+    self.displayName = [NSString stringWithFormat:
+        NSLocalizedString(@"%@ (disconnected)",
+          @"Format string for menu items corresponding to disconnected screens"),
+        _displayProductName];
+    self.window.isVisible = NO;
+  }
 }
 
 
