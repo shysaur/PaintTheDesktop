@@ -27,6 +27,7 @@
 #import "PTDToolManager.h"
 #import "PTDPaintView.h"
 #import "NSWindow+PTD.h"
+#import "PTDAppDelegate.h"
 
 
 @interface PTDScreenPaintWindowController ()
@@ -194,23 +195,23 @@
 
 - (void)saveImageAs:(id)sender
 {
-  BOOL oldActive = self.active;
-  self.active = NO;
+  BOOL oldActive = PTDAppDelegate.appDelegate.active;
+  PTDAppDelegate.appDelegate.active = NO;
   [NSWindow ptd_pushForceTopLevel];
   [super saveImageAs:sender];
   [NSWindow ptd_popForceTopLevel];
-  self.active = oldActive;
+  PTDAppDelegate.appDelegate.active = oldActive;
 }
 
 
 - (void)openImage:(id)sender
 {
-  BOOL oldActive = self.active;
-  self.active = NO;
+  BOOL oldActive = PTDAppDelegate.appDelegate.active;
+  PTDAppDelegate.appDelegate.active = NO;
   [NSWindow ptd_pushForceTopLevel];
   [super openImage:sender];
   [NSWindow ptd_popForceTopLevel];
-  self.active = oldActive;
+  PTDAppDelegate.appDelegate.active = oldActive;
 }
 
 

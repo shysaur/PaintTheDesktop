@@ -30,6 +30,8 @@
 
 + (PTDAppDelegate *)appDelegate;
 
+@property (nonatomic) BOOL active;
+
 - (void)pushAppShouldShowInDock;
 - (void)popAppShouldShowInDock;
 

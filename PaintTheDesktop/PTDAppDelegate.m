@@ -42,7 +42,6 @@
 
 @property (nonatomic) NSMutableArray<PTDAbstractPaintWindowController *> *paintWindowControllers;
 @property (nonatomic) NSStatusItem *statusItem;
-@property (nonatomic) BOOL active;
 
 @property (nonatomic) IBOutlet NSWindow *aboutWindow;
 @property (nonatomic) IBOutlet NSTextField *aboutWindowVersionLabel;
