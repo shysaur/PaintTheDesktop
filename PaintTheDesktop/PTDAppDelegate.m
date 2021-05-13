@@ -271,6 +271,7 @@
     if (!alreadyHandled) {
       PTDScreenPaintWindowController *thisWindow = [[PTDScreenPaintWindowController alloc] initWithDisplay:dispId];
       [self.paintWindowControllers addObject:thisWindow];
+      thisWindow.delegate = self;
       if (self.active)
         [thisWindow applicationDidEnableDrawing];
       else

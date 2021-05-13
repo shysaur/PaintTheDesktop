@@ -201,6 +201,13 @@
   tmp.target = self;
   tmp = [submenu addItemWithTitle:NSLocalizedString(@"Restore...", @"Menu item for loading a drawing from file") action:@selector(openImage:) keyEquivalent:@""];
   tmp.target = self;
+  
+  if (!CGDisplayIsActive(self.display)) {
+    [submenu addItem:[NSMenuItem separatorItem]];
+    tmp = [submenu addItemWithTitle:NSLocalizedString(@"Delete...", @"Menu item for deleting a screen painting") action:@selector(performClose:) keyEquivalent:@""];
+    tmp.target = self;
+  }
+  
   return submenu;
 }
 
@@ -224,6 +231,28 @@
   [super openImage:sender];
   [NSWindow ptd_popForceTopLevel];
   PTDAppDelegate.appDelegate.active = oldActive;
+}
+
+
+- (void)performClose:(id)sender
+{
+  BOOL oldActive = PTDAppDelegate.appDelegate.active;
+  PTDAppDelegate.appDelegate.active = NO;
+  [NSWindow ptd_pushForceTopLevel];
+  
+  NSAlert *closeAlert = [[NSAlert alloc] init];
+  closeAlert.messageText = [NSString stringWithFormat:NSLocalizedString(@"Do you really want to delete the painting associated to the screen named \"%@\"?", @"Message text, screen painting dispose confirmation"), _displayProductName];
+  closeAlert.informativeText = NSLocalizedString(@"The painting will be lost, and a new one will be created if the screen is reconnected.", @"Informative text, screen painting dispose confirmation");
+  [closeAlert addButtonWithTitle:NSLocalizedString(@"Delete", @"OK button, screen painting dispose confirmation")];
+  [closeAlert addButtonWithTitle:NSLocalizedString(@"Cancel", @"Cancel button, screen painting dispose confirmation")];
+  
+  NSModalResponse resp = [closeAlert runModal];
+  
+  [NSWindow ptd_popForceTopLevel];
+  PTDAppDelegate.appDelegate.active = oldActive;
+  
+  if (resp == NSAlertFirstButtonReturn)
+    [self close];
 }
 
 
