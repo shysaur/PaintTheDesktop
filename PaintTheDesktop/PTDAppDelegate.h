@@ -31,6 +31,7 @@
 + (PTDAppDelegate *)appDelegate;
 
 @property (nonatomic) BOOL active;
+@property (nonatomic) BOOL alwaysShowsDockIcon;
 
 - (void)pushAppShouldShowInDock;
 - (void)popAppShouldShowInDock;

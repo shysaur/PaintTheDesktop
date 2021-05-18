@@ -56,6 +56,15 @@
 }
 
 
++ (void)initialize
+{
+  NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
+  [ud registerDefaults:@{
+    @"PTDAlwaysShowsDockIcon": @(NO)
+  }];
+}
+
+
 + (PTDAppDelegate *)appDelegate
 {
   return (PTDAppDelegate *)NSApp.delegate;
@@ -68,6 +77,10 @@
   _paintWindowControllers = [@[] mutableCopy];
   _active = NO;
   _dockRefCount = 0;
+  
+  NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
+  _alwaysShowsDockIcon = [ud boolForKey:@"PTDAlwaysShowsDockIcon"];
+  
   return self;
 }
 
@@ -77,6 +90,8 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+  if (!self.alwaysShowsDockIcon)
+    [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
   [SUUpdater sharedUpdater];
   
   [self setupMenu];
@@ -92,9 +107,25 @@
 }
 
 
+- (void)setAlwaysShowsDockIcon:(BOOL)alwaysShowsDockIcon
+{
+  NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
+  [ud setBool:alwaysShowsDockIcon forKey:@"PTDAlwaysShowsDockIcon"];
+  
+  if (_alwaysShowsDockIcon != alwaysShowsDockIcon && _dockRefCount == 0) {
+    if (alwaysShowsDockIcon)
+      [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
+    else
+      [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+  }
+  
+  _alwaysShowsDockIcon = alwaysShowsDockIcon;
+}
+
+
 - (void)pushAppShouldShowInDock
 {
-  if (_dockRefCount == 0) {
+  if (_dockRefCount == 0 && !self.alwaysShowsDockIcon) {
     [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
   }
   _dockRefCount++;
@@ -105,7 +136,7 @@
 {
   if (_dockRefCount > 0) {
     _dockRefCount--;
-    if (_dockRefCount == 0)
+    if (_dockRefCount == 0 && !self.alwaysShowsDockIcon)
       [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
   } else {
     NSLog(@"calls to -popAppShouldShowInDock mismatched with -pushAppShouldShowInDock!");

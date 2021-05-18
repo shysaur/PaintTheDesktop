@@ -18,7 +18,7 @@
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="F0z-JX-Cv5">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="784" y="680" width="371" height="296"/>
+            <rect key="contentRect" x="784" y="519" width="371" height="296"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
             <view key="contentView" id="dFL-7a-GGr">
                 <rect key="frame" x="0.0" y="0.0" width="371" height="296"/>
@@ -29,6 +29,42 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
+                            <tabViewItem identifier="" id="Ucf-ru-TY0">
+                                <nil key="label"/>
+                                <view key="view" id="FUl-5F-62X">
+                                    <rect key="frame" x="0.0" y="0.0" width="371" height="296"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BJR-lJ-bOl">
+                                            <rect key="frame" x="105" y="260" width="162" height="18"/>
+                                            <buttonCell key="cell" type="check" title="Always show dock icon" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="KDV-Ur-6NL">
+                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                                <font key="font" metaFont="system"/>
+                                            </buttonCell>
+                                            <connections>
+                                                <binding destination="-3" name="value" keyPath="self.delegate.alwaysShowsDockIcon" id="9U8-ff-iXE"/>
+                                            </connections>
+                                        </button>
+                                        <customView translatesAutoresizingMaskIntoConstraints="NO" id="nhk-Km-H6b">
+                                            <rect key="frame" x="0.0" y="296" width="371" height="0.0"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" id="9cr-s3-sbW"/>
+                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="371" id="Wyb-ct-Vxp"/>
+                                            </constraints>
+                                        </customView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="trailing" secondItem="nhk-Km-H6b" secondAttribute="trailing" id="3tu-3L-Bd7"/>
+                                        <constraint firstItem="nhk-Km-H6b" firstAttribute="top" secondItem="FUl-5F-62X" secondAttribute="top" id="7M9-Pe-WSp"/>
+                                        <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="BJR-lJ-bOl" secondAttribute="bottom" constant="20" id="K6X-LX-vPQ"/>
+                                        <constraint firstItem="BJR-lJ-bOl" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="FUl-5F-62X" secondAttribute="leading" constant="20" id="UJm-CZ-WDm"/>
+                                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="BJR-lJ-bOl" secondAttribute="trailing" constant="20" id="VEr-WD-wmk"/>
+                                        <constraint firstItem="BJR-lJ-bOl" firstAttribute="top" secondItem="FUl-5F-62X" secondAttribute="top" constant="20" id="aqj-6z-0de"/>
+                                        <constraint firstItem="nhk-Km-H6b" firstAttribute="leading" secondItem="FUl-5F-62X" secondAttribute="leading" id="lee-jb-kH6"/>
+                                        <constraint firstItem="BJR-lJ-bOl" firstAttribute="centerX" secondItem="FUl-5F-62X" secondAttribute="centerX" id="n8K-Vk-Stp"/>
+                                    </constraints>
+                                </view>
+                            </tabViewItem>
                             <tabViewItem identifier="" id="2jo-eJ-W4F">
                                 <nil key="label"/>
                                 <view key="view" id="se5-gp-TjO">
@@ -374,16 +410,24 @@
                 <allowedToolbarItems>
                     <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="NNz-HL-MF0"/>
                     <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="Z6b-Zu-mZs"/>
-                    <toolbarItem implicitItemIdentifier="FEC1883C-8D83-4C8C-9CC1-BA702C2C2A10" explicitItemIdentifier="0" label="Tools" paletteLabel="Tools" tag="-1" image="NSPreferencesGeneral" selectable="YES" id="19F-wg-z0v">
+                    <toolbarItem implicitItemIdentifier="FEC1883C-8D83-4C8C-9CC1-BA702C2C2A10" explicitItemIdentifier="0" label="General" paletteLabel="General" tag="-1" image="NSPreferencesGeneral" selectable="YES" id="19F-wg-z0v">
                         <size key="minSize" width="32" height="32"/>
                         <size key="maxSize" width="32" height="32"/>
                         <connections>
                             <action selector="changeTab:" target="-2" id="DRA-wM-b7Z"/>
                         </connections>
                     </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="5B3579B7-7C24-4F11-B3A1-54670E6EADC9" explicitItemIdentifier="1" label="Tools" paletteLabel="Tools" tag="-1" image="NSPreferencesGeneral" selectable="YES" id="aME-uN-jkS">
+                        <size key="minSize" width="32" height="32"/>
+                        <size key="maxSize" width="32" height="32"/>
+                        <connections>
+                            <action selector="changeTab:" target="-2" id="A9H-yE-0q7"/>
+                        </connections>
+                    </toolbarItem>
                 </allowedToolbarItems>
                 <defaultToolbarItems>
                     <toolbarItem reference="19F-wg-z0v"/>
+                    <toolbarItem reference="aME-uN-jkS"/>
                 </defaultToolbarItems>
             </toolbar>
             <connections>
