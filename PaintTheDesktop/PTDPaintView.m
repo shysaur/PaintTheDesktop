@@ -209,6 +209,10 @@
   NSSize newPxSize = NSMakeSize(newSize.width * _backingScaleFactor.width, newSize.height * _backingScaleFactor.height);
   if (newPxSize.width == _mainBuffer.pixelWidth && newPxSize.height == _mainBuffer.pixelHeight)
     return;
+  if (newPxSize.width == 0 || newPxSize.height == 0) {
+    NSLog(@"%s: canceling because area is zero", __PRETTY_FUNCTION__);
+    return;
+  }
 
   @autoreleasepool {
     NSBitmapImageRep *oldImage = _mainBuffer.bufferAsImageRep;
