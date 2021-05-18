@@ -202,15 +202,7 @@
 {
   NSMenu *res = [[NSMenu alloc] init];
   
-  for (PTDAbstractPaintWindowController *paintw in _paintWindowControllers) {
-    NSString *title = [NSString stringWithFormat:@"%@", paintw.displayName];
-    NSMenuItem *mi = [NSMenuItem ptd_menuItemWithLabel:title thumbnail:paintw.thumbnail thumbnailArea:0];
-    [res addItem:mi];
-    
-    NSMenu *submenu = [paintw windowMenu];
-    if (submenu)
-      mi.submenu = submenu;
-  }
+  [self appendPaintingListToMenu:res];
   
   [res addItemWithTitle:NSLocalizedString(@"New Blank Canvas", @"") action:@selector(newCanvasWindow:) keyEquivalent:@""];
   [res addItemWithTitle:NSLocalizedString(@"New Presentation...", @"") action:@selector(newPDFWindow:) keyEquivalent:@""];
@@ -232,6 +224,30 @@
   [res addItemWithTitle:NSLocalizedString(@"Quit", @"") action:@selector(terminate:) keyEquivalent:@""];
   
   return res;
+}
+
+
+- (void)menuNeedsUpdate:(NSMenu *)menu
+{
+  if (menu != self.paintingsMenu)
+    return;
+  
+  [menu removeAllItems];
+  [self appendPaintingListToMenu:menu];
+}
+
+
+- (void)appendPaintingListToMenu:(NSMenu *)res
+{
+  for (PTDAbstractPaintWindowController *paintw in _paintWindowControllers) {
+    NSString *title = [NSString stringWithFormat:@"%@", paintw.displayName];
+    NSMenuItem *mi = [NSMenuItem ptd_menuItemWithLabel:title thumbnail:paintw.thumbnail thumbnailArea:0];
+    [res addItem:mi];
+    
+    NSMenu *submenu = [paintw windowMenu];
+    if (submenu)
+      mi.submenu = submenu;
+  }
 }
 
 

@@ -26,12 +26,20 @@
 #import <Cocoa/Cocoa.h>
 #import "PTDAbstractPaintWindowController.h"
 
-@interface PTDAppDelegate : NSObject <NSApplicationDelegate, PTDPaintWindowDelegate>
+@interface PTDAppDelegate : NSObject <NSApplicationDelegate, NSMenuDelegate, PTDPaintWindowDelegate>
 
 + (PTDAppDelegate *)appDelegate;
 
+@property (nonatomic, weak) IBOutlet NSMenu *paintingsMenu;
+
 @property (nonatomic) BOOL active;
 @property (nonatomic) BOOL alwaysShowsDockIcon;
+
+- (IBAction)openAboutWindow:(id)sender;
+- (IBAction)openPreferences:(id)sender;
+
+- (IBAction)newCanvasWindow:(id)sender;
+- (IBAction)newPDFWindow:(id)sender;
 
 - (void)pushAppShouldShowInDock;
 - (void)popAppShouldShowInDock;
