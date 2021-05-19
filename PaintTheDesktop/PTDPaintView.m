@@ -290,6 +290,7 @@
   
   static const GLint zero = 0;
   [self.openGLContext setValues:&zero forParameter:NSOpenGLContextParameterSurfaceOpacity];
+  [self.openGLContext setValues:&zero forParameter:NSOpenGLContextParameterSwapInterval];
   
   glEnable(GL_ALPHA_TEST);
   glEnable(GL_BLEND);

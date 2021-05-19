@@ -90,6 +90,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+  NSEvent.mouseCoalescingEnabled = NO;
   if (!self.alwaysShowsDockIcon)
     [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
   [SUUpdater sharedUpdater];
