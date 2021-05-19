@@ -289,7 +289,7 @@
   [super prepareOpenGL];
   
   static const GLint zero = 0;
-  [self.openGLContext setValues:&zero forParameter:NSOpenGLCPSurfaceOpacity];
+  [self.openGLContext setValues:&zero forParameter:NSOpenGLContextParameterSurfaceOpacity];
   
   glEnable(GL_ALPHA_TEST);
   glEnable(GL_BLEND);
