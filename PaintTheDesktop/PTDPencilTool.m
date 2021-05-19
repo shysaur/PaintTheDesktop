@@ -23,6 +23,7 @@
 // SOFTWARE.
 //
 
+#import <Quartz/Quartz.h>
 #import "PTDToolManager.h"
 #import "PTDPencilTool.h"
 #import "PTDDrawingSurface.h"
@@ -34,7 +35,10 @@
 NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 
 
-@implementation PTDPencilTool
+@implementation PTDPencilTool {
+  CGMutablePathRef _currentPath;
+  CAShapeLayer *_overlayShape;
+}
 
 
 + (NSString *)toolIdentifier
@@ -49,16 +53,34 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 }
 
 
+- (void)dragDidStartAtPoint:(NSPoint)point
+{
+  _currentPath = CGPathCreateMutable();
+  CGPathMoveToPoint(_currentPath, NULL, point.x, point.y);
+  [self createDragIndicator];
+}
+
+
 - (void)dragDidContinueFromPoint:(NSPoint)prevPoint toPoint:(NSPoint)nextPoint
 {
+  CGPathAddLineToPoint(_currentPath, NULL, nextPoint.x, nextPoint.y);
+  [self updateDragIndicator];
+}
+
+
+- (void)dragDidEndAtPoint:(NSPoint)point
+{
   [self.currentDrawingSurface beginCanvasDrawing];
-  NSBezierPath *path = [NSBezierPath bezierPath];
-  [path setLineCapStyle:NSLineCapStyleRound];
-  [path setLineWidth:self.size];
-  [self.color setStroke];
-  [path moveToPoint:prevPoint];
-  [path lineToPoint:nextPoint];
-  [path stroke];
+  CGContextRef ctxt = NSGraphicsContext.currentContext.CGContext;
+  CGContextBeginPath(ctxt);
+  CGContextSetLineCap(ctxt, kCGLineCapRound);
+  CGContextSetLineJoin(ctxt, kCGLineJoinRound);
+  CGContextSetLineWidth(ctxt, self.size);
+  CGContextSetStrokeColorWithColor(ctxt, self.color.CGColor);
+  CGContextAddPath(ctxt, _currentPath);
+  CGContextStrokePath(ctxt);
+  CGPathRelease(_currentPath);
+  [self removeDragIndicator];
 }
 
 
@@ -81,6 +103,36 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
   cursor.image = PTDCrosshairWithBrushOutlineImage(self.size, self.color);
   cursor.hotspot = NSMakePoint(cursor.image.size.width / 2.0, cursor.image.size.height / 2.0);
   self.cursor = cursor;
+}
+
+
+- (void)createDragIndicator
+{
+  _overlayShape = [[CAShapeLayer alloc] init];
+  [self.currentDrawingSurface.overlayLayer addSublayer:_overlayShape];
+  _overlayShape.lineWidth = self.size;
+  _overlayShape.strokeColor = self.color.CGColor;
+  _overlayShape.fillColor = NSColor.clearColor.CGColor;
+  _overlayShape.lineCap = kCALineCapRound;
+  _overlayShape.lineJoin = kCALineJoinRound;
+  _overlayShape.frame = self.currentDrawingSurface.overlayLayer.bounds;
+  [self updateDragIndicator];
+}
+
+
+- (void)updateDragIndicator
+{
+  [CATransaction begin];
+  CATransaction.disableActions = YES;
+  _overlayShape.path = _currentPath;
+  [CATransaction commit];
+}
+
+
+- (void)removeDragIndicator
+{
+  [_overlayShape removeFromSuperlayer];
+  _overlayShape = nil;
 }
 
 
