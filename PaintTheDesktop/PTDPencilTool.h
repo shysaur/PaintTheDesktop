@@ -32,6 +32,8 @@ extern NSString * const PTDToolIdentifierPencilTool;
 
 @interface PTDPencilTool : PTDBrushTool
 
+@property (class, nonatomic) double smoothingCoefficient;
+
 @end
 
 NS_ASSUME_NONNULL_END

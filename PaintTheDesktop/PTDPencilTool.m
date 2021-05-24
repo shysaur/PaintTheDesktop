@@ -30,14 +30,36 @@
 #import "PTDTool.h"
 #import "PTDCursor.h"
 #import "PTDGraphics.h"
+#import "PTDToolOptions.h"
 
 
 NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
+
+NSString * const PTDPencilToolOptionSmoothingCoefficient = @"smoothingCoefficient";
 
 
 @implementation PTDPencilTool {
   CGMutablePathRef _currentPath;
   CAShapeLayer *_overlayShape;
+}
+
+
++ (void)initialize
+{
+  PTDToolOptions *o = PTDToolOptions.sharedOptions;
+  [o registerOption:PTDPencilToolOptionSmoothingCoefficient ofToolClass:self types:@[[NSNumber class]] defaultValue:@(0.5) validationBlock:nil];
+}
+
+
++ (void)setSmoothingCoefficient:(double)smoothingCoefficient
+{
+  [PTDToolOptions.sharedOptions setObject:@(smoothingCoefficient) forOption:PTDPencilToolOptionSmoothingCoefficient ofToolClass:self.class];
+}
+
+
++ (double)smoothingCoefficient
+{
+  return [[PTDToolOptions.sharedOptions objectForOption:PTDPencilToolOptionSmoothingCoefficient ofToolClass:self.class] doubleValue];
 }
 
 
@@ -71,16 +93,119 @@ NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 - (void)dragDidEndAtPoint:(NSPoint)point
 {
   [self.currentDrawingSurface beginCanvasDrawing];
+  
   CGContextRef ctxt = NSGraphicsContext.currentContext.CGContext;
   CGContextBeginPath(ctxt);
   CGContextSetLineCap(ctxt, kCGLineCapRound);
   CGContextSetLineJoin(ctxt, kCGLineJoinRound);
   CGContextSetLineWidth(ctxt, self.size);
   CGContextSetStrokeColorWithColor(ctxt, self.color.CGColor);
-  CGContextAddPath(ctxt, _currentPath);
+  
+  if ([self.class smoothingCoefficient] > 0.001) {
+    CGContextAddPath(ctxt, [self smoothedPath]);
+  } else {
+    CGContextAddPath(ctxt, _currentPath);
+  }
+  
   CGContextStrokePath(ctxt);
   CGPathRelease(_currentPath);
   [self removeDragIndicator];
+}
+
+
+#define WRAP(n, p) (((n) % (p) + (p)) % (p))
+#define ST_MAX(a, b) ((a) > (b) ? (a) : (b))
+
+static const int smoothHistSize = 8;
+static const unsigned int smoothHistBufSize = ST_MAX(smoothHistSize*2+1, 0x20);
+static const double smoothBellMaxWidth = 5.0;
+
+typedef struct PTDSmoothedPathContext {
+  CGMutablePathRef smoothedPath;
+  NSPoint history[smoothHistBufSize];
+  double smoothingCoeff;
+  unsigned int historyIdx;
+  BOOL pathStarted;
+} PTDSmoothedPathContext;
+
+static void _PTDPencilToolSmoothedPathCallback(void *info, const CGPathElement *element)
+{
+  PTDSmoothedPathContext *spc = (PTDSmoothedPathContext *)info;
+  if (element->type == kCGPathElementMoveToPoint) {
+    for (int i=0; i<smoothHistBufSize; i++)
+      spc->history[i] = element->points[0];
+  }
+  _PTDPencilToolSmoothedPathCalcNextPoint(spc, element->points[0]);
+}
+
+static void _PTDPencilToolSmoothedPathCalcNextPoint(PTDSmoothedPathContext *spc, NSPoint point)
+{
+  spc->history[WRAP((spc->historyIdx++), smoothHistBufSize)] = point;
+  if (spc->historyIdx <= smoothHistSize)
+    return;
+    
+  CGPoint accum = {0.0, 0.0};
+  CGFloat totalWeight = 0.0;
+  
+  int centerIdx = WRAP(spc->historyIdx - smoothHistSize - 1, smoothHistBufSize);
+  CGFloat distAccum = 0.0;
+  
+  for (int i=-smoothHistSize; i<=smoothHistSize; i++) {
+    int pi, pj;
+    if (i < 0) {
+      /* points before center, in reverse order */
+      pi = WRAP(centerIdx - smoothHistSize - i - 1, smoothHistBufSize);
+      pj = WRAP(centerIdx - smoothHistSize - i, smoothHistBufSize);
+    } else if (i == 0) {
+      pi = pj = centerIdx;
+      distAccum = 0;
+    } else {
+      /* points after center, in direct order */
+      pi = WRAP(centerIdx + i, smoothHistBufSize);
+      pj = WRAP(pi - 1, smoothHistBufSize);
+    }
+    
+    CGPoint point1 = spc->history[pi];
+    CGPoint point2 = spc->history[pj];
+    CGFloat dx = point1.x - point2.x;
+    CGFloat dy = point1.y - point2.y;
+    CGFloat dist = sqrt(dx * dx + dy * dy);
+    distAccum += dist;
+    
+    CGFloat sigma = smoothBellMaxWidth * spc->smoothingCoeff;
+    CGFloat weight = exp(-(distAccum * distAccum) / (2 * sigma * sigma));
+        
+    accum.x += point1.x * weight;
+    accum.y += point1.y * weight;
+    totalWeight += weight;
+  }
+  
+  accum.x /= totalWeight;
+  accum.y /= totalWeight;
+  
+  if (!spc->pathStarted) {
+    spc->pathStarted = YES;
+    CGPathMoveToPoint(spc->smoothedPath, NULL, accum.x, accum.y);
+  } else {
+    CGPathAddLineToPoint(spc->smoothedPath, NULL, accum.x, accum.y);
+  }
+}
+
+- (CGPathRef)smoothedPath
+{
+  PTDSmoothedPathContext spc;
+  spc.smoothedPath = CGPathCreateMutable();
+  spc.historyIdx = 0;
+  spc.smoothingCoeff = [self.class smoothingCoefficient];
+  spc.pathStarted = NO;
+  
+  CGPathApply(_currentPath, &spc, _PTDPencilToolSmoothedPathCallback);
+  
+  NSPoint lastPoint = spc.history[WRAP(spc.historyIdx - 1, smoothHistBufSize)];
+  for (int i=0; i<smoothHistSize; i++)
+    _PTDPencilToolSmoothedPathCalcNextPoint(&spc, lastPoint);
+  
+  return CFAutorelease(spc.smoothedPath);
 }
 
 
