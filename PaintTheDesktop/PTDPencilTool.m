@@ -36,6 +36,7 @@
 NSString * const PTDToolIdentifierPencilTool = @"PTDToolIdentifierPencilTool";
 
 NSString * const PTDPencilToolOptionSmoothingCoefficient = @"smoothingCoefficient";
+NSString * const PTDPencilToolOptionLiveSmoothing = @"liveSmoothing";
 
 
 @implementation PTDPencilTool {
@@ -48,6 +49,7 @@ NSString * const PTDPencilToolOptionSmoothingCoefficient = @"smoothingCoefficien
 {
   PTDToolOptions *o = PTDToolOptions.sharedOptions;
   [o registerOption:PTDPencilToolOptionSmoothingCoefficient ofToolClass:self types:@[[NSNumber class]] defaultValue:@(0.5) validationBlock:nil];
+  [o registerOption:PTDPencilToolOptionLiveSmoothing ofToolClass:self types:@[[NSNumber class]] defaultValue:@(NO) validationBlock:nil];
 }
 
 
@@ -60,6 +62,18 @@ NSString * const PTDPencilToolOptionSmoothingCoefficient = @"smoothingCoefficien
 + (double)smoothingCoefficient
 {
   return [[PTDToolOptions.sharedOptions objectForOption:PTDPencilToolOptionSmoothingCoefficient ofToolClass:self.class] doubleValue];
+}
+
+
++ (void)setLiveSmoothing:(BOOL)liveSmoothing
+{
+  [PTDToolOptions.sharedOptions setObject:@(liveSmoothing) forOption:PTDPencilToolOptionLiveSmoothing ofToolClass:self.class];
+}
+
+
++ (BOOL)liveSmoothing
+{
+  return [[PTDToolOptions.sharedOptions objectForOption:PTDPencilToolOptionLiveSmoothing ofToolClass:self.class] boolValue];
 }
 
 
@@ -249,7 +263,10 @@ static void _PTDPencilToolSmoothedPathCalcNextPoint(PTDSmoothedPathContext *spc,
 {
   [CATransaction begin];
   CATransaction.disableActions = YES;
-  _overlayShape.path = _currentPath;
+  if (![self.class liveSmoothing] || [self.class smoothingCoefficient] <= 0.001)
+    _overlayShape.path = _currentPath;
+  else
+    _overlayShape.path = [self smoothedPath];
   [CATransaction commit];
 }
 
