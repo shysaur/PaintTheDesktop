@@ -26,12 +26,16 @@
 #import "PTDPreferencesWindowController.h"
 #import "PTDBrushColorPrefsCollectionViewDelegate.h"
 #import "PTDAppDelegate.h"
+#import "PTDPencilTool.h"
 
 
 @interface PTDPreferencesWindowController ()
 
 @property (nonatomic, weak) IBOutlet NSTabView *preferencesTabView;
 @property (nonatomic, weak) IBOutlet NSToolbar *toolbar;
+
+@property (nonatomic, weak) IBOutlet NSButton *liveSmoothingBtn;
+@property (nonatomic, weak) IBOutlet NSSlider *smoothingCoeffSlider;
 
 @end
 
@@ -57,6 +61,8 @@
 - (void)windowDidLoad
 {
   self.window.canHide = NO;
+  
+  [self initializePencilPreferences];
   
   NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
   int tab = (int)[ud integerForKey:@"PTDPreferencesTab"];
@@ -116,6 +122,28 @@
 - (void)windowWillClose:(NSNotification *)notification
 {
   [PTDAppDelegate.appDelegate popAppShouldShowInDock];
+}
+
+
+#pragma mark - Pencil preferences
+
+
+- (void)initializePencilPreferences
+{
+  self.liveSmoothingBtn.state = PTDPencilTool.liveSmoothing ? NSControlStateValueOn : NSControlStateValueOff;
+  self.smoothingCoeffSlider.doubleValue = PTDPencilTool.smoothingCoefficient;
+}
+
+
+- (IBAction)changeLiveSmoothing:(id)sender
+{
+  PTDPencilTool.liveSmoothing = self.liveSmoothingBtn.state == NSControlStateValueOn ? YES : NO;
+}
+
+
+- (IBAction)changeSmoothingCoefficient:(id)sender
+{
+  PTDPencilTool.smoothingCoefficient = self.smoothingCoeffSlider.doubleValue;
 }
 
 
