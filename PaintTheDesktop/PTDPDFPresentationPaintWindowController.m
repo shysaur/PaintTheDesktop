@@ -24,6 +24,7 @@
 //
 
 #import <Carbon/Carbon.h>
+#import <IOKit/pwr_mgt/IOPM.h>
 #import "PTDPDFPresentationPaintWindowController.h"
 #import "PTDPDFPageView.h"
 #import "PTDAppDelegate.h"
@@ -45,6 +46,8 @@
 @implementation PTDPDFPresentationPaintWindowController {
   BOOL _openingFile;
   NSMutableArray<NSData *> *_annotationPages;
+  BOOL _sleepAssertionValid;
+  IOPMAssertionID _sleepAssertion;
 }
 
 
@@ -61,6 +64,18 @@
   self.paintViewController.active = NO;
   self.window.backgroundColor = [NSColor blackColor];
   [PTDAppDelegate.appDelegate pushAppShouldShowInDock];
+  
+  IOReturn err = IOPMAssertionCreateWithName(
+      kIOPMAssertPreventUserIdleDisplaySleep,
+      kIOPMAssertionLevelOn,
+      CFSTR("PaintTheDesktop Presentation"),
+      &_sleepAssertion);
+  if (err != kIOReturnSuccess) {
+    NSLog(@"Could not disable sleep!? Error code: %d", err);
+    _sleepAssertionValid = NO;
+  } else {
+    _sleepAssertionValid = YES;
+  }
 }
 
 
@@ -318,6 +333,11 @@
 {
   [super windowWillClose:notification];
   [PTDAppDelegate.appDelegate popAppShouldShowInDock];
+  if (_sleepAssertionValid) {
+    if (IOPMAssertionRelease(_sleepAssertion) != kIOReturnSuccess) {
+      NSLog(@"sleep assertion release failed!?");
+    }
+  }
 }
 
 
