@@ -196,7 +196,7 @@
 - (NSMenu *)windowMenu
 {
   NSMenu *submenu = [[NSMenu alloc] init];
-  NSMenuItem *tmp;
+  NSMenuItem *tmp, *tmp2;
   tmp = [submenu addItemWithTitle:NSLocalizedString(@"Save As...", @"Menu item for saving a drawing to file") action:@selector(saveImageAs:) keyEquivalent:@""];
   tmp.target = self;
   tmp = [submenu addItemWithTitle:NSLocalizedString(@"Restore...", @"Menu item for loading a drawing from file") action:@selector(openImage:) keyEquivalent:@""];
@@ -209,13 +209,19 @@
   }
   
   [submenu addItem:[NSMenuItem separatorItem]];
-  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Main Display", @"Menu item for making a display main") action:@selector(makeDisplayMain:) keyEquivalent:@""];
+  tmp = [submenu addItemWithTitle:NSLocalizedString(@"Main Display...", @"Menu item for making a display main") action:@selector(makeDisplayMain:) keyEquivalent:@""];
   tmp.target = self;
+  tmp2 = [submenu addItemWithTitle:NSLocalizedString(@"Main Display", @"Menu item for making a display main without asking") action:@selector(makeDisplayMain:) keyEquivalent:@""];
+  tmp2.target = self;
+  tmp2.alternate = YES;
+  tmp2.keyEquivalentModifierMask = NSEventModifierFlagOption;
   if (CGDisplayIsMain(self.display)) {
     tmp.state = NSControlStateValueOn;
+    tmp2.state = NSControlStateValueOn;
   }
   if (!CGDisplayIsActive(self.display)) {
     tmp.enabled = NO;
+    tmp2.enabled = NO;
   }
   
   return submenu;
