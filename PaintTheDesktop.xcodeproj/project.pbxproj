@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		011426B424968916005363E8 /* PTDOpenGLBufferedTexture.m in Sources */ = {isa = PBXBuildFile; fileRef = 011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */; };
 		013C9A03249AD17E0033120A /* PTDNSPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 013C9A02249AD17E0033120A /* PTDNSPanel.m */; };
+		013D2EDA272B5A2D008F92BC /* NSMenu+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 013D2ED9272B5A2D008F92BC /* NSMenu+PTD.m */; };
 		0146EBAB24FB319400B3785C /* Sparkle.framework in Copy Bundle Frameworks */ = {isa = PBXBuildFile; fileRef = 0146EB9324FB316300B3785C /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		01484AE62631AC1A00B0518F /* PTDCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484AE52631AC1A00B0518F /* PTDCollectionViewFlowLayout.m */; };
 		01484AFF263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484AFE263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m */; };
@@ -177,6 +178,8 @@
 		011426B324968916005363E8 /* PTDOpenGLBufferedTexture.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDOpenGLBufferedTexture.m; sourceTree = "<group>"; };
 		013C9A01249AD17E0033120A /* PTDNSPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDNSPanel.h; sourceTree = "<group>"; };
 		013C9A02249AD17E0033120A /* PTDNSPanel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDNSPanel.m; sourceTree = "<group>"; };
+		013D2ED8272B5A2D008F92BC /* NSMenu+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSMenu+PTD.h"; sourceTree = "<group>"; };
+		013D2ED9272B5A2D008F92BC /* NSMenu+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSMenu+PTD.m"; sourceTree = "<group>"; };
 		0146EB8024FB316200B3785C /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		01484AE42631AC1A00B0518F /* PTDCollectionViewFlowLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDCollectionViewFlowLayout.h; sourceTree = "<group>"; };
 		01484AE52631AC1A00B0518F /* PTDCollectionViewFlowLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDCollectionViewFlowLayout.m; sourceTree = "<group>"; };
@@ -430,6 +433,8 @@
 				01484AE52631AC1A00B0518F /* PTDCollectionViewFlowLayout.m */,
 				01B7AF5C2642E10100A3FF31 /* NSAffineTransform+PTD.h */,
 				01B7AF5D2642E10100A3FF31 /* NSAffineTransform+PTD.m */,
+				013D2ED8272B5A2D008F92BC /* NSMenu+PTD.h */,
+				013D2ED9272B5A2D008F92BC /* NSMenu+PTD.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -761,6 +766,7 @@
 				01484AFF263213EA00B0518F /* PTDAbstractPrefsCollectionViewDelegate.m in Sources */,
 				016AD9A8249790B3004E3749 /* PTDDrawingSurface.m in Sources */,
 				01B7AF602643129200A3FF31 /* PTDUtils.m in Sources */,
+				013D2EDA272B5A2D008F92BC /* NSMenu+PTD.m in Sources */,
 				016D36B42490584E0086E96D /* PTDPencilTool.m in Sources */,
 				015A50CC24A13F4B0008AAB1 /* PTDRoundRectTool.m in Sources */,
 				01B7AF472642D24500A3FF31 /* PTDPDFPresentationPaintWindowController.m in Sources */,

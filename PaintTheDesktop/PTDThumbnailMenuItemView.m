@@ -27,6 +27,7 @@
 #import "NSGeometry+PTD.h"
 #import "NSNib+PTD.h"
 #import "NSImage+PTD.h"
+#import "NSMenu+PTD.h"
 
 
 @interface PTDThumbnailMenuItemView ()
@@ -61,9 +62,6 @@
 
 - (void)awakeFromNib
 {
-  if (@available(macOS 10.16, *)) {
-    self.leftBorderConstraint.constant = 10;
-  }
   self.label.font = [NSFont menuFontOfSize:0];
 }
 
@@ -72,6 +70,23 @@
 {
   [super viewDidMoveToWindow];
   [self setFrameSize:self.fittingSize];
+}
+
+
+- (void)viewWillDraw
+{
+  if (@available(macOS 10.16, *)) {
+    CGFloat oldLeftBorder = self.leftBorderConstraint.constant;
+    CGFloat newLeftBorder;
+    if (self.enclosingMenuItem.menu.ptd_itemsHaveLargeIndentation)
+      newLeftBorder = 20;
+    else
+      newLeftBorder = 10;
+    if (oldLeftBorder != newLeftBorder) {
+      self.leftBorderConstraint.constant = newLeftBorder;
+      [self layout];
+    }
+  }
 }
 
 
