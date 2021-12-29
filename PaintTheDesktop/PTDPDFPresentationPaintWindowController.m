@@ -100,6 +100,26 @@
 }
 
 
+- (void)updateWindowTitle
+{
+  NSString *title;
+  
+  if (self.theDocument) {
+    if (self.pageIndex < 0) {
+      title = [NSString stringWithFormat:NSLocalizedString(@"%@ (start / %ld)", @"Presentation window title bar format, on blank initial slide"), self.displayName, self.theDocument.pageCount];
+    } else if (self.pageIndex >= self.theDocument.pageCount) {
+      title = [NSString stringWithFormat:NSLocalizedString(@"%@ (end / %ld)", @"Presentation window title bar format, on blank final slide"), self.displayName, self.theDocument.pageCount];
+    } else {
+      title = [NSString stringWithFormat:NSLocalizedString(@"%@ (%ld / %ld)", @"Presentation window title bar format"), self.displayName, self.pageIndex + 1, self.theDocument.pageCount];
+    }
+  } else {
+    title = self.displayName;
+  }
+  
+  self.window.title = title;
+}
+
+
 - (void)setTheDocument:(PDFDocument *)theDocument
 {
   _theDocument = theDocument;
@@ -137,6 +157,8 @@
   
   if (![self restoreCanvas])
     [self clearCanvas];
+  
+  [self updateWindowTitle];
 }
 
 

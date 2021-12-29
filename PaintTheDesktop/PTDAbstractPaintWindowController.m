@@ -58,7 +58,13 @@
 {
   _displayName = displayName;
   if (self.windowLoaded)
-    self.window.title = _displayName;
+    [self updateWindowTitle];
+}
+
+
+- (void)updateWindowTitle
+{
+  self.window.title = _displayName;
 }
 
 

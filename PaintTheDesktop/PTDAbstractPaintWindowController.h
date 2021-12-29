@@ -34,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, weak) id<PTDPaintWindowDelegate> delegate;
 
 @property (nonatomic) NSString *displayName;
+- (void)updateWindowTitle;
 
 - (nullable NSMenu *)windowMenu;
 @property (nonatomic, readonly, copy) NSImage *thumbnail;
