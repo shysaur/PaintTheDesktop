@@ -160,7 +160,7 @@
     PTDDrawingSurface *surf = [self drawingSurface];
     PTDTool *tool = [self initializeToolWithSurface:surf];
     if (!self.mouseIsDragging) {
-      [tool dragDidStartAtPoint:self.lastMousePosition];
+      [tool dragDidStartAtPoint:[self locationForEvent:event]];
       self.mouseIsDragging = YES;
     } else {
       [tool dragDidContinueFromPoint:self.lastMousePosition toPoint:[self locationForEvent:event]];
@@ -206,6 +206,18 @@
   self.mouseInView = YES;
   if (!self.active)
     return;
+  
+  /* Cancel last drag */
+  if (self.mouseIsDragging) {
+    @autoreleasepool {
+      PTDDrawingSurface *surf = [self drawingSurface];
+      PTDTool *tool = [self initializeToolWithSurface:surf];
+      [tool dragDidEndAtPoint:self.lastMousePosition];
+    }
+    self.mouseIsDragging = NO;
+  }
+  [self updateCursorAtPoint:[self locationForEvent:event]];
+  
   [self openContextMenuWithEvent:event];
 }
 
