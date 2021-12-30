@@ -1,8 +1,8 @@
 //
-// PTDDrawingSurface.h
-// PaintTheDesktop -- Created on 15/06/2020.
+// NSTextView+PTD.m
+// PaintTheDesktop -- Created on 30/12/21.
 //
-// Copyright (c) 2020 Daniele Cattaneo
+// Copyright (c) 2021 Daniele Cattaneo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,31 +23,27 @@
 // SOFTWARE.
 //
 
-#import <Cocoa/Cocoa.h>
+#import <math.h>
+#import "NSTextView+PTD.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation NSTextView (PTD)
 
-@class PTDPaintView;
-@class PTDTransientView;
 
-@interface PTDDrawingSurface : NSObject
+- (CGFloat)ptd_firstBaselineOffsetFromTop
+{
+  NSPoint boxOrig = self.textContainerOrigin;
+  NSLayoutManager *lm = self.layoutManager;
+  
+  if (self.string.length > 0) {
+    NSTypesetter *lino = lm.typesetter;
+    CGFloat offs = [lino baselineOffsetInLayoutManager:lm glyphIndex:0];
+    NSRect lfr = [lm lineFragmentRectForGlyphAtIndex:0 effectiveRange:NULL];
+    return boxOrig.y + NSMaxY(lfr) - offs;
+  }
+  
+  CGFloat offs = [lm defaultBaselineOffsetForFont:self.font];
+  return boxOrig.y + offs;
+}
 
-- (instancetype)initWithPaintView:(PTDPaintView *)paintView;
-
-- (void)beginCanvasDrawing;
-- (void)endCanvasDrawing;
-
-- (CALayer *)overlayLayer;
-
-- (NSTextView *)beginTextEditing;
-- (void)endTextEditing:(NSTextView *)textView;
-
-- (NSBitmapImageRep *)captureRect:(NSRect)rect;
-
-- (NSRect)bounds;
-
-- (NSPoint)alignPointToBacking:(NSPoint)point;
 
 @end
-
-NS_ASSUME_NONNULL_END

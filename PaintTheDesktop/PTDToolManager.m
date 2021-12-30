@@ -34,6 +34,7 @@
 #import "PTDSelectionTool.h"
 #import "PTDLineTool.h"
 #import "PTDToolOptions.h"
+#import "PTDTextTool.h"
 
 
 NSString * const PTDToolManagerOptionToolIdentifier = @"toolId";
@@ -73,6 +74,7 @@ NSString * const PTDToolManagerOptionToolIdentifier = @"toolId";
       PTDToolIdentifierRectangleTool: [PTDRectangleTool class],
       PTDToolIdentifierOvalTool: [PTDOvalTool class],
       PTDToolIdentifierRoundRectTool: [PTDRoundRectTool class],
+      PTDToolIdentifierTextTool: [PTDTextTool class],
       PTDToolIdentifierSelectionTool: [PTDSelectionTool class],
       PTDToolIdentifierResetTool: [PTDResetTool class]
     };
@@ -101,6 +103,7 @@ NSString * const PTDToolManagerOptionToolIdentifier = @"toolId";
     PTDToolIdentifierRectangleTool,
     PTDToolIdentifierOvalTool,
     PTDToolIdentifierRoundRectTool,
+    PTDToolIdentifierTextTool,
     PTDToolIdentifierSelectionTool,
     PTDToolIdentifierResetTool
   ];

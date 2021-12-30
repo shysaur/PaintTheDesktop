@@ -1,8 +1,8 @@
 //
-// PTDDrawingSurface.h
-// PaintTheDesktop -- Created on 15/06/2020.
+// PTDTextTool.h
+// PaintTheDesktop -- Created on 30/12/21.
 //
-// Copyright (c) 2020 Daniele Cattaneo
+// Copyright (c) 2021 Daniele Cattaneo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,30 +23,13 @@
 // SOFTWARE.
 //
 
-#import <Cocoa/Cocoa.h>
+#import "PTDTool.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class PTDPaintView;
-@class PTDTransientView;
+extern NSString * const PTDToolIdentifierTextTool;
 
-@interface PTDDrawingSurface : NSObject
-
-- (instancetype)initWithPaintView:(PTDPaintView *)paintView;
-
-- (void)beginCanvasDrawing;
-- (void)endCanvasDrawing;
-
-- (CALayer *)overlayLayer;
-
-- (NSTextView *)beginTextEditing;
-- (void)endTextEditing:(NSTextView *)textView;
-
-- (NSBitmapImageRep *)captureRect:(NSRect)rect;
-
-- (NSRect)bounds;
-
-- (NSPoint)alignPointToBacking:(NSPoint)point;
+@interface PTDTextTool : PTDTool <NSTextViewDelegate>
 
 @end
 

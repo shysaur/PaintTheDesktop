@@ -64,6 +64,8 @@
 		01C0D68C2492ED7100AECEAB /* NSScreen+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 01C0D68B2492ED7100AECEAB /* NSScreen+PTD.m */; };
 		01CFFD1924EB50580093D6BA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01CFFD1B24EB50580093D6BA /* Localizable.strings */; };
 		01D68A5825AB9D1A00536CD6 /* PTDSelectionTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 01D68A5725AB9D1A00536CD6 /* PTDSelectionTool.m */; };
+		01E7E726277E0B9B00F02DBA /* PTDTextTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E7E725277E0B9B00F02DBA /* PTDTextTool.m */; };
+		01E7E739277E2DF500F02DBA /* NSTextView+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = 01E7E738277E2DF500F02DBA /* NSTextView+PTD.m */; };
 		01EE4620260BAD3400CF4CFF /* PTDPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EE461E260BAD3400CF4CFF /* PTDPreferencesWindowController.m */; };
 		01EE4621260BAD3400CF4CFF /* PTDPreferencesWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01EE461F260BAD3400CF4CFF /* PTDPreferencesWindow.xib */; };
 		01EE4624260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EE4623260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m */; };
@@ -283,6 +285,10 @@
 		01CFFD1A24EB50580093D6BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		01D68A5625AB9D1A00536CD6 /* PTDSelectionTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDSelectionTool.h; sourceTree = "<group>"; };
 		01D68A5725AB9D1A00536CD6 /* PTDSelectionTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDSelectionTool.m; sourceTree = "<group>"; };
+		01E7E724277E0B9B00F02DBA /* PTDTextTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDTextTool.h; sourceTree = "<group>"; };
+		01E7E725277E0B9B00F02DBA /* PTDTextTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDTextTool.m; sourceTree = "<group>"; };
+		01E7E737277E2DF500F02DBA /* NSTextView+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSTextView+PTD.h"; sourceTree = "<group>"; };
+		01E7E738277E2DF500F02DBA /* NSTextView+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSTextView+PTD.m"; sourceTree = "<group>"; };
 		01EE461D260BAD3400CF4CFF /* PTDPreferencesWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDPreferencesWindowController.h; sourceTree = "<group>"; };
 		01EE461E260BAD3400CF4CFF /* PTDPreferencesWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPreferencesWindowController.m; sourceTree = "<group>"; };
 		01EE461F260BAD3400CF4CFF /* PTDPreferencesWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PTDPreferencesWindow.xib; sourceTree = "<group>"; };
@@ -397,6 +403,8 @@
 				016D36BC249067300086E96D /* PTDTool.m */,
 				0169E1782607F4CF008F986B /* PTDBrushTool.h */,
 				0169E1792607F4CF008F986B /* PTDBrushTool.m */,
+				01E7E724277E0B9B00F02DBA /* PTDTextTool.h */,
+				01E7E725277E0B9B00F02DBA /* PTDTextTool.m */,
 				0169E17B2607F524008F986B /* Utility Tools */,
 				0169E17C2607F534008F986B /* Brush Tools */,
 			);
@@ -435,6 +443,8 @@
 				01B7AF5D2642E10100A3FF31 /* NSAffineTransform+PTD.m */,
 				013D2ED8272B5A2D008F92BC /* NSMenu+PTD.h */,
 				013D2ED9272B5A2D008F92BC /* NSMenu+PTD.m */,
+				01E7E737277E2DF500F02DBA /* NSTextView+PTD.h */,
+				01E7E738277E2DF500F02DBA /* NSTextView+PTD.m */,
 			);
 			name = Utilities;
 			sourceTree = "<group>";
@@ -737,6 +747,7 @@
 				016D36C0249068F40086E96D /* PTDResetTool.m in Sources */,
 				018E37632623C99E0009B7A4 /* PTDGraphics.m in Sources */,
 				01B7AF5E2642E10100A3FF31 /* NSAffineTransform+PTD.m in Sources */,
+				01E7E726277E0B9B00F02DBA /* PTDTextTool.m in Sources */,
 				0164247B249FF71F000955D8 /* PTDOvalTool.m in Sources */,
 				019AB4882622571F008F85A7 /* PTDBrushColorPrefsCollectionViewDelegate.m in Sources */,
 				0162BC97249A0DDA00DFECC9 /* PTDRingMenuSpring.m in Sources */,
@@ -780,6 +791,7 @@
 				013C9A03249AD17E0033120A /* PTDNSPanel.m in Sources */,
 				01484B0726321F4900B0518F /* PTDAbstractSizeCollectionViewItem.m in Sources */,
 				01484B0426321F1800B0518F /* PTDAbstractSizePrefsCollectionViewDelegate.m in Sources */,
+				01E7E739277E2DF500F02DBA /* NSTextView+PTD.m in Sources */,
 				01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */,
 				01A31E4825BB35CA002BA7D4 /* NSBezierPath+PTD.m in Sources */,
 				016D36B724905E280086E96D /* PTDToolManager.m in Sources */,

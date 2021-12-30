@@ -30,6 +30,23 @@
 #import "PTDAppDelegate.h"
 
 
+@interface PTDScreenPaintWindow: NSWindow
+
+@end
+
+
+@implementation PTDScreenPaintWindow
+
+
+- (BOOL)canBecomeKeyWindow
+{
+  return YES;
+}
+
+
+@end
+
+
 @interface PTDScreenPaintWindowController ()
 
 @property (nonatomic) BOOL active;
@@ -79,7 +96,7 @@
 - (void)loadWindow
 {
   NSRect contentRect = [self displayRect];
-  NSWindow *window = [[NSWindow alloc]
+  NSWindow *window = [[PTDScreenPaintWindow alloc]
       initWithContentRect:contentRect
       styleMask:NSWindowStyleMaskBorderless
       backing:NSBackingStoreBuffered

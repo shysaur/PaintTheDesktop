@@ -68,6 +68,21 @@
 }
 
 
+- (NSTextView *)beginTextEditing
+{
+  NSTextView *tv = [[NSTextView alloc] init];
+  [_paintView addSubview:tv];
+  [_paintView.window makeFirstResponder:tv];
+  return tv;
+}
+
+
+- (void)endTextEditing:(NSTextView *)textView
+{
+  [textView removeFromSuperview];
+}
+
+
 - (NSBitmapImageRep *)captureRect:(NSRect)rect
 {
   return [_paintView snapshotOfRect:rect];
