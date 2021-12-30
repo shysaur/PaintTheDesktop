@@ -23,7 +23,7 @@
 // SOFTWARE.
 //
 
-#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -31,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) NSImage *image;
 @property (nonatomic) NSPoint hotspot;
+
++ (instancetype)cursorFromCursor:(NSCursor *)cursor;
 
 @end
 

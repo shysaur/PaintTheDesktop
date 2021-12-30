@@ -27,4 +27,14 @@
 
 @implementation PTDCursor
 
+
++ (instancetype)cursorFromCursor:(NSCursor *)cursor
+{
+  PTDCursor *res = [[self alloc] init];
+  res.image = cursor.image;
+  res.hotspot = cursor.hotSpot;
+  return res;
+}
+
+
 @end
