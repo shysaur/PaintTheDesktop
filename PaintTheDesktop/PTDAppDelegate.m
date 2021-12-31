@@ -295,6 +295,8 @@
   if (self.preferencesWindowController == nil) {
     self.preferencesWindowController = [[PTDPreferencesWindowController alloc] init];
   }
+  
+  self.active = NO;
   [NSApp activateIgnoringOtherApps:YES];
   [self.preferencesWindowController showWindow:self];
 }
