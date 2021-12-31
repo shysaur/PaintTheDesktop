@@ -68,12 +68,12 @@ static NSInteger _forceTopLevelRefCount;
 - (void)ptd_sw_setLevel:(NSWindowLevel)windowLevel
 {
   if (_forceTopLevelRefCount > 0 && windowLevel < kCGMaximumWindowLevelKey) {
-    NSLog(@"elevated window %ld (%@) level from %ld to %d",
-        (long)self.windowNumber, self, (long)windowLevel, kCGMaximumWindowLevelKey);
+    NSLog(@"elevated window %ld (%@) level from %ld to %d (refc=%d)",
+        (long)self.windowNumber, self, (long)windowLevel, kCGMaximumWindowLevelKey, (int)_forceTopLevelRefCount);
     [self ptd_sw_setLevel:kCGMaximumWindowLevelKey];
   } else {
-    NSLog(@"not elevated window %ld (%@) level from %ld",
-        (long)self.windowNumber, self, (long)windowLevel);
+    NSLog(@"not elevated window %ld (%@) level from %ld (refc=%d)",
+        (long)self.windowNumber, self, (long)windowLevel, (int)_forceTopLevelRefCount);
     [self ptd_sw_setLevel:windowLevel];
   }
 }
