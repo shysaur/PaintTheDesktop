@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (CALayer *)overlayLayer;
 
-- (NSTextView *)beginTextEditing;
+- (void)beginTextEditingWithTextView:(NSTextView *)textView;
 - (void)endTextEditing:(NSTextView *)textView;
 
 - (NSBitmapImageRep *)captureRect:(NSRect)rect;

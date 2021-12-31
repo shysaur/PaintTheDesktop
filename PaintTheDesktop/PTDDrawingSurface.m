@@ -68,12 +68,10 @@
 }
 
 
-- (NSTextView *)beginTextEditing
+- (void)beginTextEditingWithTextView:(NSTextView *)textView;
 {
-  NSTextView *tv = [[NSTextView alloc] init];
-  [_paintView addSubview:tv];
-  [_paintView.window makeFirstResponder:tv];
-  return tv;
+  [_paintView addSubview:textView];
+  [_paintView.window makeFirstResponder:textView];
 }
 
 

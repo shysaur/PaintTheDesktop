@@ -26,7 +26,7 @@
 #import <Cocoa/Cocoa.h>
 #import "PTDAbstractPaintWindowController.h"
 
-@interface PTDAppDelegate : NSObject <NSApplicationDelegate, NSMenuDelegate, PTDPaintWindowDelegate>
+@interface PTDAppDelegate : NSObject <NSApplicationDelegate, NSMenuDelegate, NSMenuItemValidation, PTDPaintWindowDelegate>
 
 + (PTDAppDelegate *)appDelegate;
 

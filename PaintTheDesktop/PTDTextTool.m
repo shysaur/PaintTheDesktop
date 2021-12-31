@@ -28,6 +28,7 @@
 #import "NSView+PTD.h"
 #import "NSTextView+PTD.h"
 #import "PTDCursor.h"
+#import "PTDGraphics.h"
 
 
 NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
@@ -36,6 +37,25 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
 @interface NSLayoutManager ()
 
 - (void)_setDrawsDebugBaselines:(BOOL)arg1;
+
+@end
+
+
+@interface PTDTextToolView: NSTextView
+
+@end
+
+
+@implementation PTDTextToolView
+
+
+- (nullable NSMenu *)menuForEvent:(NSEvent *)event
+{
+  if ([event type] == NSEventTypeRightMouseDown)
+    [self.superview rightMouseDown:event];
+  return nil;
+}
+
 
 @end
 
@@ -55,6 +75,23 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
 + (PTDRingMenuItem *)menuItem
 {
   return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconText"] target:nil action:nil];
+}
+
+
+- (void)reloadOptions
+{
+  _color = NSColor.blackColor;
+  _baseFont = [NSFont userFontOfSize:24];
+  _fontSize = 24;
+  _textAlignment = NSTextAlignmentLeft;
+}
+
+
+- (NSFont *)resolvedFont
+{
+  NSFontManager *fm = [NSFontManager sharedFontManager];
+  NSFont *newFont = [fm convertFont:self.baseFont toSize:self.fontSize];
+  return newFont;
 }
 
 
@@ -78,7 +115,8 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
 {
   self.cursor = nil;
   
-  _textView = [self.currentDrawingSurface beginTextEditing];
+  _textView = [[PTDTextToolView alloc] init];
+  [self.currentDrawingSurface beginTextEditingWithTextView:_textView];
   
   point = [_textView.superview ptd_backingAlignedPoint:point];
   _baselinePivot = point;
@@ -94,7 +132,8 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
   textViewRect.size.height = point.y;
   _textView.frame = textViewRect;
   
-  _textView.font = [NSFont userFontOfSize:24];
+  _textView.font = [self resolvedFont];
+  _textView.textColor = self.color;
   
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"debug"]) {
     [_textView.layoutManager _setDrawsDebugBaselines:YES];
@@ -119,7 +158,7 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
     /* We finish setting up the text view now otherwise the initial caret
      * positioning and baseline are screwed up.
      *   Empty text fields are hard... I guess? */
-    _textView.alignment = NSTextAlignmentCenter;
+    _textView.alignment = self.textAlignment;
     _textView.textContainer.heightTracksTextView = NO;
     _textView.textContainer.widthTracksTextView = NO;
     _textView.horizontallyResizable = YES;
@@ -134,7 +173,7 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
     newOrigin.x = _baselinePivot.x - xBorder;
   } else if (_textView.alignment == NSTextAlignmentCenter) {
     newOrigin.x = _baselinePivot.x - _textView.frame.size.width / 2.0;
-  } else if (_textView.alignment == NSTextAlignmentCenter) {
+  } else if (_textView.alignment == NSTextAlignmentRight) {
     newOrigin.x = _baselinePivot.x - _textView.frame.size.width + xBorder;
   } else {
     NSLog(@"What is this text alignment (id = %d) that I don't know? Whatever, let's not panic...", (int)_textView.alignment);
@@ -172,6 +211,139 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
   if (_textView) {
     [self endTextEditing];
   }
+}
+
+
+- (void)setColor:(NSColor *)color
+{
+  _color = color;
+  if (_textView) {
+    _textView.textColor = color;
+    [self updateTextViewFrame];
+  }
+}
+
+
+- (void)setBaseFont:(NSFont *)baseFont
+{
+  _baseFont = baseFont;
+  if (_textView) {
+    _textView.font = [self resolvedFont];
+    [self updateTextViewFrame];
+  }
+}
+
+
+- (void)setFontSize:(CGFloat)fontSize
+{
+  _fontSize = fontSize;
+  if (_textView) {
+    _textView.font = [self resolvedFont];
+    [self updateTextViewFrame];
+  }
+}
+
+
+- (void)setTextAlignment:(NSTextAlignment)textAlignment
+{
+  _textAlignment = textAlignment;
+  if (_textView && _textView.string.length > 0)
+    [self updateTextViewFrame];
+}
+
+
+- (nullable PTDRingMenuRing *)optionMenu
+{
+  PTDRingMenuRing *res = [PTDRingMenuRing ring];
+  
+  [res beginGravityMassGroupWithAngle:M_PI_2 / 3.0];
+  NSArray <NSNumber *> *sizes = @[@(24), @(48), @(72), @(100)];
+  for (NSNumber *size in sizes) {
+    PTDRingMenuItem *item = [self menuItemForFontSize:size.integerValue];
+    [res addItem:item];
+  }
+  [res endGravityMassGroup];
+  
+  [res addSpringWithElasticity:1000];
+  
+  [res beginGravityMassGroupWithAngle:M_PI_2 / 3.0];
+  [res addItem:[self menuItemForTextAlignment:NSTextAlignmentLeft]];
+  [res addItem:[self menuItemForTextAlignment:NSTextAlignmentCenter]];
+  [res addItem:[self menuItemForTextAlignment:NSTextAlignmentRight]];
+  [res endGravityMassGroup];
+  
+  [res addSpringWithElasticity:1000];
+  
+  NSArray <NSColor *> *colors = @[NSColor.blackColor, NSColor.systemRedColor, NSColor.systemBlueColor, NSColor.systemYellowColor, NSColor.systemGreenColor, NSColor.whiteColor];
+  for (NSColor *color in colors) {
+    PTDRingMenuItem *item = [self menuItemForTextColor:color];
+    [res addItem:item];
+  }
+  
+  [res addSpringWithElasticity:1000];
+  return res;
+}
+
+
+- (PTDRingMenuItem *)menuItemForTextColor:(NSColor *)color
+{
+  NSImage *img = [NSImage imageWithSize:NSMakeSize(16, 16) flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+    PTDDrawCircularColorSwatch(NSMakeRect(3, 3, 16-6, 16-6), color);
+    return YES;
+  }];
+  PTDRingMenuItem *itm = [PTDRingMenuItem itemWithImage:img target:self action:@selector(changeColor:)];
+  itm.representedObject = color;
+  if ([color isEqual:_color])
+    itm.state = NSControlStateValueOn;
+  return itm;
+}
+
+
+- (PTDRingMenuItem *)menuItemForFontSize:(CGFloat)size
+{
+  NSString *strSize = [NSString stringWithFormat:@"%d", (int)size];
+  
+  PTDRingMenuItem *itm = [PTDRingMenuItem itemWithText:strSize target:self action:@selector(changeFontSize:)];
+  itm.tag = size;
+  if (size == _fontSize)
+    itm.state = NSControlStateValueOn;
+  return itm;
+}
+
+
+- (PTDRingMenuItem *)menuItemForTextAlignment:(NSTextAlignment)alignment
+{
+  NSImage *image;
+  if (alignment == NSTextAlignmentCenter)
+    image = [NSImage imageNamed:@"PTDTextAlignCenter"];
+  else if (alignment == NSTextAlignmentRight)
+    image = [NSImage imageNamed:@"PTDTextAlignRight"];
+  else
+    image = [NSImage imageNamed:@"PTDTextAlignLeft"];
+  
+  PTDRingMenuItem *itm = [PTDRingMenuItem itemWithImage:image target:self action:@selector(changeTextAlignment:)];
+  itm.tag = alignment;
+  if (alignment == _textAlignment)
+    itm.state = NSControlStateValueOn;
+  return itm;
+}
+
+
+- (void)changeColor:(id)sender
+{
+  [self setColor:sender];
+}
+
+
+- (void)changeFontSize:(id)sender
+{
+  [self setFontSize:[sender tag]];
+}
+
+
+- (void)changeTextAlignment:(id)sender
+{
+  [self setTextAlignment:[sender tag]];
 }
 
 
