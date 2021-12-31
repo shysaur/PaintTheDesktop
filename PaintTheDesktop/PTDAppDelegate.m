@@ -238,6 +238,17 @@
 }
 
 
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem
+{
+  if (self.active) {
+    if (menuItem.action == @selector(newCanvasWindow:) ||
+        menuItem.action == @selector(newPDFWindow:))
+      return NO;
+  }
+  return YES;
+}
+
+
 - (void)appendPaintingListToMenu:(NSMenu *)res
 {
   for (PTDAbstractPaintWindowController *paintw in _paintWindowControllers) {
