@@ -104,7 +104,9 @@
 
 - (void)dealloc
 {
-  [self endCanvasDrawing];
+  if (_canvasContext) {
+    [self endCanvasDrawing];
+  }
 }
 
 
