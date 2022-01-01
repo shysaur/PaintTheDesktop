@@ -82,19 +82,25 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 - (void)_computeSelectionShape
 {
   NSSize thisSize = _size;
-  CGFloat r1 = thisSize.height * (M_SQRT1_2 - 0.5);
-  CGFloat r2 = thisSize.width * (M_SQRT1_2 - 0.5);
+  CGFloat ry = thisSize.height * 0.5 * M_SQRT2;
+  CGFloat rx = thisSize.width * 0.5 * M_SQRT2;
   
-  if (fabs(r1 - r2) < FLT_EPSILON) {
-    thisSize.height += r1 * 2.0;
-    thisSize.width += r2 * 2.0;
+  if (fabs(ry - rx) < 0.5) {
+    thisSize.height = ry * 2.0;
+    thisSize.width = rx * 2.0;
     _selectionShape = [NSBezierPath bezierPathWithOvalInRect:(NSRect){NSZeroPoint, thisSize}];
   } else {
-    CGFloat r = MIN(r1, r2);
-    thisSize.height += r * 1.5;
-    thisSize.width += r * 1.5;
-    CGFloat rr = MIN(thisSize.height / 4.0, thisSize.width / 4.0);
-    _selectionShape = [NSBezierPath bezierPathWithRoundedRect:(NSRect){NSZeroPoint, thisSize} xRadius:rr yRadius:rr];
+    CGFloat r;
+    if (rx > ry) {
+      r = ry;
+      thisSize.width += ry * 2.0 - thisSize.height;
+      thisSize.height = ry * 2.0;
+    } else {
+      r = rx;
+      thisSize.height += rx * 2.0 - thisSize.width;
+      thisSize.width = rx * 2.0;
+    }
+    _selectionShape = [NSBezierPath bezierPathWithRoundedRect:(NSRect){NSZeroPoint, thisSize} xRadius:r yRadius:r];
   }
   
   _selectionShapeSize = thisSize;
@@ -209,7 +215,9 @@ static NSMutableSet <PTDRingMenuWindow *> *currentlyOpenMenus;
 
 - (CGFloat)maximumSide
 {
-  return MAX(self.item.image.size.width, self.item.image.size.height) + 5.0;
+  CGFloat minImgSide = MIN(self.item.image.size.width, self.item.image.size.height);
+  CGFloat maxImgSide = MAX(self.item.image.size.width, self.item.image.size.height);
+  return maxImgSide + minImgSide * (M_SQRT1_2 - 0.5) + 2.0;
 }
 
 
