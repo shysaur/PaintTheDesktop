@@ -36,9 +36,24 @@
 #import "PTDRingMenuWindow.h"
 
 
+typedef NS_OPTIONS(NSUInteger, PTDPaintViewActivityStatus) {
+  PTDPaintViewActivityStatusActive = 1 << 0,
+  PTDPaintViewActivityStatusInResize = 1 << 1,
+};
+
+NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
+{
+  BOOL userActive = status & PTDPaintViewActivityStatusActive;
+  BOOL inResize = status & PTDPaintViewActivityStatusInResize;
+  return userActive && !inResize;
+}
+
+
 @interface PTDPaintViewController ()
 
 @property (nonatomic) PTDToolManager *toolManager;
+
+@property (nonatomic) PTDPaintViewActivityStatus activityStatus;
 
 @property (nonatomic) BOOL mouseInView;
 @property (nonatomic) BOOL mouseIsDragging;
@@ -53,6 +68,8 @@
 
 @implementation PTDPaintViewController {
   __weak PTDDrawingSurface *_lastDrawingSurface;
+  
+  BOOL _isResizing;
 }
 
 @dynamic view;
@@ -79,6 +96,9 @@
   
   [self currentToolDidChange];
   self.currentCursor = self.toolManager.currentTool.cursor;
+  
+  _isResizing = NO;
+  self.view.paintViewDelegate = self;
   
   self.active = YES;
 }
@@ -135,7 +155,7 @@
 - (void)mouseDown:(NSEvent *)event
 {
   self.mouseInView = YES;
-  if (!self.active)
+  if (!self.effectivelyActive)
     return;
   
   self.mouseIsDragging = YES;
@@ -153,7 +173,7 @@
 - (void)mouseDragged:(NSEvent *)event
 {
   self.mouseInView = YES;
-  if (!self.active)
+  if (!self.effectivelyActive)
     return;
   
   @autoreleasepool {
@@ -175,7 +195,7 @@
 - (void)mouseUp:(NSEvent *)event
 {
   self.mouseInView = YES;
-  if (!self.active)
+  if (!self.effectivelyActive)
     return;
   
   if (self.mouseIsDragging) {
@@ -204,7 +224,7 @@
 - (void)rightMouseDown:(NSEvent *)event
 {
   self.mouseInView = YES;
-  if (!self.active)
+  if (!self.effectivelyActive)
     return;
   
   /* Cancel last drag */
@@ -251,6 +271,42 @@
       PTDTool *tool = [self initializeToolWithSurface:surf];
       [tool modifierFlagsChanged];
     }
+  }
+}
+
+
+- (void)viewWillResize:(PTDPaintView *)view
+{
+  if (!self.view.inLiveResize && !_isResizing) {
+    _isResizing = YES;
+    self.activityStatus = self.activityStatus | PTDPaintViewActivityStatusInResize;
+  }
+}
+
+
+- (void)viewWillStartLiveResize:(PTDPaintView *)view
+{
+  if (!_isResizing) {
+    _isResizing = YES;
+    self.activityStatus = self.activityStatus | PTDPaintViewActivityStatusInResize;
+  }
+}
+
+
+- (void)viewDidResize:(PTDPaintView *)view
+{
+  if (!self.view.inLiveResize && _isResizing) {
+    _isResizing = NO;
+    self.activityStatus = self.activityStatus & ~PTDPaintViewActivityStatusInResize;
+  }
+}
+
+
+- (void)viewDidEndLiveResize:(PTDPaintView *)view
+{
+  if (_isResizing) {
+    _isResizing = NO;
+    self.activityStatus = self.activityStatus & ~PTDPaintViewActivityStatusInResize;
   }
 }
 
@@ -348,24 +404,48 @@
 }
 
 
-- (void)setActive:(BOOL)active
+- (void)setActivityStatus:(PTDPaintViewActivityStatus)activityStatus
 {
-  if (_active != active) {
-    if (active) {
+  BOOL newComputedActive = PTDPaintViewActiveFromStatus(activityStatus);
+  BOOL oldComputedActive = PTDPaintViewActiveFromStatus(_activityStatus);
+  if (newComputedActive != oldComputedActive) {
+    if (newComputedActive) {
       [self activateTool];
     } else {
       [self deactivateTool];
     }
+    _activityStatus = activityStatus;
+    NSPoint mousePositionInWindow = [self.view.window mouseLocationOutsideOfEventStream];
+    [self updateCursorAtPoint:[self.view convertPoint:mousePositionInWindow fromView:nil]];
+  } else {
+    _activityStatus = activityStatus;
   }
-  _active = active;
-  NSPoint mousePositionInWindow = [self.view.window mouseLocationOutsideOfEventStream];
-  [self updateCursorAtPoint:[self.view convertPoint:mousePositionInWindow fromView:nil]];
+}
+
+
+- (BOOL)effectivelyActive
+{
+  return PTDPaintViewActiveFromStatus(self.activityStatus);
+}
+
+
+- (BOOL)active
+{
+  return !!(_activityStatus & PTDPaintViewActivityStatusActive);
+}
+
+
+- (void)setActive:(BOOL)active
+{
+  self.activityStatus =
+      (_activityStatus & ~PTDPaintViewActivityStatusActive)
+        | active ? PTDPaintViewActivityStatusActive : 0;
 }
 
 
 - (BOOL)computeNextCursorVisibility
 {
-  if (!self.active)
+  if (!self.effectivelyActive)
     return YES;
   if (!self.currentCursor)
     return YES;

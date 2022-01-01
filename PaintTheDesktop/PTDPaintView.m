@@ -83,30 +83,57 @@
 
 - (void)setFrame:(NSRect)frame
 {
+  if (self.paintViewDelegate && [self.paintViewDelegate respondsToSelector:@selector(viewWillResize:)])
+    [self.paintViewDelegate viewWillResize:self];
+  
   [super setFrame:frame];
   if (!self.inLiveResize)
     [self updateBackingImages];
+  
+  if (self.paintViewDelegate && [self.paintViewDelegate respondsToSelector:@selector(viewDidResize:)])
+    [self.paintViewDelegate viewDidResize:self];
 }
 
 
 - (void)setFrameSize:(NSSize)newSize
 {
+  if (self.paintViewDelegate && [self.paintViewDelegate respondsToSelector:@selector(viewWillResize:)])
+    [self.paintViewDelegate viewWillResize:self];
+  
   [super setFrameSize:newSize];
   if (!self.inLiveResize)
     [self updateBackingImages];
+  
+  if (self.paintViewDelegate && [self.paintViewDelegate respondsToSelector:@selector(viewDidResize:)])
+    [self.paintViewDelegate viewDidResize:self];
 }
 
 
 - (void)setBounds:(NSRect)frame
 {
+  if (self.paintViewDelegate && [self.paintViewDelegate respondsToSelector:@selector(viewWillResize:)])
+    [self.paintViewDelegate viewWillResize:self];
+  
   [super setBounds:frame];
   if (!self.inLiveResize)
     [self updateBackingImages];
+  
+  if (self.paintViewDelegate && [self.paintViewDelegate respondsToSelector:@selector(viewDidResize:)])
+    [self.paintViewDelegate viewDidResize:self];
+}
+
+
+- (void)viewWillStartLiveResize
+{
+  if (self.paintViewDelegate && [self.paintViewDelegate respondsToSelector:@selector(viewWillStartLiveResize:)])
+    [self.paintViewDelegate viewWillStartLiveResize:self];
 }
 
 
 - (void)viewDidEndLiveResize
 {
+  if (self.paintViewDelegate && [self.paintViewDelegate respondsToSelector:@selector(viewDidEndLiveResize:)])
+    [self.paintViewDelegate viewDidEndLiveResize:self];
   [self updateBackingImages];
 }
 

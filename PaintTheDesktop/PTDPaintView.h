@@ -27,7 +27,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol PTDPaintViewDelegate;
+
 @interface PTDPaintView : NSOpenGLView
+
+@property (nonatomic, weak) id<PTDPaintViewDelegate> paintViewDelegate;
 
 @property (nonatomic) NSSize backingScaleFactor;
 @property (nonatomic, readonly) NSRect paintRect;
@@ -41,6 +45,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSBitmapImageRep *)snapshot;
 - (NSBitmapImageRep *)snapshotOfRect:(NSRect)rect;
+
+@end
+
+@protocol PTDPaintViewDelegate <NSObject>
+
+@optional
+- (void)viewWillResize:(PTDPaintView *)view;
+- (void)viewWillStartLiveResize:(PTDPaintView *)view;
+- (void)viewDidResize:(PTDPaintView *)view;
+- (void)viewDidEndLiveResize:(PTDPaintView *)view;
 
 @end
 

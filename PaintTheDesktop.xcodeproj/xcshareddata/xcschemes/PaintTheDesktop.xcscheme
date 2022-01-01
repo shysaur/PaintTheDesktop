@@ -62,6 +62,11 @@
             value = ""
             isEnabled = "NO">
          </EnvironmentVariable>
+         <EnvironmentVariable
+            key = "CG_CONTEXT_SHOW_BACKTRACE"
+            value = ""
+            isEnabled = "YES">
+         </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction

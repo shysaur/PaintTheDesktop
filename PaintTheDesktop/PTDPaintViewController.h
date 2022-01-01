@@ -28,7 +28,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDPaintViewController : NSViewController
+@interface PTDPaintViewController : NSViewController <PTDPaintViewDelegate>
 
 @property (strong) IBOutlet PTDPaintView *view;
 
