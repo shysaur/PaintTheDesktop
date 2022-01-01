@@ -53,47 +53,6 @@ NSString * const PTDToolManagerOptionToolIdentifier = @"toolId";
 }
 
 
-+ (void)initialize
-{
-  PTDToolOptions *o = PTDToolOptions.sharedOptions;
-  [o registerGlobalOption:PTDToolManagerOptionToolIdentifier types:@[[NSString class]] defaultValue:PTDToolIdentifierPencilTool validationBlock:^BOOL(id  _Nonnull value) {
-    return [[[self class] availableToolIdentifiers] containsObject:value];
-  }];
-}
-
-
-- (instancetype)init
-{
-  self = [super init];
-  
-  _availableToolIdentifiers = [[self class] availableToolIdentifiers];
-  _toolClasses = @{
-      PTDToolIdentifierPencilTool: [PTDPencilTool class],
-      PTDToolIdentifierEraserTool: [PTDEraserTool class],
-      PTDToolIdentifierLineTool: [PTDLineTool class],
-      PTDToolIdentifierRectangleTool: [PTDRectangleTool class],
-      PTDToolIdentifierOvalTool: [PTDOvalTool class],
-      PTDToolIdentifierRoundRectTool: [PTDRoundRectTool class],
-      PTDToolIdentifierTextTool: [PTDTextTool class],
-      PTDToolIdentifierSelectionTool: [PTDSelectionTool class],
-      PTDToolIdentifierResetTool: [PTDResetTool class]
-    };
-    
-  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-  _optionsChangedObserver = [nc addObserverForName:PTDToolOptionsChangedNotification
-      object:PTDToolOptions.sharedOptions
-      queue:nil usingBlock:^(NSNotification * _Nonnull note) {
-    PTDTool *otherTool = [note.userInfo objectForKey:PTDToolOptionsChangedNotificationUserInfoToolKey];
-    if (!otherTool)
-      [self reloadOptions];
-  }];
-  
-  [self reloadOptions];
-    
-  return self;
-}
-
-
 + (NSArray <NSString *> *)availableToolIdentifiers
 {
   return @[
@@ -107,6 +66,58 @@ NSString * const PTDToolManagerOptionToolIdentifier = @"toolId";
     PTDToolIdentifierSelectionTool,
     PTDToolIdentifierResetTool
   ];
+}
+
+
++ (NSDictionary <NSString *, Class> *)toolClasses
+{
+  return @{
+    PTDToolIdentifierPencilTool: [PTDPencilTool class],
+    PTDToolIdentifierEraserTool: [PTDEraserTool class],
+    PTDToolIdentifierLineTool: [PTDLineTool class],
+    PTDToolIdentifierRectangleTool: [PTDRectangleTool class],
+    PTDToolIdentifierOvalTool: [PTDOvalTool class],
+    PTDToolIdentifierRoundRectTool: [PTDRoundRectTool class],
+    PTDToolIdentifierTextTool: [PTDTextTool class],
+    PTDToolIdentifierSelectionTool: [PTDSelectionTool class],
+    PTDToolIdentifierResetTool: [PTDResetTool class]
+  };
+}
+
+
++ (void)registerDefaults
+{
+  PTDToolOptions *o = PTDToolOptions.sharedOptions;
+  [o registerGlobalOption:PTDToolManagerOptionToolIdentifier types:@[[NSString class]] defaultValue:PTDToolIdentifierPencilTool validationBlock:^BOOL(id  _Nonnull value) {
+    return [[[self class] availableToolIdentifiers] containsObject:value];
+  }];
+  
+  NSArray <Class> *tools = self.toolClasses.allValues;
+  for (Class tool in tools) {
+    [tool registerDefaults];
+  }
+}
+
+
+- (instancetype)init
+{
+  self = [super init];
+  
+  _availableToolIdentifiers = [[self class] availableToolIdentifiers];
+  _toolClasses = [[self class] toolClasses];
+    
+  NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+  _optionsChangedObserver = [nc addObserverForName:PTDToolOptionsChangedNotification
+      object:PTDToolOptions.sharedOptions
+      queue:nil usingBlock:^(NSNotification * _Nonnull note) {
+    PTDTool *otherTool = [note.userInfo objectForKey:PTDToolOptionsChangedNotificationUserInfoToolKey];
+    if (!otherTool)
+      [self reloadOptions];
+  }];
+  
+  [self reloadOptions];
+    
+  return self;
 }
 
 

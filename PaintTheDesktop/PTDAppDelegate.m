@@ -58,7 +58,7 @@
 }
 
 
-+ (void)initialize
++ (void)registerDefaults
 {
   NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
   [ud registerDefaults:@{
@@ -79,6 +79,9 @@
   _paintWindowControllers = [@[] mutableCopy];
   _active = NO;
   _dockRefCount = 0;
+  
+  [self.class registerDefaults];
+  [PTDToolManager registerDefaults];
   
   NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
   _alwaysShowsDockIcon = [ud boolForKey:@"PTDAlwaysShowsDockIcon"];

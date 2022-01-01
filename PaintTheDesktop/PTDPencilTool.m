@@ -45,7 +45,7 @@ NSString * const PTDPencilToolOptionLiveSmoothing = @"liveSmoothing";
 }
 
 
-+ (void)initialize
++ (void)registerDefaults
 {
   PTDToolOptions *o = PTDToolOptions.sharedOptions;
   [o registerOption:PTDPencilToolOptionSmoothingCoefficient ofToolClass:self types:@[[NSNumber class]] defaultValue:@(0.5) validationBlock:nil];

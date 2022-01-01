@@ -37,7 +37,7 @@ NSString * const PTDBrushToolOptionSizeOptions = @"brushSizeOptions";
 @implementation PTDBrushTool
 
 
-+ (void)initialize
++ (void)registerDefaults
 {
   PTDToolOptions *o = PTDToolOptions.sharedOptions;
   

@@ -34,6 +34,11 @@
 }
 
 
++ (void)registerDefaults
+{
+}
+
+
 - (instancetype)init
 {
   self = [super init];

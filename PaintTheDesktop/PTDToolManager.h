@@ -33,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PTDToolManager : NSObject
 
++ (void)registerDefaults;
+
 @property (nonatomic, readonly) PTDTool *currentTool;
 @property (nonatomic, readonly, nullable) NSString *previousToolIdentifier;
 
