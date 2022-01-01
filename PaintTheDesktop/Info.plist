@@ -32,6 +32,8 @@
 	<true/>
 	<key>SUFeedURL</key>
 	<string>https://github.com/shysaur/PaintTheDesktop/raw/master/Updates/paintthedesktop-appcast.xml</string>
+	<key>SUEnableAutomaticChecks</key>
+	<false/>
 	<key>SUPublicEDKey</key>
 	<string>xeftqEhxib28LfWujQPeqzQsOW1N7CbSjna1vfuIqtI=</string>
 </dict>

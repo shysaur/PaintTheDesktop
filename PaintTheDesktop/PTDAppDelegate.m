@@ -40,6 +40,8 @@
 
 @interface PTDAppDelegate ()
 
+@property (nonatomic) SPUStandardUpdaterController *updateController;
+
 @property (nonatomic) NSMutableArray<PTDAbstractPaintWindowController *> *paintWindowControllers;
 @property (nonatomic) NSStatusItem *statusItem;
 
@@ -81,6 +83,8 @@
   NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
   _alwaysShowsDockIcon = [ud boolForKey:@"PTDAlwaysShowsDockIcon"];
   
+  _updateController = [[SPUStandardUpdaterController alloc] initWithStartingUpdater:YES updaterDelegate:nil userDriverDelegate:nil];
+  
   return self;
 }
 
@@ -93,7 +97,6 @@
   NSEvent.mouseCoalescingEnabled = NO;
   if (!self.alwaysShowsDockIcon)
     [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
-  [SUUpdater sharedUpdater];
   
   [self setupMenu];
   [self updateScreenPaintWindows];
@@ -218,7 +221,7 @@
   [prefsMi setTarget:self];
   
   NSMenuItem *sparkleMi = [res addItemWithTitle:NSLocalizedString(@"Check for Updates...", @"") action:@selector(checkForUpdates:) keyEquivalent:@""];
-  [sparkleMi setTarget:[SUUpdater sharedUpdater]];
+  [sparkleMi setTarget:self.updateController];
   
   [res addItem:[NSMenuItem separatorItem]];
   
