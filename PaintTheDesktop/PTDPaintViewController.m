@@ -285,7 +285,17 @@
 }
 
 
-- (void)currentToolWillChange
+- (void)activateTool
+{
+  @autoreleasepool {
+    PTDDrawingSurface *surf = [self drawingSurface];
+    PTDTool *tool = [self initializeToolWithSurface:surf];
+    [tool activate];
+  }
+}
+
+
+- (void)deactivateTool
 {
   @autoreleasepool {
     PTDDrawingSurface *surf = [self drawingSurface];
@@ -295,13 +305,15 @@
 }
 
 
+- (void)currentToolWillChange
+{
+  [self deactivateTool];
+}
+
+
 - (void)currentToolDidChange
 {
-  @autoreleasepool {
-    PTDDrawingSurface *surf = [self drawingSurface];
-    PTDTool *tool = [self initializeToolWithSurface:surf];
-    [tool activate];
-  }
+  [self activateTool];
 }
 
 
@@ -340,9 +352,9 @@
 {
   if (_active != active) {
     if (active) {
-      [self.toolManager.currentTool activate];
+      [self activateTool];
     } else {
-      [self.toolManager.currentTool deactivate];
+      [self deactivateTool];
     }
   }
   _active = active;
