@@ -28,9 +28,9 @@
 #import "PTDGraphics.h"
 
 
-NSString * const PTDBrushToolOptionSize = @"brushSize";
 NSString * const PTDBrushToolOptionColor = @"brushColor";
 NSString * const PTDBrushToolOptionColorOptions = @"brushColorOptions";
+NSString * const PTDBrushToolOptionSize = @"brushSize";
 NSString * const PTDBrushToolOptionSizeOptions = @"brushSizeOptions";
 
 

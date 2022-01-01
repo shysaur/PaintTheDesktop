@@ -29,6 +29,8 @@
 #import "NSTextView+PTD.h"
 #import "PTDCursor.h"
 #import "PTDGraphics.h"
+#import "PTDBrushTool.h"
+#import "PTDToolOptions.h"
 
 
 NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
@@ -80,10 +82,10 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
 
 - (void)reloadOptions
 {
-  _color = NSColor.blackColor;
   _baseFont = [NSFont userFontOfSize:24];
   _fontSize = 24;
   _textAlignment = NSTextAlignmentLeft;
+  self.color = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionColor ofToolClass:nil];
 }
 
 
@@ -274,7 +276,7 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
   
   [res addSpringWithElasticity:1000];
   
-  NSArray <NSColor *> *colors = @[NSColor.blackColor, NSColor.systemRedColor, NSColor.systemBlueColor, NSColor.systemYellowColor, NSColor.systemGreenColor, NSColor.whiteColor];
+  NSArray <NSColor *> *colors = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionColorOptions ofToolClass:nil];
   for (NSColor *color in colors) {
     PTDRingMenuItem *item = [self menuItemForTextColor:color];
     [res addItem:item];
@@ -331,7 +333,7 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
 
 - (void)changeColor:(id)sender
 {
-  [self setColor:sender];
+  [[PTDToolOptions sharedOptions] setObject:sender forOption:PTDBrushToolOptionColor ofToolClass:nil];
 }
 
 

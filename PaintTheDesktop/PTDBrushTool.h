@@ -27,6 +27,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+extern NSString * const PTDBrushToolOptionColor;
+extern NSString * const PTDBrushToolOptionColorOptions;
+
 @interface PTDBrushTool : PTDTool
 
 @property (nonatomic, class, null_resettable) NSArray <NSColor *> *defaultColors;
