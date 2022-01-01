@@ -54,6 +54,9 @@
 
 - (void)endCanvasDrawing
 {
+  if (_canvasContext) {
+    [_canvasContext flushGraphics];
+  }
   [NSGraphicsContext setCurrentContext:nil];
   _canvasContext = nil;
   if (_touchedPaintView) {
