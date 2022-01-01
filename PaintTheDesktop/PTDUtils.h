@@ -27,7 +27,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-__attribute__((noreturn)) void PTDAbstract(void);
+#define PTDAbstract() _PTDAbstract(__FILE__, __LINE__)
+__attribute__((noreturn)) void _PTDAbstract(const char *file, int line);
 
 void PTDSwizzleInstanceMethod(id self, SEL originalSelector, SEL swizzledSelector);
 

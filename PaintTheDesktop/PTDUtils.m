@@ -28,9 +28,9 @@
 #import "PTDUtils.h"
 
 
-void PTDAbstract(void)
+void _PTDAbstract(const char *file, int line)
 {
-  NSLog(@"invoked an abstract method!");
+  NSLog(@"Invoked an abstract method! (%s:%d)", file, line);
   __builtin_trap();
 }
 
