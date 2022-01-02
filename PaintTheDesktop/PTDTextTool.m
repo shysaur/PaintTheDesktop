@@ -36,6 +36,8 @@
 NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
 
 NSString * const PTDTextToolOptionBaseFontName = @"baseFontName";
+NSString * const PTDTextToolOptionFontSize = @"fontSize";
+NSString * const PTDTextToolOptionTextAlignment = @"textAlignment";
 
 
 @interface NSLayoutManager ()
@@ -81,22 +83,14 @@ NSString * const PTDTextToolOptionBaseFontName = @"baseFontName";
 }
 
 
-- (instancetype)init
-{
-  self = [super init];
-  _fontSize = 24;
-  _textAlignment = NSTextAlignmentLeft;
-  [self reloadOptions];
-  return self;
-}
-
-
 + (void)registerDefaults
 {
   [super registerDefaults];
   
   PTDToolOptions *o = PTDToolOptions.sharedOptions;
   [o registerOption:PTDTextToolOptionBaseFontName ofToolClass:self types:@[[NSString class]] defaultValue:@"Helvetica" validationBlock:nil];
+  [o registerOption:PTDTextToolOptionFontSize ofToolClass:self types:@[[NSNumber class]] defaultValue:@(24) validationBlock:nil];
+  [o registerOption:PTDTextToolOptionTextAlignment ofToolClass:self types:@[[NSNumber class]] defaultValue:@(NSTextAlignmentLeft) validationBlock:nil];
 }
 
 
@@ -129,10 +123,15 @@ NSString * const PTDTextToolOptionBaseFontName = @"baseFontName";
 
 - (void)reloadOptions
 {
-  _resolvedFont = [NSFont fontWithName:[self.class baseFontName] size:_fontSize];
-  self.color = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionColor ofToolClass:nil];
+  self.fontSize = [[PTDToolOptions.sharedOptions objectForOption:PTDTextToolOptionFontSize ofToolClass:self.class] doubleValue];
+  self.textAlignment = [[PTDToolOptions.sharedOptions objectForOption:PTDTextToolOptionTextAlignment ofToolClass:self.class] integerValue];
+  self.color = [PTDToolOptions.sharedOptions objectForOption:PTDBrushToolOptionColor ofToolClass:nil];
+  
+  self.resolvedFont = [NSFont fontWithName:[self.class baseFontName] size:self.fontSize];
+  
   if (_textView) {
-    _textView.font = _resolvedFont;
+    _textView.font = self.resolvedFont;
+    _textView.textColor = self.color;
     [self updateTextViewFrame];
   }
 }
@@ -175,7 +174,7 @@ NSString * const PTDTextToolOptionBaseFontName = @"baseFontName";
   textViewRect.size.height = point.y;
   _textView.frame = textViewRect;
   
-  _textView.font = [self resolvedFont];
+  _textView.font = self.resolvedFont;
   _textView.textColor = self.color;
   
   if ([[NSUserDefaults standardUserDefaults] boolForKey:@"debug"]) {
@@ -257,36 +256,6 @@ NSString * const PTDTextToolOptionBaseFontName = @"baseFontName";
 }
 
 
-- (void)setColor:(NSColor *)color
-{
-  _color = color;
-  if (_textView) {
-    _textView.textColor = color;
-    [self updateTextViewFrame];
-  }
-}
-
-
-- (void)setFontSize:(CGFloat)fontSize
-{
-  _fontSize = fontSize;
-  [self reloadOptions];
-  if (_textView) {
-    _textView.font = [self resolvedFont];
-    [self updateTextViewFrame];
-  }
-}
-
-
-- (void)setTextAlignment:(NSTextAlignment)textAlignment
-{
-  _textAlignment = textAlignment;
-  [self reloadOptions];
-  if (_textView && _textView.string.length > 0)
-    [self updateTextViewFrame];
-}
-
-
 - (nullable PTDRingMenuRing *)optionMenu
 {
   PTDRingMenuRing *res = [PTDRingMenuRing ring];
@@ -328,7 +297,7 @@ NSString * const PTDTextToolOptionBaseFontName = @"baseFontName";
   }];
   PTDRingMenuItem *itm = [PTDRingMenuItem itemWithImage:img target:self action:@selector(changeColor:)];
   itm.representedObject = color;
-  if ([color isEqual:_color])
+  if ([color isEqual:self.color])
     itm.state = NSControlStateValueOn;
   return itm;
 }
@@ -340,7 +309,7 @@ NSString * const PTDTextToolOptionBaseFontName = @"baseFontName";
   
   PTDRingMenuItem *itm = [PTDRingMenuItem itemWithText:strSize target:self action:@selector(changeFontSize:)];
   itm.tag = size;
-  if (size == _fontSize)
+  if (size == self.fontSize)
     itm.state = NSControlStateValueOn;
   return itm;
 }
@@ -372,13 +341,13 @@ NSString * const PTDTextToolOptionBaseFontName = @"baseFontName";
 
 - (void)changeFontSize:(id)sender
 {
-  [self setFontSize:[sender tag]];
+  [[PTDToolOptions sharedOptions] setObject:@([sender tag]) forOption:PTDTextToolOptionFontSize ofToolClass:self.class];
 }
 
 
 - (void)changeTextAlignment:(id)sender
 {
-  [self setTextAlignment:[sender tag]];
+  [[PTDToolOptions sharedOptions] setObject:@([sender tag]) forOption:PTDTextToolOptionTextAlignment ofToolClass:self.class];
 }
 
 
