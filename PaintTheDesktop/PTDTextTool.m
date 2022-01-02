@@ -211,18 +211,33 @@ NSString * const PTDTextToolOptionTextAlignment = @"textAlignment";
   newOrigin.y = _baselinePivot.y - _textView.frame.size.height + baselineOffset;
   
   CGFloat xBorder = _textView.textContainerInset.width + _textView.textContainer.lineFragmentPadding;
-  if (_textView.alignment == NSTextAlignmentLeft || _textView.alignment == NSTextAlignmentNatural) {
-    newOrigin.x = _baselinePivot.x - xBorder;
-  } else if (_textView.alignment == NSTextAlignmentCenter) {
+  if (_textView.alignment == NSTextAlignmentCenter) {
     newOrigin.x = _baselinePivot.x - _textView.frame.size.width / 2.0;
   } else if (_textView.alignment == NSTextAlignmentRight) {
     newOrigin.x = _baselinePivot.x - _textView.frame.size.width + xBorder;
   } else {
-    NSLog(@"What is this text alignment (id = %d) that I don't know? Whatever, let's not panic...", (int)_textView.alignment);
     newOrigin.x = _baselinePivot.x - xBorder;
   }
   
   [_textView setFrameOrigin:[_textView.superview ptd_backingAlignedPoint:newOrigin]];
+  
+  /* adjust text container size limit */
+  if (_textView.string.length > 0) {
+    CGFloat maxHeight = newOrigin.y + _textView.frame.size.height;
+    CGFloat maxWidth;
+    NSRect canvasRect = _textView.superview.bounds;
+    CGFloat leftSide = _baselinePivot.x;
+    CGFloat rightSide = canvasRect.size.width - _baselinePivot.x;
+    if (_textView.alignment == NSTextAlignmentCenter) {
+      maxWidth = (MIN(leftSide, rightSide) + xBorder) * 2.0;
+    } else if (_textView.alignment == NSTextAlignmentRight) {
+      maxWidth = leftSide + xBorder;
+    } else {
+      maxWidth = rightSide + xBorder;
+    }
+    _textView.maxSize = NSMakeSize(maxWidth, maxHeight);
+    _textView.textContainer.size = NSMakeSize(maxWidth, maxHeight);
+  }
 }
 
 
