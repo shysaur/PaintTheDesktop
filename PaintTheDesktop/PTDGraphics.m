@@ -200,3 +200,19 @@ NSImage *PTDCrosshairImage(CGFloat size, NSColor *color)
   }];
 }
 
+
+NSImage *PTDImageFromString(NSString *string, NSFont *font, NSColor *color)
+{
+  NSDictionary *attrib = @{
+    NSFontAttributeName: font,
+    NSForegroundColorAttributeName: color
+  };
+  NSSize textSize = [string sizeWithAttributes:attrib];
+  textSize.width = ceil(textSize.width);
+  textSize.height = ceil(textSize.height);
+  return [NSImage imageWithSize:textSize flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
+    [string drawAtPoint:NSZeroPoint withAttributes:attrib];
+    return YES;
+  }];
+}
+

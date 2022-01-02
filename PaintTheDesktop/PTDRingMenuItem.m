@@ -24,6 +24,7 @@
 //
 
 #import "PTDRingMenuItem.h"
+#import "PTDGraphics.h"
 
 @implementation PTDRingMenuItem
 
@@ -58,18 +59,7 @@
 
 - (void)setText:(NSString *)text
 {
-  NSFont *font = [NSFont systemFontOfSize:NSFont.systemFontSize];
-  NSDictionary *attrib = @{
-    NSFontAttributeName: font,
-    NSForegroundColorAttributeName: [NSColor blackColor]
-  };
-  NSSize textSize = [text sizeWithAttributes:attrib];
-  textSize.width = ceil(textSize.width);
-  textSize.height = ceil(textSize.height);
-  self.image = [NSImage imageWithSize:textSize flipped:NO drawingHandler:^BOOL(NSRect dstRect) {
-    [text drawAtPoint:NSZeroPoint withAttributes:attrib];
-    return YES;
-  }];
+  self.image = PTDImageFromString(text, [NSFont systemFontOfSize:NSFont.systemFontSize], NSColor.blackColor);
   self.image.template = YES;
 }
 

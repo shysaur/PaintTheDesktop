@@ -35,4 +35,6 @@ NSImage *PTDEraserSizeIndicatorImage(CGFloat size);
 NSImage *PTDCrosshairWithBrushOutlineImage(CGFloat size, NSColor *color);
 NSImage *PTDCrosshairImage(CGFloat size, NSColor *color);
 
+NSImage *PTDImageFromString(NSString *string, NSFont *font, NSColor *color);
+
 NS_ASSUME_NONNULL_END
