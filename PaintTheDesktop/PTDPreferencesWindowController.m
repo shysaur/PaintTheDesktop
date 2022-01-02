@@ -27,6 +27,7 @@
 #import "PTDBrushColorPrefsCollectionViewDelegate.h"
 #import "PTDAppDelegate.h"
 #import "PTDPencilTool.h"
+#import "PTDTextTool.h"
 
 
 @interface PTDPreferencesWindowController ()
@@ -37,10 +38,14 @@
 @property (nonatomic, weak) IBOutlet NSButton *liveSmoothingBtn;
 @property (nonatomic, weak) IBOutlet NSSlider *smoothingCoeffSlider;
 
+@property (nonatomic, weak) IBOutlet NSPopUpButton *fontPopUp;
+
 @end
 
 
-@implementation PTDPreferencesWindowController
+@implementation PTDPreferencesWindowController {
+  __weak NSMenuItem *_selectedFontMenuItem;
+}
 
 
 + (void)initialize
@@ -63,6 +68,7 @@
   self.window.canHide = NO;
   
   [self initializePencilPreferences];
+  [self initializeTextPreferences];
   
   NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
   int tab = (int)[ud integerForKey:@"PTDPreferencesTab"];
@@ -144,6 +150,169 @@
 - (IBAction)changeSmoothingCoefficient:(id)sender
 {
   PTDPencilTool.smoothingCoefficient = self.smoothingCoeffSlider.doubleValue;
+}
+
+
+#pragma mark - Text preferences
+
+
+- (void)initializeTextPreferences
+{
+  [self populateFontMenu];
+}
+
+
+- (void)populateFontMenu
+{
+  NSMenu *temporaryMenu = [[NSMenu alloc] init];
+  [temporaryMenu addItemWithTitle:@"Loading..." action:nil keyEquivalent:@""];
+  self.fontPopUp.menu = temporaryMenu;
+  self.fontPopUp.enabled = NO;
+  
+  NSString *initialFontName = PTDTextTool.baseFontName;
+  
+  dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INTERACTIVE, 0), ^{
+    [self populateFontMenuInBackgroundWithInitialSelection:initialFontName];
+  });
+}
+
+
+- (void)populateFontMenuInBackgroundWithInitialSelection:(NSString *)initSel
+{
+  NSFontManager *fm = NSFontManager.sharedFontManager;
+  NSMenu *theMenu = [[NSMenu alloc] init];
+  
+  NSArray *families = fm.availableFontFamilies;
+  for (NSString *familyName in families) {
+    NSMenuItem *familyItem = [self menuItemForFontFamily:familyName initialSelection:initSel];
+    [theMenu addItem:familyItem];
+  }
+  
+  dispatch_async(dispatch_get_main_queue(), ^{
+    self.fontPopUp.menu = theMenu;
+    self.fontPopUp.enabled = YES;
+    [self updatePopUpWithFont];
+  });
+}
+
+
+static NSInteger PTDFontFamilyMemberSpecimenEligibilityScore(NSArray *member)
+{
+  NSInteger weight = [member[2] integerValue];
+  NSFontTraitMask mask = [member[3] integerValue];
+  
+  NSInteger weightScore = (20 - ABS(weight - 5)) * 100;
+  
+  NSInteger flagsScore = 40;
+  if (mask & NSItalicFontMask)
+    flagsScore -= 10;
+  if (mask & NSBoldFontMask)
+    flagsScore -= 10;
+  if (mask & NSSmallCapsFontMask)
+    flagsScore -= 10;
+  if (mask & NSNarrowFontMask || mask & NSExpandedFontMask || mask & NSCondensedFontMask || mask & NSPosterFontMask || mask & NSCompressedFontMask)
+    flagsScore -= 10;
+  
+  return weightScore + flagsScore;
+}
+
+- (NSMenuItem *)menuItemForFontFamily:(NSString *)familyName initialSelection:(NSString *)initSel
+{
+  NSFontManager *fm = NSFontManager.sharedFontManager;
+  NSArray *members = [fm availableMembersOfFontFamily:familyName];
+  
+  if (members.count == 1) {
+    NSString *psname = members[0][0];
+    NSMenuItem *mi = [self menuItemWithTitle:familyName forFontName:psname initialSelection:initSel];
+    return mi;
+  }
+  
+  NSMenu *membersSubmenu = [[NSMenu alloc] init];
+  NSArray *specimen = members[0];
+  NSInteger specimenScore = PTDFontFamilyMemberSpecimenEligibilityScore(specimen);
+  for (NSArray *member in members) {
+    NSString *psname = member[0];
+    NSString *label = member[1];
+    
+    NSMenuItem *mi = [self menuItemWithTitle:label forFontName:psname initialSelection:initSel];
+    [membersSubmenu addItem:mi];
+    
+    NSInteger newSpecimenScore = PTDFontFamilyMemberSpecimenEligibilityScore(member);
+    if (newSpecimenScore > specimenScore) {
+      specimen = member;
+      specimenScore = newSpecimenScore;
+    }
+  }
+  
+  NSMenuItem *familyMenuItem = [self menuItemWithTitle:familyName forFontName:specimen[0] initialSelection:nil];
+  familyMenuItem.submenu = membersSubmenu;
+  familyMenuItem.action = nil;
+  return familyMenuItem;
+}
+
+
+- (NSMenuItem *)menuItemWithTitle:(NSString *)title forFontName:(NSString *)postscriptName initialSelection:(NSString *)initSel
+{
+  /* this call is what takes time */
+  NSFont *font = [NSFont fontWithName:postscriptName size:14.0];
+  
+  NSMenuItem *menuItem = [[NSMenuItem alloc] init];
+  menuItem.attributedTitle = [[NSAttributedString alloc] initWithString:title attributes:@{
+    NSFontAttributeName: font,
+    NSForegroundColorAttributeName: NSColor.controlTextColor
+  }];
+  menuItem.representedObject = postscriptName;
+  menuItem.target = self;
+  menuItem.action = @selector(changeTextBaseFont:);
+  
+  if (initSel && [postscriptName isEqual:initSel]) {
+    menuItem.state = NSControlStateValueOn;
+    _selectedFontMenuItem = menuItem;
+  }
+  
+  return menuItem;
+}
+
+
+- (void)updatePopUpWithFont
+{
+  NSMenuItem *selectedItem = _selectedFontMenuItem;
+  NSMenuItem *parentItem;
+  
+  if (selectedItem.menu.supermenu) {
+    NSMenu *rootMenu = selectedItem.menu.supermenu;
+    NSInteger i = [rootMenu indexOfItemWithSubmenu:selectedItem.menu];
+    parentItem = [rootMenu itemAtIndex:i];
+    [self.fontPopUp selectItemAtIndex:i];
+  } else {
+    [self.fontPopUp selectItem:selectedItem];
+  }
+  
+  NSMenuItem *displayItem;
+  if (parentItem) {
+    NSMutableAttributedString *str = [selectedItem.attributedTitle mutableCopy];
+    NSString *prefix = [parentItem.title stringByAppendingString:@" — "];
+    [str replaceCharactersInRange:NSMakeRange(0, 0) withString:prefix];
+    displayItem = [[NSMenuItem alloc] init];
+    displayItem.attributedTitle = str;
+  } else {
+    displayItem = selectedItem;
+  }
+  NSPopUpButtonCell *cell = self.fontPopUp.cell;
+  cell.usesItemFromMenu = NO;
+  cell.menuItem = displayItem;
+}
+
+
+- (void)changeTextBaseFont:(NSMenuItem *)sender
+{
+  if (_selectedFontMenuItem) {
+    _selectedFontMenuItem.state = NSControlStateValueOff;
+  }
+  [sender setState:NSControlStateValueOn];
+  _selectedFontMenuItem = sender;
+  PTDTextTool.baseFontName = [sender representedObject];
+  [self updatePopUpWithFont];
 }
 
 

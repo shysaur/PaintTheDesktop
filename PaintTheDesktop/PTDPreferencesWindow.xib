@@ -8,6 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PTDPreferencesWindowController">
             <connections>
+                <outlet property="fontPopUp" destination="zrb-hC-gb8" id="IZJ-Iw-QQK"/>
                 <outlet property="liveSmoothingBtn" destination="6lL-hg-YNU" id="VGL-wH-B3h"/>
                 <outlet property="preferencesTabView" destination="rEL-cq-HBP" id="mqG-u2-MJE"/>
                 <outlet property="smoothingCoeffSlider" destination="D7p-uW-YZd" id="rbQ-eP-1fB"/>
@@ -257,7 +258,7 @@
                                                                                     <rect key="frame" x="0.0" y="22" width="201" height="50"/>
                                                                                     <clipView key="contentView" id="ZIQ-We-3Dp">
                                                                                         <rect key="frame" x="1" y="1" width="199" height="48"/>
-                                                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                                        <autoresizingMask key="autoresizingMask"/>
                                                                                         <subviews>
                                                                                             <collectionView id="hBD-Cw-HCc">
                                                                                                 <rect key="frame" x="0.0" y="0.0" width="199" height="48"/>
@@ -489,7 +490,7 @@
                                                                                     <rect key="frame" x="0.0" y="22" width="201" height="50"/>
                                                                                     <clipView key="contentView" id="bO9-sb-Fri">
                                                                                         <rect key="frame" x="1" y="1" width="199" height="48"/>
-                                                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                                                        <autoresizingMask key="autoresizingMask"/>
                                                                                         <subviews>
                                                                                             <collectionView id="pcS-QE-0KO">
                                                                                                 <rect key="frame" x="0.0" y="0.0" width="199" height="48"/>
@@ -599,6 +600,65 @@
                                                             <constraint firstItem="gF5-YT-5vy" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="rI7-dv-3g9" secondAttribute="leading" constant="20" symbolic="YES" id="UiH-Ji-JH4"/>
                                                             <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="gF5-YT-5vy" secondAttribute="bottom" constant="20" symbolic="YES" id="Yda-zU-LVg"/>
                                                             <constraint firstItem="gF5-YT-5vy" firstAttribute="centerX" secondItem="rI7-dv-3g9" secondAttribute="centerX" id="hz7-yG-MEf"/>
+                                                        </constraints>
+                                                    </view>
+                                                </tabViewItem>
+                                                <tabViewItem label="Text" identifier="" id="8xb-eg-anc">
+                                                    <view key="view" id="w64-SM-QUw">
+                                                        <rect key="frame" x="10" y="33" width="415" height="170"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <subviews>
+                                                            <gridView xPlacement="leading" yPlacement="top" rowAlignment="firstBaseline" translatesAutoresizingMaskIntoConstraints="NO" id="HqG-yO-zqA">
+                                                                <rect key="frame" x="39" y="72" width="337" height="92"/>
+                                                                <rows>
+                                                                    <gridRow id="RPx-J4-gLf"/>
+                                                                    <gridRow id="YNf-Yc-CNG"/>
+                                                                    <gridRow id="FUr-jv-cL2"/>
+                                                                </rows>
+                                                                <columns>
+                                                                    <gridColumn id="brN-Pu-EbD"/>
+                                                                    <gridColumn id="nxI-uT-MjX"/>
+                                                                </columns>
+                                                                <gridCells>
+                                                                    <gridCell row="RPx-J4-gLf" column="brN-Pu-EbD" id="Md3-pV-vqu">
+                                                                        <textField key="contentView" horizontalHuggingPriority="251" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Aoe-jZ-6lr">
+                                                                            <rect key="frame" x="-2" y="75" width="35" height="16"/>
+                                                                            <textFieldCell key="cell" lineBreakMode="clipping" title="Font:" id="ZkT-kv-3G2">
+                                                                                <font key="font" usesAppearanceFont="YES"/>
+                                                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                                            </textFieldCell>
+                                                                        </textField>
+                                                                    </gridCell>
+                                                                    <gridCell row="RPx-J4-gLf" column="nxI-uT-MjX" id="nro-sW-v83">
+                                                                        <popUpButton key="contentView" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="zrb-hC-gb8">
+                                                                            <rect key="frame" x="34" y="68" width="307" height="25"/>
+                                                                            <constraints>
+                                                                                <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="300" id="dAC-mU-6op"/>
+                                                                            </constraints>
+                                                                            <popUpButtonCell key="cell" type="push" title="DUMMY" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" altersStateOfSelectedItem="NO" selectedItem="pGi-Cd-Ydl" id="lB6-KB-0pe">
+                                                                                <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                                                                <font key="font" metaFont="menu"/>
+                                                                                <menu key="menu" id="rbJ-v6-Asd">
+                                                                                    <items>
+                                                                                        <menuItem title="DUMMY" id="pGi-Cd-Ydl"/>
+                                                                                    </items>
+                                                                                </menu>
+                                                                            </popUpButtonCell>
+                                                                        </popUpButton>
+                                                                    </gridCell>
+                                                                    <gridCell row="YNf-Yc-CNG" column="brN-Pu-EbD" id="jPQ-ay-ghc"/>
+                                                                    <gridCell row="YNf-Yc-CNG" column="nxI-uT-MjX" id="pSz-00-8Gm"/>
+                                                                    <gridCell row="FUr-jv-cL2" column="brN-Pu-EbD" id="luR-T0-XPL"/>
+                                                                    <gridCell row="FUr-jv-cL2" column="nxI-uT-MjX" id="45v-ml-KmQ"/>
+                                                                </gridCells>
+                                                            </gridView>
+                                                        </subviews>
+                                                        <constraints>
+                                                            <constraint firstItem="HqG-yO-zqA" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="w64-SM-QUw" secondAttribute="leading" constant="20" symbolic="YES" id="4VA-dR-BjP"/>
+                                                            <constraint firstItem="HqG-yO-zqA" firstAttribute="centerX" secondItem="w64-SM-QUw" secondAttribute="centerX" id="M1j-hh-PK2"/>
+                                                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="HqG-yO-zqA" secondAttribute="trailing" constant="20" symbolic="YES" id="sjR-cg-r2t"/>
+                                                            <constraint firstItem="HqG-yO-zqA" firstAttribute="top" secondItem="w64-SM-QUw" secondAttribute="top" constant="6" id="xVx-zx-Xb3"/>
                                                         </constraints>
                                                     </view>
                                                 </tabViewItem>

@@ -31,10 +31,7 @@ extern NSString * const PTDToolIdentifierTextTool;
 
 @interface PTDTextTool : PTDTool <NSTextViewDelegate>
 
-@property (nonatomic) NSColor *color;
-@property (nonatomic) NSFont *baseFont;
-@property (nonatomic) CGFloat fontSize;
-@property (nonatomic) NSTextAlignment textAlignment;
+@property (nonatomic, class, null_resettable) NSString *baseFontName;
 
 @end
 

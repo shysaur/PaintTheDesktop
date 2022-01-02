@@ -35,6 +35,8 @@
 
 NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
 
+NSString * const PTDTextToolOptionBaseFontName = @"baseFontName";
+
 
 @interface NSLayoutManager ()
 
@@ -62,9 +64,54 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
 @end
 
 
+@interface PTDTextTool ()
+
+@property (nonatomic) NSColor *color;
+@property (nonatomic) CGFloat fontSize;
+@property (nonatomic) NSTextAlignment textAlignment;
+
+@property (nonatomic) NSFont *resolvedFont;
+
+@end
+
+
 @implementation PTDTextTool {
   NSTextView *_textView;
   NSPoint _baselinePivot;
+}
+
+
+- (instancetype)init
+{
+  self = [super init];
+  _fontSize = 24;
+  _textAlignment = NSTextAlignmentLeft;
+  [self reloadOptions];
+  return self;
+}
+
+
++ (void)registerDefaults
+{
+  [super registerDefaults];
+  
+  PTDToolOptions *o = PTDToolOptions.sharedOptions;
+  [o registerOption:PTDTextToolOptionBaseFontName ofToolClass:self types:@[[NSString class]] defaultValue:@"Helvetica" validationBlock:nil];
+}
+
+
++ (NSString *)baseFontName
+{
+  return [PTDToolOptions.sharedOptions objectForOption:PTDTextToolOptionBaseFontName ofToolClass:self];
+}
+
+
++ (void)setBaseFontName:(NSString *)baseFontName
+{
+  if (!baseFontName)
+    [PTDToolOptions.sharedOptions restoreDefaultForOption:PTDTextToolOptionBaseFontName ofToolClass:self];
+  else
+    [PTDToolOptions.sharedOptions setObject:baseFontName forOption:PTDTextToolOptionBaseFontName ofToolClass:self];
 }
 
 
@@ -82,18 +129,12 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
 
 - (void)reloadOptions
 {
-  _baseFont = [NSFont userFontOfSize:24];
-  _fontSize = 24;
-  _textAlignment = NSTextAlignmentLeft;
+  _resolvedFont = [NSFont fontWithName:[self.class baseFontName] size:_fontSize];
   self.color = [[PTDToolOptions sharedOptions] objectForOption:PTDBrushToolOptionColor ofToolClass:nil];
-}
-
-
-- (NSFont *)resolvedFont
-{
-  NSFontManager *fm = [NSFontManager sharedFontManager];
-  NSFont *newFont = [fm convertFont:self.baseFont toSize:self.fontSize];
-  return newFont;
+  if (_textView) {
+    _textView.font = _resolvedFont;
+    [self updateTextViewFrame];
+  }
 }
 
 
@@ -226,19 +267,10 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
 }
 
 
-- (void)setBaseFont:(NSFont *)baseFont
-{
-  _baseFont = baseFont;
-  if (_textView) {
-    _textView.font = [self resolvedFont];
-    [self updateTextViewFrame];
-  }
-}
-
-
 - (void)setFontSize:(CGFloat)fontSize
 {
   _fontSize = fontSize;
+  [self reloadOptions];
   if (_textView) {
     _textView.font = [self resolvedFont];
     [self updateTextViewFrame];
@@ -249,6 +281,7 @@ NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
 - (void)setTextAlignment:(NSTextAlignment)textAlignment
 {
   _textAlignment = textAlignment;
+  [self reloadOptions];
   if (_textView && _textView.string.length > 0)
     [self updateTextViewFrame];
 }
