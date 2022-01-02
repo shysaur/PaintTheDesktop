@@ -35,6 +35,7 @@
 
 NSString * const PTDToolIdentifierTextTool = @"PTDToolIdentifierTextTool";
 
+NSString * const PTDTextToolOptionDefaultFontSizes = @"defaultFontSizes";
 NSString * const PTDTextToolOptionBaseFontName = @"baseFontName";
 NSString * const PTDTextToolOptionFontSize = @"fontSize";
 NSString * const PTDTextToolOptionTextAlignment = @"textAlignment";
@@ -88,6 +89,20 @@ NSString * const PTDTextToolOptionTextAlignment = @"textAlignment";
   [super registerDefaults];
   
   PTDToolOptions *o = PTDToolOptions.sharedOptions;
+  
+  [o registerOption:PTDTextToolOptionDefaultFontSizes ofToolClass:self types:@[[NSArray class], [NSNumber class]] defaultValue:@[
+      @(24), @(48), @(72), @(100)
+    ] validationBlock:^BOOL(id  _Nonnull value) {
+      if (![value isKindOfClass:[NSArray class]])
+        return NO;
+      NSArray *a = (NSArray *)value;
+      for (id v in a) {
+        if (![v isKindOfClass:[NSNumber class]])
+          return NO;
+      }
+      return YES;
+    }];
+  
   [o registerOption:PTDTextToolOptionBaseFontName ofToolClass:self types:@[[NSString class]] defaultValue:@"Helvetica" validationBlock:nil];
   [o registerOption:PTDTextToolOptionFontSize ofToolClass:self types:@[[NSNumber class]] defaultValue:@(24) validationBlock:nil];
   [o registerOption:PTDTextToolOptionTextAlignment ofToolClass:self types:@[[NSNumber class]] defaultValue:@(NSTextAlignmentLeft) validationBlock:nil];
@@ -106,6 +121,21 @@ NSString * const PTDTextToolOptionTextAlignment = @"textAlignment";
     [PTDToolOptions.sharedOptions restoreDefaultForOption:PTDTextToolOptionBaseFontName ofToolClass:self];
   else
     [PTDToolOptions.sharedOptions setObject:baseFontName forOption:PTDTextToolOptionBaseFontName ofToolClass:self];
+}
+
+
++ (NSArray<NSNumber *> *)defaultFontSizes
+{
+  return [PTDToolOptions.sharedOptions objectForOption:PTDTextToolOptionDefaultFontSizes ofToolClass:self];
+}
+
+
++ (void)setDefaultFontSizes:(NSArray<NSNumber *> *)defaultFontSizes
+{
+  if (!defaultFontSizes)
+    [PTDToolOptions.sharedOptions restoreDefaultForOption:PTDTextToolOptionDefaultFontSizes ofToolClass:self];
+  else
+    [PTDToolOptions.sharedOptions setObject:defaultFontSizes forOption:PTDTextToolOptionDefaultFontSizes ofToolClass:self];
 }
 
 
@@ -276,7 +306,7 @@ NSString * const PTDTextToolOptionTextAlignment = @"textAlignment";
   PTDRingMenuRing *res = [PTDRingMenuRing ring];
   
   [res beginGravityMassGroupWithAngle:M_PI_2 / 3.0];
-  NSArray <NSNumber *> *sizes = @[@(24), @(48), @(72), @(100)];
+  NSArray <NSNumber *> *sizes = self.class.defaultFontSizes;
   for (NSNumber *size in sizes) {
     PTDRingMenuItem *item = [self menuItemForFontSize:size.integerValue];
     [res addItem:item];

@@ -1,8 +1,8 @@
 //
-// PTDTextTool.h
-// PaintTheDesktop -- Created on 30/12/21.
+// PTDTextSizeEditorController.h
+// PaintTheDesktop -- Created on 02/01/22.
 //
-// Copyright (c) 2021 Daniele Cattaneo
+// Copyright (c) 2022 Daniele Cattaneo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,16 +23,11 @@
 // SOFTWARE.
 //
 
-#import "PTDTool.h"
+#import <Cocoa/Cocoa.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString * const PTDToolIdentifierTextTool;
-
-@interface PTDTextTool : PTDTool <NSTextViewDelegate>
-
-@property (nonatomic, class, null_resettable) NSString *baseFontName;
-@property (nonatomic, class, null_resettable) NSArray <NSNumber *> *defaultFontSizes;
+@interface PTDTextSizePrefsTableViewController : NSObject <NSTableViewDelegate, NSTableViewDataSource>
 
 @end
 

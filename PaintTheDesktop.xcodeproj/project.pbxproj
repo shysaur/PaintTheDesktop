@@ -71,6 +71,7 @@
 		01EE4624260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EE4623260BE25F00CF4CFF /* PTDBrushColorCollectionViewItem.m */; };
 		01F0320F2634C6B10045B622 /* PTDPaintViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F0320E2634C6B10045B622 /* PTDPaintViewController.m */; };
 		01F032122634EC810045B622 /* PTDLineTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F032112634EC810045B622 /* PTDLineTool.m */; };
+		01F171DA27823BF700EFC221 /* PTDTextSizePrefsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F171D927823BF700EFC221 /* PTDTextSizePrefsTableViewController.m */; };
 		F7023C1B24C72D6E00B54623 /* NSWindow+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */; };
 /* End PBXBuildFile section */
 
@@ -209,6 +210,8 @@
 		01F0320E2634C6B10045B622 /* PTDPaintViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPaintViewController.m; sourceTree = "<group>"; };
 		01F032102634EC810045B622 /* PTDLineTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDLineTool.h; sourceTree = "<group>"; };
 		01F032112634EC810045B622 /* PTDLineTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDLineTool.m; sourceTree = "<group>"; };
+		01F171D827823BF700EFC221 /* PTDTextSizePrefsTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDTextSizePrefsTableViewController.h; sourceTree = "<group>"; };
+		01F171D927823BF700EFC221 /* PTDTextSizePrefsTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDTextSizePrefsTableViewController.m; sourceTree = "<group>"; };
 		F7023C1924C72D6E00B54623 /* NSWindow+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSWindow+PTD.h"; sourceTree = "<group>"; };
 		F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+PTD.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -436,6 +439,8 @@
 				01484B0326321F1800B0518F /* PTDAbstractSizePrefsCollectionViewDelegate.m */,
 				01484B0526321F4900B0518F /* PTDAbstractSizeCollectionViewItem.h */,
 				01484B0626321F4900B0518F /* PTDAbstractSizeCollectionViewItem.m */,
+				01F171D827823BF700EFC221 /* PTDTextSizePrefsTableViewController.h */,
+				01F171D927823BF700EFC221 /* PTDTextSizePrefsTableViewController.m */,
 				01484B0E2632321100B0518F /* PTDSizeEditorPopover.h */,
 				01484B0F2632321100B0518F /* PTDSizeEditorPopover.m */,
 				01484B102632321100B0518F /* PTDSizeEditorPopover.xib */,
@@ -595,6 +600,7 @@
 				01A213E7248EE94600B5EB9D /* main.m in Sources */,
 				013C9A03249AD17E0033120A /* PTDNSPanel.m in Sources */,
 				01484B0726321F4900B0518F /* PTDAbstractSizeCollectionViewItem.m in Sources */,
+				01F171DA27823BF700EFC221 /* PTDTextSizePrefsTableViewController.m in Sources */,
 				01484B0426321F1800B0518F /* PTDAbstractSizePrefsCollectionViewDelegate.m in Sources */,
 				01E7E739277E2DF500F02DBA /* NSTextView+PTD.m in Sources */,
 				01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */,
