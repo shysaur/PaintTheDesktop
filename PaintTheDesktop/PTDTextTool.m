@@ -58,8 +58,6 @@ NSString * const PTDTextToolOptionTextAlignment = @"textAlignment";
 
 - (nullable NSMenu *)menuForEvent:(NSEvent *)event
 {
-  if ([event type] == NSEventTypeRightMouseDown)
-    [self.superview rightMouseDown:event];
   return nil;
 }
 
