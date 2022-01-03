@@ -146,6 +146,9 @@
 
 - (void)viewDidChangeBackingProperties
 {
+  if (!self.window)
+    return;
+  [_mainBuffer convertToColorSpace:self.window.screen.colorSpace renderingIntent:NSColorRenderingIntentRelativeColorimetric];
   CGFloat scale = self.window.screen.backingScaleFactor;
   NSSize oldScaleFactor = self.backingScaleFactor;
   self.backingScaleFactor = NSMakeSize(MAX(oldScaleFactor.width, scale), MAX(oldScaleFactor.height, scale));

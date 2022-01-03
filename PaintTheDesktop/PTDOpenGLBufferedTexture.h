@@ -45,7 +45,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic) GLint pixelWidth;
 @property (readonly, nonatomic) GLint pixelHeight;
 
-@property (readonly, nonatomic) NSColorSpace *colorSpace;
+/* Setting this property retags the texture without converting it */
+@property (nonatomic) NSColorSpace *colorSpace;
+- (void)convertToColorSpace:(NSColorSpace *)colorSpace renderingIntent:(NSColorRenderingIntent)renderingIntent;
 
 @property (readonly, nonatomic) NSOpenGLContext *openGLContext;
 

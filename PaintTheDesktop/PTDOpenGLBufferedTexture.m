@@ -265,6 +265,37 @@
 }
 
 
+- (void)setColorSpace:(NSColorSpace *)colorSpace
+{
+  _lastWrappedImage = nil;
+  _colorSpace = colorSpace;
+}
+
+
+- (void)convertToColorSpace:(NSColorSpace *)colorSpace renderingIntent:(NSColorRenderingIntent)renderingIntent
+{
+  if (_colorSpace == nil || colorSpace == nil) {
+    self.colorSpace = colorSpace;
+    return;
+  }
+  if ([_colorSpace isEqual:colorSpace])
+    return;
+  
+  @autoreleasepool {
+    NSBitmapImageRep *tempImageRep = self.bufferAsImageRep;
+    tempImageRep = [tempImageRep bitmapImageRepByConvertingToColorSpace:colorSpace renderingIntent:renderingIntent];
+    
+    self.colorSpace = colorSpace;
+    NSBitmapImageRep *newImageRep = self.bufferAsImageRep;
+    NSGraphicsContext *tmpgc = [NSGraphicsContext graphicsContextWithBitmapImageRep:newImageRep];
+    [NSGraphicsContext saveGraphicsState];
+    [NSGraphicsContext setCurrentContext:tmpgc];
+    [tempImageRep drawAtPoint:NSZeroPoint];
+    [NSGraphicsContext restoreGraphicsState];
+  }
+}
+
+
 - (void)dealloc
 {
   if (_textureId)
