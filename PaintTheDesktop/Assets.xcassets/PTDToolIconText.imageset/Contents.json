@@ -1,11 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "PTDToolIconText.png",
+      "filename" : "PTDToolIconText-1.png",
       "idiom" : "mac",
       "scale" : "1x"
     },
     {
+      "filename" : "PTDToolIconText@2x-1.png",
       "idiom" : "mac",
       "scale" : "2x"
     }

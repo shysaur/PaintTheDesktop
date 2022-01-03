@@ -1,11 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "PTDTextAlignRight.png",
+      "filename" : "PTDTextAlignRight-1.png",
       "idiom" : "mac",
       "scale" : "1x"
     },
     {
+      "filename" : "PTDTextAlignRight@2x-1.png",
       "idiom" : "mac",
       "scale" : "2x"
     }
