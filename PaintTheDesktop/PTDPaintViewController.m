@@ -439,7 +439,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 {
   self.activityStatus =
       (_activityStatus & ~PTDPaintViewActivityStatusActive)
-        | active ? PTDPaintViewActivityStatusActive : 0;
+        | (active ? PTDPaintViewActivityStatusActive : 0);
 }
 
 
