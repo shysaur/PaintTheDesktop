@@ -74,6 +74,7 @@
 - (void)beginTextEditingWithTextView:(NSTextView *)textView;
 {
   [_paintView addSubview:textView];
+  [_paintView.window makeKeyAndOrderFront:nil];
   [_paintView.window makeFirstResponder:textView];
 }
 
