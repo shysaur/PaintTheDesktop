@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NSNib (PTD)
 
-- (id)ptd_instantiateObjectWithIdentifier:(NSString *)ident withOwner:(nullable id)owner;
+- (nullable id)ptd_instantiateObjectWithIdentifier:(NSString *)ident withOwner:(nullable id)owner;
 
 @end
 
