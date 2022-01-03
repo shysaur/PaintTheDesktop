@@ -44,6 +44,12 @@
 }
 
 
+- (BOOL)canBecomeMainWindow
+{
+  return NO;
+}
+
+
 @end
 
 

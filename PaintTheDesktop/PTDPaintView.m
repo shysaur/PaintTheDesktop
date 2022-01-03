@@ -56,6 +56,12 @@
 }
 
 
+- (BOOL)acceptsFirstMouse:(NSEvent *)event
+{
+  return YES;
+}
+
+
 - (BOOL)isOpaque
 {
   return NO;
