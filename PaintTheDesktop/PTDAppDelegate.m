@@ -225,7 +225,7 @@
   [self appendPaintingListToMenu:res];
   
   [res addItemWithTitle:NSLocalizedString(@"New Blank Canvas", @"") action:@selector(newCanvasWindow:) keyEquivalent:@""];
-  [res addItemWithTitle:NSLocalizedString(@"New Presentation...", @"") action:@selector(newPDFWindow:) keyEquivalent:@""];
+  [res addItemWithTitle:NSLocalizedString(@"New Presentation...", @"") action:@selector(newPresentationWindow:) keyEquivalent:@""];
   
   [res addItem:[NSMenuItem separatorItem]];
   
@@ -261,7 +261,7 @@
 {
   if (self.active) {
     if (menuItem.action == @selector(newCanvasWindow:) ||
-        menuItem.action == @selector(newPDFWindow:))
+        menuItem.action == @selector(newPresentationWindow:))
       return NO;
   }
   return YES;
@@ -291,7 +291,7 @@
 }
 
 
-- (void)newPDFWindow:(id)sender
+- (void)newPresentationWindow:(id)sender
 {
   PTDPDFPresentationPaintWindowController *thisWindow = [[PTDPDFPresentationPaintWindowController alloc] init];
   [self.paintWindowControllers addObject:thisWindow];

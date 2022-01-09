@@ -39,7 +39,7 @@
 - (IBAction)openPreferences:(id)sender;
 
 - (IBAction)newCanvasWindow:(id)sender;
-- (IBAction)newPDFWindow:(id)sender;
+- (IBAction)newPresentationWindow:(id)sender;
 
 - (void)pushAppShouldShowInDock;
 - (void)popAppShouldShowInDock;
