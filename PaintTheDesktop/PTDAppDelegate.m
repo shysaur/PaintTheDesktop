@@ -99,7 +99,7 @@
 {
   NSEvent.mouseCoalescingEnabled = NO;
   if (!self.alwaysShowsDockIcon)
-    [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
+    [self hideDockIcon];
   
   [self setupMenu];
   [self updateScreenPaintWindows];
@@ -121,9 +121,9 @@
   
   if (_alwaysShowsDockIcon != alwaysShowsDockIcon && _dockRefCount == 0) {
     if (alwaysShowsDockIcon)
-      [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
+      [self hideDockIcon];
     else
-      [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+      [self showDockIcon];
   }
   
   _alwaysShowsDockIcon = alwaysShowsDockIcon;
@@ -133,7 +133,7 @@
 - (void)pushAppShouldShowInDock
 {
   if (_dockRefCount == 0 && !self.alwaysShowsDockIcon) {
-    [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+    [self showDockIcon];
   }
   _dockRefCount++;
 }
@@ -144,10 +144,23 @@
   if (_dockRefCount > 0) {
     _dockRefCount--;
     if (_dockRefCount == 0 && !self.alwaysShowsDockIcon)
-      [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
+      [self hideDockIcon];
   } else {
     NSLog(@"calls to -popAppShouldShowInDock mismatched with -pushAppShouldShowInDock!");
   }
+}
+
+
+- (void)showDockIcon
+{
+  [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+  [NSRunningApplication.currentApplication activateWithOptions:NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps];
+}
+
+
+- (void)hideDockIcon
+{
+  [NSApp setActivationPolicy:NSApplicationActivationPolicyAccessory];
 }
 
 
