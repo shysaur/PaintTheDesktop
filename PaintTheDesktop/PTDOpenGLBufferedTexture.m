@@ -39,56 +39,37 @@
 
 @interface PTDOpenGLBufferedTextureWrapperImageRep: NSBitmapImageRep
 
-- (instancetype)initWithOpenGLContext:(NSOpenGLContext *)glcontext
-    buffer:(GLuint)buffer
-    pixelsWide:(NSInteger)width
-    pixelsHigh:(NSInteger)height
-    bitsPerSample:(NSInteger)bps
-    samplesPerPixel:(NSInteger)spp
-    hasAlpha:(BOOL)alpha
-    colorSpace:(NSColorSpace *)colorSpace
-    bytesPerRow:(NSInteger)rBytes
-    bitsPerPixel:(NSInteger)pBits;
+- (instancetype)initWithBufferedTexture:(PTDOpenGLBufferedTexture *)texture;
 
 @end
 
 
 @implementation PTDOpenGLBufferedTextureWrapperImageRep {
-  GLuint _glBuffer;
-  NSOpenGLContext *_glContext;
+  PTDOpenGLBufferedTexture *_parent;
 }
 
 
-- (instancetype)initWithOpenGLContext:(NSOpenGLContext *)glcontext
-    buffer:(GLuint)buffer
-    pixelsWide:(NSInteger)width
-    pixelsHigh:(NSInteger)height
-    bitsPerSample:(NSInteger)bps
-    samplesPerPixel:(NSInteger)spp
-    hasAlpha:(BOOL)alpha
-    colorSpace:(NSColorSpace *)colorSpace
-    bytesPerRow:(NSInteger)rBytes
-    bitsPerPixel:(NSInteger)pBits
+- (instancetype)initWithBufferedTexture:(PTDOpenGLBufferedTexture *)texture
 {
-  [glcontext makeCurrentContext];
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, buffer);
+  [texture bindBuffer];
   void *bufptr = glMapBuffer(GL_PIXEL_UNPACK_BUFFER, GL_READ_WRITE);
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
   
+  NSInteger bytePerRow = ALIGN_OFFS(4 * texture.pixelWidth, 4);
   self = [super
       initWithBitmapDataPlanes:(unsigned char**)&bufptr
-      pixelsWide:width pixelsHigh:height
-      bitsPerSample:bps samplesPerPixel:spp hasAlpha:alpha isPlanar:NO
+      pixelsWide:texture.pixelWidth pixelsHigh:texture.pixelHeight
+      bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES isPlanar:NO
       colorSpaceName:NSCalibratedRGBColorSpace
-      bytesPerRow:rBytes bitsPerPixel:pBits];
-  [self setProperty:@"NSColorSpace" withValue:colorSpace];
+      bytesPerRow:bytePerRow bitsPerPixel:0];
+  
+  [self setProperty:@"NSColorSpace" withValue:texture.colorSpace];
   if ([self respondsToSelector:@selector(_retagBackingWithColorSpace:)])
-    [self _retagBackingWithColorSpace:colorSpace];
+    [self _retagBackingWithColorSpace:texture.colorSpace];
   else
     NSLog(@"PTDOpenGLBufferedTextureWrapperImageRep: couldn't -_retagBackingWithColorSpace:");
-      
-  _glBuffer = buffer;
-  _glContext = glcontext;
+  
+  _parent = texture;
   return self;
 }
 
@@ -96,18 +77,14 @@
 - (instancetype)copyWithZone:(NSZone *)zone
 {
   PTDOpenGLBufferedTextureWrapperImageRep *new = [super copyWithZone:zone];
-  new->_glContext = nil;
-  new->_glBuffer = 0;
+  new->_parent = self->_parent;
   return new;
 }
 
 
 - (void)dealloc
 {
-  if (!_glContext)
-    return;
-  [_glContext makeCurrentContext];
-  glBindBuffer(GL_PIXEL_UNPACK_BUFFER, _glBuffer);
+  [_parent bindBuffer];
   glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER);
   glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
 }
@@ -201,14 +178,7 @@
   if (imageRep)
     return imageRep;
     
-  NSInteger bytePerRow = ALIGN_OFFS(4 * _pixelWidth, 4);
-  imageRep = [[PTDOpenGLBufferedTextureWrapperImageRep alloc]
-      initWithOpenGLContext:self.openGLContext
-      buffer:_bufferId
-      pixelsWide:_pixelWidth pixelsHigh:_pixelHeight
-      bitsPerSample:8 samplesPerPixel:4 hasAlpha:YES
-      colorSpace:_colorSpace
-      bytesPerRow:bytePerRow bitsPerPixel:0];
+  imageRep = [[PTDOpenGLBufferedTextureWrapperImageRep alloc] initWithBufferedTexture:self];
   _lastWrappedImage = imageRep;
   return imageRep;
 }
