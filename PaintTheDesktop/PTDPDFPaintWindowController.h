@@ -1,8 +1,8 @@
 //
-// PTDPDFPresentationPaintWindowController.h
-// PaintTheDesktop -- Created on 05/05/2021.
+// PTDPDFPaintWindowController.h
+// PaintTheDesktop -- Created on 10/01/22.
 //
-// Copyright (c) 2021 Daniele Cattaneo
+// Copyright (c) 2022 Daniele Cattaneo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,12 +23,21 @@
 // SOFTWARE.
 //
 
-#import "PTDPDFPaintWindowController.h"
+#import "PTDSimpleAbstractPaintWindowController.h"
+#import "PTDPDFPageView.h"
+#import <PDFKit/PDFKit.h>
 
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDPDFPresentationPaintWindowController : PTDPDFPaintWindowController
+@interface PTDPDFPaintWindowController : PTDSimpleAbstractPaintWindowController <NSWindowDelegate>
+
+@property (nonatomic) IBOutlet PTDPDFPageView *pageView;
+
+@property (nonatomic) PDFDocument *theDocument;
+@property (nonatomic) NSInteger pageIndex;
+
+- (void)saveAnnotatedDocumentAs:(id)sender;
 
 @end
 

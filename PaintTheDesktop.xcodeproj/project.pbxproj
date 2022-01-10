@@ -19,6 +19,7 @@
 		01484B122632321100B0518F /* PTDSizeEditorPopover.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01484B102632321100B0518F /* PTDSizeEditorPopover.xib */; };
 		01484B1526323E4800B0518F /* PTDScreenPaintWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484B1426323E4800B0518F /* PTDScreenPaintWindowController.m */; };
 		015A50CC24A13F4B0008AAB1 /* PTDRoundRectTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 015A50CB24A13F4B0008AAB1 /* PTDRoundRectTool.m */; };
+		016223D3278C848100096A47 /* PTDPDFPaintWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 016223D2278C848100096A47 /* PTDPDFPaintWindowController.m */; };
 		0162BC91249A0CAE00DFECC9 /* PTDRingMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC90249A0CAE00DFECC9 /* PTDRingMenu.m */; };
 		0162BC94249A0CC400DFECC9 /* PTDRingMenuItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC93249A0CC400DFECC9 /* PTDRingMenuItem.m */; };
 		0162BC97249A0DDA00DFECC9 /* PTDRingMenuSpring.m in Sources */ = {isa = PBXBuildFile; fileRef = 0162BC96249A0DDA00DFECC9 /* PTDRingMenuSpring.m */; };
@@ -111,6 +112,8 @@
 		01484B1426323E4800B0518F /* PTDScreenPaintWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDScreenPaintWindowController.m; sourceTree = "<group>"; };
 		015A50CA24A13F4B0008AAB1 /* PTDRoundRectTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRoundRectTool.h; sourceTree = "<group>"; };
 		015A50CB24A13F4B0008AAB1 /* PTDRoundRectTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRoundRectTool.m; sourceTree = "<group>"; };
+		016223D1278C848100096A47 /* PTDPDFPaintWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDPDFPaintWindowController.h; sourceTree = "<group>"; };
+		016223D2278C848100096A47 /* PTDPDFPaintWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPDFPaintWindowController.m; sourceTree = "<group>"; };
 		0162BC8F249A0CAD00DFECC9 /* PTDRingMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenu.h; sourceTree = "<group>"; };
 		0162BC90249A0CAE00DFECC9 /* PTDRingMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRingMenu.m; sourceTree = "<group>"; };
 		0162BC92249A0CC400DFECC9 /* PTDRingMenuItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRingMenuItem.h; sourceTree = "<group>"; };
@@ -356,7 +359,7 @@
 				01A213EF248EE9F600B5EB9D /* PTDSimpleCanvasPaintWindowController.m */,
 				01484B1326323E4800B0518F /* PTDScreenPaintWindowController.h */,
 				01484B1426323E4800B0518F /* PTDScreenPaintWindowController.m */,
-				01B7AF6226432E4800A3FF31 /* Presentation */,
+				01B7AF6226432E4800A3FF31 /* PDF */,
 				01F0320D2634C6B10045B622 /* PTDPaintViewController.h */,
 				01F0320E2634C6B10045B622 /* PTDPaintViewController.m */,
 				01A213F3248EEA1D00B5EB9D /* PTDPaintView.h */,
@@ -409,9 +412,11 @@
 			path = PaintTheDesktop;
 			sourceTree = "<group>";
 		};
-		01B7AF6226432E4800A3FF31 /* Presentation */ = {
+		01B7AF6226432E4800A3FF31 /* PDF */ = {
 			isa = PBXGroup;
 			children = (
+				016223D1278C848100096A47 /* PTDPDFPaintWindowController.h */,
+				016223D2278C848100096A47 /* PTDPDFPaintWindowController.m */,
 				01B7AF442642D24500A3FF31 /* PTDPDFPresentationPaintWindowController.h */,
 				01B7AF452642D24500A3FF31 /* PTDPDFPresentationPaintWindowController.m */,
 				01B7AF462642D24500A3FF31 /* PTDPDFPresentationPaintWindowController.xib */,
@@ -420,7 +425,7 @@
 				01B7AF7326432E9500A3FF31 /* PTDAnnotationOverlayPDFPage.h */,
 				01B7AF7426432E9500A3FF31 /* PTDAnnotationOverlayPDFPage.m */,
 			);
-			name = Presentation;
+			name = PDF;
 			sourceTree = "<group>";
 		};
 		01EE461C260BACD800CF4CFF /* Preferences */ = {
@@ -564,6 +569,7 @@
 				01A213F5248EEA1D00B5EB9D /* PTDPaintView.m in Sources */,
 				01B7AF7526432E9500A3FF31 /* PTDAnnotationOverlayPDFPage.m in Sources */,
 				016AD9AB2497A902004E3749 /* PTDRectangleTool.m in Sources */,
+				016223D3278C848100096A47 /* PTDPDFPaintWindowController.m in Sources */,
 				016AD9A524978132004E3749 /* NSView+PTD.m in Sources */,
 				016A928C24993FFD006C9678 /* PTDRingMenuWindow.m in Sources */,
 				0162BCA0249A9BC000DFECC9 /* NSColor+PTD.m in Sources */,
