@@ -40,6 +40,7 @@
 
 - (IBAction)newCanvasWindow:(id)sender;
 - (IBAction)newPresentationWindow:(id)sender;
+- (IBAction)newPDFAnnotationWindow:(id)sender;
 
 - (void)pushAppShouldShowInDock;
 - (void)popAppShouldShowInDock;

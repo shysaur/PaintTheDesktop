@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="19529" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19529"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -24,7 +25,7 @@
             <rect key="contentRect" x="196" y="207" width="572" height="337"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
             <view key="contentView" misplaced="YES" id="2bd-2X-8iP">
-                <rect key="frame" x="0.0" y="-20" width="572" height="357"/>
+                <rect key="frame" x="0.0" y="0.0" width="572" height="337"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="re3-7w-RPo">
@@ -313,6 +314,11 @@
                             <menuItem title="New Presentation…" keyEquivalent="o" id="Gb8-I5-NoD">
                                 <connections>
                                     <action selector="newPresentationWindow:" target="Voe-Tx-rLC" id="eOU-vC-Rxq"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="New PDF Viewer..." keyEquivalent="o" id="gty-01-jOK">
+                                <connections>
+                                    <action selector="newPDFAnnotationWindow:" target="Voe-Tx-rLC" id="vvW-RP-ztb"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Open Recent" id="SGb-Wa-zew">

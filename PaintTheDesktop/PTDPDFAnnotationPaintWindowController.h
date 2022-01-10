@@ -1,8 +1,8 @@
 //
-// PTDPDFPageView.h
-// PaintTheDesktop -- Created on 05/05/2021.
+// PTDPDFAnnotationPaintWindowController.h
+// PaintTheDesktop -- Created on 09/01/22.
 //
-// Copyright (c) 2021 Daniele Cattaneo
+// Copyright (c) 2022 Daniele Cattaneo
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,17 +23,11 @@
 // SOFTWARE.
 //
 
-#import <Cocoa/Cocoa.h>
-#import <PDFKit/PDFKit.h>
+#import "PTDPDFPaintWindowController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PTDPDFPageView : NSView
-
-@property (nonatomic, nullable) PDFPage *pdfPage;
-@property (nonatomic, nullable) NSColor *borderColor;
-
-@property (nonatomic, weak) IBOutlet NSView *pageChildView;
+@interface PTDPDFAnnotationPaintWindowController : PTDPDFPaintWindowController
 
 @end
 

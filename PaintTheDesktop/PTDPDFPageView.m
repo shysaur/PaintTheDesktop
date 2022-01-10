@@ -94,6 +94,11 @@
   
   [page drawWithBox:kPDFDisplayBoxCropBox toContext:NSGraphicsContext.currentContext.CGContext];
   
+  if (self.borderColor) {
+    [self.borderColor set];
+    NSFrameRect(sourceRect);
+  }
+  
   [NSGraphicsContext.currentContext restoreGraphicsState];
 }
 

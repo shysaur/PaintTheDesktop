@@ -36,6 +36,7 @@
 #import "PTDPreferencesWindowController.h"
 #import "PTDPDFPresentationPaintWindowController.h"
 #import "NSWindow+PTD.h"
+#import "PTDPDFAnnotationPaintWindowController.h"
 
 
 @interface PTDAppDelegate ()
@@ -226,6 +227,7 @@
   
   [res addItemWithTitle:NSLocalizedString(@"New Blank Canvas", @"") action:@selector(newCanvasWindow:) keyEquivalent:@""];
   [res addItemWithTitle:NSLocalizedString(@"New Presentation...", @"") action:@selector(newPresentationWindow:) keyEquivalent:@""];
+  [res addItemWithTitle:NSLocalizedString(@"New PDF Viewer...", @"") action:@selector(newPDFAnnotationWindow:) keyEquivalent:@""];
   
   [res addItem:[NSMenuItem separatorItem]];
   
@@ -261,7 +263,8 @@
 {
   if (self.active) {
     if (menuItem.action == @selector(newCanvasWindow:) ||
-        menuItem.action == @selector(newPresentationWindow:))
+        menuItem.action == @selector(newPresentationWindow:) ||
+        menuItem.action == @selector(newPDFAnnotationWindow:))
       return NO;
   }
   return YES;
@@ -294,6 +297,15 @@
 - (void)newPresentationWindow:(id)sender
 {
   PTDPDFPresentationPaintWindowController *thisWindow = [[PTDPDFPresentationPaintWindowController alloc] init];
+  [self.paintWindowControllers addObject:thisWindow];
+  thisWindow.delegate = self;
+  [thisWindow showWindow:self];
+}
+
+
+- (void)newPDFAnnotationWindow:(id)sender
+{
+  PTDPDFAnnotationPaintWindowController *thisWindow = [[PTDPDFAnnotationPaintWindowController alloc] init];
   [self.paintWindowControllers addObject:thisWindow];
   thisWindow.delegate = self;
   [thisWindow showWindow:self];

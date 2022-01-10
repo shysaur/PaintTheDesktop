@@ -73,6 +73,8 @@
 		01F0320F2634C6B10045B622 /* PTDPaintViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F0320E2634C6B10045B622 /* PTDPaintViewController.m */; };
 		01F032122634EC810045B622 /* PTDLineTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F032112634EC810045B622 /* PTDLineTool.m */; };
 		01F171DA27823BF700EFC221 /* PTDTextSizePrefsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F171D927823BF700EFC221 /* PTDTextSizePrefsTableViewController.m */; };
+		01FD9A86278B489E00589F87 /* PTDPDFAnnotationPaintWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01FD9A84278B489E00589F87 /* PTDPDFAnnotationPaintWindowController.m */; };
+		01FD9A87278B489E00589F87 /* PTDPDFAnnotationPaintWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01FD9A85278B489E00589F87 /* PTDPDFAnnotationPaintWindowController.xib */; };
 		F7023C1B24C72D6E00B54623 /* NSWindow+PTD.m in Sources */ = {isa = PBXBuildFile; fileRef = F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */; };
 /* End PBXBuildFile section */
 
@@ -215,6 +217,9 @@
 		01F032112634EC810045B622 /* PTDLineTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDLineTool.m; sourceTree = "<group>"; };
 		01F171D827823BF700EFC221 /* PTDTextSizePrefsTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDTextSizePrefsTableViewController.h; sourceTree = "<group>"; };
 		01F171D927823BF700EFC221 /* PTDTextSizePrefsTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDTextSizePrefsTableViewController.m; sourceTree = "<group>"; };
+		01FD9A83278B489E00589F87 /* PTDPDFAnnotationPaintWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDPDFAnnotationPaintWindowController.h; sourceTree = "<group>"; };
+		01FD9A84278B489E00589F87 /* PTDPDFAnnotationPaintWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDPDFAnnotationPaintWindowController.m; sourceTree = "<group>"; };
+		01FD9A85278B489E00589F87 /* PTDPDFAnnotationPaintWindowController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PTDPDFAnnotationPaintWindowController.xib; sourceTree = "<group>"; };
 		F7023C1924C72D6E00B54623 /* NSWindow+PTD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSWindow+PTD.h"; sourceTree = "<group>"; };
 		F7023C1A24C72D6E00B54623 /* NSWindow+PTD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSWindow+PTD.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -420,6 +425,9 @@
 				01B7AF442642D24500A3FF31 /* PTDPDFPresentationPaintWindowController.h */,
 				01B7AF452642D24500A3FF31 /* PTDPDFPresentationPaintWindowController.m */,
 				01B7AF462642D24500A3FF31 /* PTDPDFPresentationPaintWindowController.xib */,
+				01FD9A83278B489E00589F87 /* PTDPDFAnnotationPaintWindowController.h */,
+				01FD9A84278B489E00589F87 /* PTDPDFAnnotationPaintWindowController.m */,
+				01FD9A85278B489E00589F87 /* PTDPDFAnnotationPaintWindowController.xib */,
 				01B7AF592642D50200A3FF31 /* PTDPDFPageView.h */,
 				01B7AF5A2642D50200A3FF31 /* PTDPDFPageView.m */,
 				01B7AF7326432E9500A3FF31 /* PTDAnnotationOverlayPDFPage.h */,
@@ -520,6 +528,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				018CB0C624AA3CCB002ABD80 /* PTDThumbnailMenuItemView.xib in Resources */,
+				01FD9A87278B489E00589F87 /* PTDPDFAnnotationPaintWindowController.xib in Resources */,
 				01EE4621260BAD3400CF4CFF /* PTDPreferencesWindow.xib in Resources */,
 				01B7AF482642D24500A3FF31 /* PTDPDFPresentationPaintWindowController.xib in Resources */,
 				01CFFD1924EB50580093D6BA /* Localizable.strings in Resources */,
@@ -611,6 +620,7 @@
 				01E7E739277E2DF500F02DBA /* NSTextView+PTD.m in Sources */,
 				01A213DF248EE94500B5EB9D /* PTDAppDelegate.m in Sources */,
 				01A31E4825BB35CA002BA7D4 /* NSBezierPath+PTD.m in Sources */,
+				01FD9A86278B489E00589F87 /* PTDPDFAnnotationPaintWindowController.m in Sources */,
 				016D36B724905E280086E96D /* PTDToolManager.m in Sources */,
 				01A213F1248EE9F600B5EB9D /* PTDSimpleCanvasPaintWindowController.m in Sources */,
 				0177600F25BA340000317B4F /* PTDNoAnimeCALayer.m in Sources */,
