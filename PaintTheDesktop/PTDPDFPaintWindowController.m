@@ -65,11 +65,13 @@
   openPanel.allowedFileTypes = @[
     (__bridge NSString *)kUTTypePDF];
   [openPanel beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse result) {
-    if (result != NSModalResponseOK)
+    if (result != NSModalResponseOK) {
       [self close];
-    self.displayName = openPanel.URL.lastPathComponent;
-    self.window.representedURL = openPanel.URL;
-    self.theDocument = [[PDFDocument alloc] initWithURL:openPanel.URL];
+    } else {
+      self.displayName = openPanel.URL.lastPathComponent;
+      self.window.representedURL = openPanel.URL;
+      self.theDocument = [[PDFDocument alloc] initWithURL:openPanel.URL];
+    }
   }];
 }
 
