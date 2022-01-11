@@ -35,12 +35,14 @@
   PTDOpenGLBufferedTexture *_mainBuffer;
   PTDNoAnimeCALayer *_overlayLayer;
   CALayer *_cursorLayer;
+  BOOL _liveResize;
 }
 
 
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
   self = [super initWithFrame:frameRect];
+  _liveResize = NO;
   _backingScaleFactor = NSMakeSize(1.0, 1.0);
   [self updateBackingImages];
   return self;
@@ -50,6 +52,7 @@
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
   self = [super initWithCoder:coder];
+  _liveResize = NO;
   _backingScaleFactor = NSMakeSize(1.0, 1.0);
   [self updateBackingImages];
   return self;
@@ -131,13 +134,23 @@
 
 - (void)viewWillStartLiveResize
 {
+  [super viewWillStartLiveResize];
+  _liveResize = YES;
   if (self.paintViewDelegate && [self.paintViewDelegate respondsToSelector:@selector(viewWillStartLiveResize:)])
     [self.paintViewDelegate viewWillStartLiveResize:self];
 }
 
 
+- (BOOL)inLiveResize
+{
+  return _liveResize ? YES : [super inLiveResize];
+}
+
+
 - (void)viewDidEndLiveResize
 {
+  [super viewDidEndLiveResize];
+  _liveResize = NO;
   if (self.paintViewDelegate && [self.paintViewDelegate respondsToSelector:@selector(viewDidEndLiveResize:)])
     [self.paintViewDelegate viewDidEndLiveResize:self];
   [self updateBackingImages];
@@ -146,7 +159,7 @@
 
 - (void)viewDidChangeBackingProperties
 {
-  if (!self.window)
+  if (!self.window || self.inLiveResize)
     return;
   [_mainBuffer convertToColorSpace:self.window.screen.colorSpace renderingIntent:NSColorRenderingIntentRelativeColorimetric];
   CGFloat scale = self.window.screen.backingScaleFactor;

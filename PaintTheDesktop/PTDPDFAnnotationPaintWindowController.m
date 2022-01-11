@@ -105,6 +105,7 @@
 - (void)scrollViewWillStartLiveMagnify:(NSNotification *)notification
 {
   self.paintViewController.active = NO;
+  [self.paintViewController.view viewWillStartLiveResize];
 }
 
 
@@ -122,6 +123,7 @@
   [self.scrollView reflectScrolledClipView:self.scrollView.contentView];
   
   self.paintViewController.active = YES;
+  [self.paintViewController.view viewDidEndLiveResize];
 }
 
 
