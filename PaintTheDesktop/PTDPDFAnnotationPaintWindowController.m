@@ -48,7 +48,6 @@
   [super windowDidLoad];
   self.window.backgroundColor = NSColor.whiteColor;
   self.pageView.borderColor = [NSColor colorWithWhite:0.0 alpha:0.2];
-  self.pageView.anchorPageToBottom = YES;
   [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(scrollViewWillStartLiveScroll:) name:NSScrollViewWillStartLiveScrollNotification object:self.scrollView];
   [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(scrollViewDidEndLiveScroll:) name:NSScrollViewDidEndLiveScrollNotification object:self.scrollView];
   [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(scrollViewWillStartLiveMagnify:) name:NSScrollViewWillStartLiveMagnifyNotification object:self.scrollView];
