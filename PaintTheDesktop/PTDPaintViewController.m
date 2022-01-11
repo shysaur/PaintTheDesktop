@@ -68,7 +68,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 
 @implementation PTDPaintViewController {
   __weak PTDDrawingSurface *_lastDrawingSurface;
-  
+  NSPoint _firstMousePosition;
   BOOL _isResizing;
 }
 
@@ -159,7 +159,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
     return;
   
   self.mouseIsDragging = YES;
-  self.lastMousePosition = [self locationForEvent:event];
+  self.lastMousePosition = _firstMousePosition = [self locationForEvent:event];
   
   @autoreleasepool {
     PTDDrawingSurface *surf = [self drawingSurface];
@@ -198,16 +198,19 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
   if (!self.effectivelyActive)
     return;
   
+  NSPoint thisLocation = [self locationForEvent:event];
+  CGFloat manhattanDist = 0.0;
   if (self.mouseIsDragging) {
+    manhattanDist = fabs(thisLocation.x - _firstMousePosition.x) + fabs(thisLocation.y - _firstMousePosition.y);
     @autoreleasepool {
       PTDDrawingSurface *surf = [self drawingSurface];
       PTDTool *tool = [self initializeToolWithSurface:surf];
-      [tool dragDidContinueFromPoint:self.lastMousePosition toPoint:[self locationForEvent:event]];
+      [tool dragDidContinueFromPoint:self.lastMousePosition toPoint:thisLocation];
       [tool dragDidEndAtPoint:[self locationForEvent:event]];
     }
   }
   
-  if (event.clickCount == 1) {
+  if (event.clickCount == 1 && manhattanDist < 3.0) {
     @autoreleasepool {
       PTDDrawingSurface *surf = [self drawingSurface];
       PTDTool *tool = [self initializeToolWithSurface:surf];
