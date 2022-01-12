@@ -84,8 +84,9 @@
   [self.class registerDefaults];
   [PTDToolManager registerDefaults];
   
-  NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
-  _alwaysShowsDockIcon = [ud boolForKey:@"PTDAlwaysShowsDockIcon"];
+  //NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
+  //_alwaysShowsDockIcon = [ud boolForKey:@"PTDAlwaysShowsDockIcon"];
+  _alwaysShowsDockIcon = YES;
   
   _updateController = [[SPUStandardUpdaterController alloc] initWithStartingUpdater:YES updaterDelegate:nil userDriverDelegate:nil];
   
@@ -117,8 +118,9 @@
 
 - (void)setAlwaysShowsDockIcon:(BOOL)alwaysShowsDockIcon
 {
-  NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
-  [ud setBool:alwaysShowsDockIcon forKey:@"PTDAlwaysShowsDockIcon"];
+  alwaysShowsDockIcon = YES;
+  //NSUserDefaults *ud = NSUserDefaults.standardUserDefaults;
+  //[ud setBool:alwaysShowsDockIcon forKey:@"PTDAlwaysShowsDockIcon"];
   
   if (_alwaysShowsDockIcon != alwaysShowsDockIcon && _dockRefCount == 0) {
     if (alwaysShowsDockIcon)
@@ -175,6 +177,7 @@
 
 - (void)setupMenu
 {
+  /*
   NSStatusBar *menuBar = [NSStatusBar systemStatusBar];
   self.statusItem = [menuBar statusItemWithLength:20.0];
   
@@ -183,6 +186,7 @@
   self.statusItem.button.action = @selector(statusItemAction:);
   [self.statusItem.button sendActionOn:NSEventMaskLeftMouseUp | NSEventMaskRightMouseUp];
   self.statusItem.behavior = NSStatusItemBehaviorTerminationOnRemoval;
+  */
 }
 
 
@@ -349,6 +353,7 @@
 
 - (void)updateScreenPaintWindows
 {
+  /*
   for (NSScreen *screen in NSScreen.screens) {
     CGDirectDisplayID dispId = [screen ptd_displayID];
     
@@ -370,6 +375,7 @@
         [thisWindow applicationDidDisableDrawing];
     }
   }
+  */
 }
 
 
