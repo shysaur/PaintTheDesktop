@@ -97,7 +97,14 @@ NSString * const PTDEraserToolOptionSizeOptions = @"sizes";
 
 - (void)activate
 {
+  NSEvent.mouseCoalescingEnabled = YES;
   [self updateCursor];
+}
+
+
+- (void)deactivate
+{
+  NSEvent.mouseCoalescingEnabled = NO;
 }
 
 
