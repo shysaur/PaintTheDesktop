@@ -68,6 +68,7 @@
 {
   [super windowDidLoad];
   [PTDAppDelegate.appDelegate pushAppShouldShowInDock];
+  [self.window makeFirstResponder:self.window.contentView];
 }
 
 

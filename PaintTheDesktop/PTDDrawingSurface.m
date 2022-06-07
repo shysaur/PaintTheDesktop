@@ -97,6 +97,13 @@
 }
 
 
+- (NSPoint)convertPointFromScreen:(NSPoint)point
+{
+  NSPoint p2 = [_paintView.window convertPointFromScreen:point];
+  return [_paintView convertPoint:p2 fromView:nil];
+}
+
+
 - (NSPoint)alignPointToBacking:(NSPoint)point
 {
   return [_paintView ptd_backingAlignedPoint:point];

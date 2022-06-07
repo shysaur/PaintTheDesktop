@@ -45,6 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSBitmapImageRep *)captureRect:(NSRect)rect;
 
 - (NSRect)bounds;
+- (NSPoint)convertPointFromScreen:(NSPoint)point;
 
 - (NSPoint)alignPointToBacking:(NSPoint)point;
 

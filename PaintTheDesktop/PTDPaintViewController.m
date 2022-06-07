@@ -34,6 +34,7 @@
 #import "PTDRingMenuItem.h"
 #import "PTDRingMenuSpring.h"
 #import "PTDRingMenuWindow.h"
+#import "PTDSelectionTool.h"
 
 
 typedef NS_OPTIONS(NSUInteger, PTDPaintViewActivityStatus) {
@@ -340,6 +341,46 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
     [tool willOpenOptionMenuAtPoint:[self locationForEvent:event]];
     self.systemCursorVisibility = YES;
     [ringMenu popUpMenuWithEvent:event forView:self.view];
+  }
+}
+
+
+- (void)cut:(id)sender
+{
+  @autoreleasepool {
+    PTDDrawingSurface *surf = [self drawingSurface];
+    PTDTool *tool = [self initializeToolWithSurface:surf];
+    if ([tool isKindOfClass:[PTDSelectionTool class]]) {
+      PTDSelectionTool *tool2 = (PTDSelectionTool *)tool;
+      [tool2 cut:sender];
+    }
+  }
+}
+
+
+- (void)copy:(id)sender
+{
+  @autoreleasepool {
+    PTDDrawingSurface *surf = [self drawingSurface];
+    PTDTool *tool = [self initializeToolWithSurface:surf];
+    if ([tool isKindOfClass:[PTDSelectionTool class]]) {
+      PTDSelectionTool *tool2 = (PTDSelectionTool *)tool;
+      [tool2 copy:sender];
+    }
+  }
+}
+
+
+- (void)paste:(id)sender
+{
+  if (![self.toolManager.currentTool isKindOfClass:[PTDSelectionTool class]]) {
+    [self.toolManager changeTool:PTDToolIdentifierSelectionTool];
+  }
+  @autoreleasepool {
+    PTDDrawingSurface *surf = [self drawingSurface];
+    PTDTool *tool = [self initializeToolWithSurface:surf];
+    PTDSelectionTool *tool2 = (PTDSelectionTool *)tool;
+    [tool2 paste:sender];
   }
 }
 

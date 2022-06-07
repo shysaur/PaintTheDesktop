@@ -31,6 +31,10 @@ extern NSString * const PTDToolIdentifierSelectionTool;
 
 @interface PTDSelectionTool : PTDTool
 
+- (void)cut:(id)sender;
+- (void)copy:(id)sender;
+- (void)paste:(id)sender;
+
 @end
 
 NS_ASSUME_NONNULL_END

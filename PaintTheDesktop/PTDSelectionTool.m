@@ -186,11 +186,22 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
     return;
   }
   
+  NSPoint pasteLocation;
+  if ([sender isKindOfClass:[PTDRingMenuItem class]]) {
+    pasteLocation = _lastMenuPosition;
+  } else {
+    pasteLocation = NSEvent.mouseLocation;
+    pasteLocation = [self.currentDrawingSurface convertPointFromScreen:pasteLocation];
+    if (!NSPointInRect(pasteLocation, self.currentDrawingSurface.bounds)) {
+      pasteLocation = PTD_NSRectCenter(self.currentDrawingSurface.bounds);
+    }
+  }
+  
   [self terminateEditSelection];
   _selectedArea = newImage;
   _currentSelection = NSMakeRect(
-      _lastMenuPosition.x - _selectedArea.size.height / 2.0,
-      _lastMenuPosition.y - _selectedArea.size.height / 2.0,
+      pasteLocation.x - _selectedArea.size.width / 2.0,
+      pasteLocation.y - _selectedArea.size.height / 2.0,
       _selectedArea.size.width,
       _selectedArea.size.height);
   _currentSelection.origin = [self.currentDrawingSurface alignPointToBacking:_currentSelection.origin];
