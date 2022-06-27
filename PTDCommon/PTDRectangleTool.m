@@ -40,7 +40,8 @@ NSString * const PTDToolIdentifierRectangleTool = @"PTDToolIdentifierRectangleTo
 
 + (PTDRingMenuItem *)menuItem
 {
-  return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconRectangle"] target:nil action:nil];
+  NSImage *image = [[NSBundle bundleForClass:[self class]] imageForResource:@"PTDToolIconRectangle"];
+  return [PTDRingMenuItem itemWithImage:image target:nil action:nil];
 }
 
 

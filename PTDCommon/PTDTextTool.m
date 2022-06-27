@@ -145,7 +145,8 @@ NSString * const PTDTextToolOptionTextAlignment = @"textAlignment";
 
 + (PTDRingMenuItem *)menuItem
 {
-  return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconText"] target:nil action:nil];
+  NSImage *image = [[NSBundle bundleForClass:[self class]] imageForResource:@"PTDToolIconText"];
+  return [PTDRingMenuItem itemWithImage:image target:nil action:nil];
 }
 
 
@@ -360,13 +361,14 @@ NSString * const PTDTextToolOptionTextAlignment = @"textAlignment";
 
 - (PTDRingMenuItem *)menuItemForTextAlignment:(NSTextAlignment)alignment
 {
-  NSImage *image;
+  NSString *imageName;
   if (alignment == NSTextAlignmentCenter)
-    image = [NSImage imageNamed:@"PTDTextAlignCenter"];
+    imageName = @"PTDTextAlignCenter";
   else if (alignment == NSTextAlignmentRight)
-    image = [NSImage imageNamed:@"PTDTextAlignRight"];
+    imageName = @"PTDTextAlignRight";
   else
-    image = [NSImage imageNamed:@"PTDTextAlignLeft"];
+    imageName = @"PTDTextAlignLeft";
+  NSImage *image = [[NSBundle bundleForClass:[self class]] imageForResource:imageName];
   
   PTDRingMenuItem *itm = [PTDRingMenuItem itemWithImage:image target:self action:@selector(changeTextAlignment:)];
   itm.tag = alignment;

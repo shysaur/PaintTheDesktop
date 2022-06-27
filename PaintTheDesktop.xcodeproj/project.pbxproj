@@ -13,6 +13,7 @@
 		01484B0726321F4900B0518F /* PTDAbstractSizeCollectionViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484B0626321F4900B0518F /* PTDAbstractSizeCollectionViewItem.m */; };
 		01484B112632321100B0518F /* PTDSizeEditorPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = 01484B0F2632321100B0518F /* PTDSizeEditorPopover.m */; };
 		01484B122632321100B0518F /* PTDSizeEditorPopover.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01484B102632321100B0518F /* PTDSizeEditorPopover.xib */; };
+		0157B8FA286A5DE4009F5D74 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0157B8F9286A5DE4009F5D74 /* Assets.xcassets */; };
 		016A928D24993FFD006C9678 /* PTDRingMenuWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 016A928B24993FFD006C9678 /* PTDRingMenuWindow.xib */; };
 		018CB0C624AA3CCB002ABD80 /* PTDThumbnailMenuItemView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 018CB0C524AA3CCB002ABD80 /* PTDThumbnailMenuItemView.xib */; };
 		019AB4882622571F008F85A7 /* PTDBrushColorPrefsCollectionViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 019AB4872622571F008F85A7 /* PTDBrushColorPrefsCollectionViewDelegate.m */; };
@@ -170,6 +171,7 @@
 		01484B102632321100B0518F /* PTDSizeEditorPopover.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PTDSizeEditorPopover.xib; sourceTree = "<group>"; };
 		01484B1326323E4800B0518F /* PTDScreenPaintWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDScreenPaintWindowController.h; sourceTree = "<group>"; };
 		01484B1426323E4800B0518F /* PTDScreenPaintWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDScreenPaintWindowController.m; sourceTree = "<group>"; };
+		0157B8F9286A5DE4009F5D74 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		015A50CA24A13F4B0008AAB1 /* PTDRoundRectTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDRoundRectTool.h; sourceTree = "<group>"; };
 		015A50CB24A13F4B0008AAB1 /* PTDRoundRectTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PTDRoundRectTool.m; sourceTree = "<group>"; };
 		016223D1278C848100096A47 /* PTDPDFPaintWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PTDPDFPaintWindowController.h; sourceTree = "<group>"; };
@@ -354,6 +356,7 @@
 				01B49924286A583C0000EA4E /* Ring Menu */,
 				01B49902286A56980000EA4E /* Tools */,
 				01B498C3286A55C50000EA4E /* Utilities */,
+				0157B8F9286A5DE4009F5D74 /* Assets.xcassets */,
 			);
 			path = PTDCommon;
 			sourceTree = "<group>";
@@ -717,6 +720,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0157B8FA286A5DE4009F5D74 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1027,7 +1031,7 @@
 					"@loader_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.danielecattaneo.PTDCommon;
+				PRODUCT_BUNDLE_IDENTIFIER = com.danielecattaneo.PaintTheDesktop.fmwk;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1058,7 +1062,7 @@
 					"@loader_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.danielecattaneo.PTDCommon;
+				PRODUCT_BUNDLE_IDENTIFIER = com.danielecattaneo.PaintTheDesktop.fmwk;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;

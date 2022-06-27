@@ -40,7 +40,8 @@ NSString * const PTDToolIdentifierRoundRectTool = @"PTDToolIdentifierRoundRectTo
 
 + (PTDRingMenuItem *)menuItem
 {
-  return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconRoundRect"] target:nil action:nil];
+  NSImage *image = [[NSBundle bundleForClass:[self class]] imageForResource:@"PTDToolIconRoundRect"];
+  return [PTDRingMenuItem itemWithImage:image target:nil action:nil];
 }
 
 

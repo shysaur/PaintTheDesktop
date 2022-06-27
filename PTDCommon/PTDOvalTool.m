@@ -40,7 +40,8 @@ NSString * const PTDToolIdentifierOvalTool = @"PTDToolIdentifierOvalTool";
 
 + (PTDRingMenuItem *)menuItem
 {
-  return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconOval"] target:nil action:nil];
+  NSImage *image = [[NSBundle bundleForClass:[self class]] imageForResource:@"PTDToolIconOval"];
+  return [PTDRingMenuItem itemWithImage:image target:nil action:nil];
 }
 
 

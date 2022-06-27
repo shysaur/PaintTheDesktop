@@ -50,7 +50,8 @@ NSString * const PTDToolIdentifierLineTool = @"PTDToolIdentifierLineTool";
 
 + (PTDRingMenuItem *)menuItem
 {
-  return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconLine"] target:nil action:nil];
+  NSImage *image = [[NSBundle bundleForClass:[self class]] imageForResource:@"PTDToolIconLine"];
+  return [PTDRingMenuItem itemWithImage:image target:nil action:nil];
 }
 
 

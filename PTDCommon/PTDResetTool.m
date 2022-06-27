@@ -43,7 +43,8 @@ NSString * const PTDToolIdentifierResetTool = @"PTDToolIdentifierResetTool";
 
 + (PTDRingMenuItem *)menuItem
 {
-  return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconReset"] target:nil action:nil];
+  NSImage *image = [[NSBundle bundleForClass:[self class]] imageForResource:@"PTDToolIconReset"];
+  return [PTDRingMenuItem itemWithImage:image target:nil action:nil];
 }
 
 

@@ -94,7 +94,8 @@ typedef NS_OPTIONS(NSUInteger, PTDSelectionToolEditFlags) {
 
 + (PTDRingMenuItem *)menuItem
 {
-  return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconSelection"] target:nil action:nil];
+  NSImage *image = [[NSBundle bundleForClass:[self class]] imageForResource:@"PTDToolIconSelection"];
+  return [PTDRingMenuItem itemWithImage:image target:nil action:nil];
 }
 
 

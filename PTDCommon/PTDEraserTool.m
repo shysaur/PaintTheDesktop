@@ -144,7 +144,8 @@ NSString * const PTDEraserToolOptionSizeOptions = @"sizes";
 
 + (PTDRingMenuItem *)menuItem
 {
-  return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconEraser"] target:nil action:nil];
+  NSImage *image = [[NSBundle bundleForClass:[self class]] imageForResource:@"PTDToolIconEraser"];
+  return [PTDRingMenuItem itemWithImage:image target:nil action:nil];
 }
 
 

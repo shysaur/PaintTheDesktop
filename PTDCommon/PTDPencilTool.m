@@ -225,7 +225,8 @@ static void _PTDPencilToolSmoothedPathCalcNextPoint(PTDSmoothedPathContext *spc,
 
 + (PTDRingMenuItem *)menuItem
 {
-  return [PTDRingMenuItem itemWithImage:[NSImage imageNamed:@"PTDToolIconPencil"] target:nil action:nil];
+  NSImage *image = [[NSBundle bundleForClass:[self class]] imageForResource:@"PTDToolIconPencil"];
+  return [PTDRingMenuItem itemWithImage:image target:nil action:nil];
 }
 
 
