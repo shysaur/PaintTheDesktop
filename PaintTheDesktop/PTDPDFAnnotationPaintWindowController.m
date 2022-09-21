@@ -128,6 +128,9 @@
 
 - (void)updateContentViewSize
 {
+  if (!self.pageView.pdfPage)
+    return;
+  
   NSRect pageRect = [self.pageView.pdfPage boundsForBox:kPDFDisplayBoxCropBox];
   NSView *contentView = self.scrollView.documentView;
   
