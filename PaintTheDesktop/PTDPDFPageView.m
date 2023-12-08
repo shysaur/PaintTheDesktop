@@ -24,6 +24,7 @@
 //
 
 #import "PTDPDFPageView.h"
+#import "PDFPage+PTD.h"
 #import "NSAffineTransform+PTD.h"
 
 
@@ -51,7 +52,7 @@
 
 - (NSRect)pageFrame
 {
-  NSRect pageRect = [self.pdfPage boundsForBox:kPDFDisplayBoxCropBox];
+  NSRect pageRect = [self.pdfPage ptd_rotatedCropBox];
   NSRect frame = self.frame;
   NSRect res = NSZeroRect;
   
@@ -81,7 +82,7 @@
   if (!page)
     return;
   
-  NSRect sourceRect = [page boundsForBox:kPDFDisplayBoxCropBox];
+  NSRect sourceRect = [page ptd_rotatedCropBox];
   NSRect destRect = [self pageFrame];
   
   [NSGraphicsContext.currentContext saveGraphicsState];

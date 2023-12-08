@@ -30,6 +30,7 @@
 #import "PTDAnnotationOverlayPDFPage.h"
 #import "NSGeometry+PTD.h"
 #import "PTDThumbnailMenuItemView.h"
+#import "PDFPage+PTD.h"
 
 
 @interface PTDPDFPaintWindowController ()
@@ -228,7 +229,7 @@
   }
   
   PDFPage *page = [self.theDocument pageAtIndex:pageIndex];
-  NSRect box = [page boundsForBox:kPDFDisplayBoxCropBox];
+  NSRect box = [page ptd_rotatedCropBox];
   NSSize destSize = PTD_NSSizePreservingAspectWithArea(box.size, area);
   NSImage *baseThumb = [page thumbnailOfSize:destSize forBox:kPDFDisplayBoxCropBox];
   NSData *snapshotData =_annotationPages[pageIndex];

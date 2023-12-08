@@ -25,6 +25,7 @@
 
 #import "PTDAnnotationOverlayPDFPage.h"
 #import "NSAffineTransform+PTD.h"
+#import "PDFPage+PTD.h"
 
 
 @implementation PTDAnnotationOverlayPDFPage {

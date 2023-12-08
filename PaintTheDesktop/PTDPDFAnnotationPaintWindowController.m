@@ -24,6 +24,7 @@
 //
 
 #import "PTDPDFAnnotationPaintWindowController.h"
+#import "PDFPage+PTD.h"
 #import "NSGeometry+PTD.h"
 
 
@@ -131,7 +132,7 @@
   if (!self.pageView.pdfPage)
     return;
   
-  NSRect pageRect = [self.pageView.pdfPage boundsForBox:kPDFDisplayBoxCropBox];
+  NSRect pageRect = [self.pageView.pdfPage ptd_rotatedCropBox];
   NSView *contentView = self.scrollView.documentView;
   
   CGFloat width = self.scrollView.frame.size.width;
