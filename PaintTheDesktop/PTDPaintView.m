@@ -71,6 +71,12 @@
 }
 
 
+- (BOOL)clipsToBounds
+{
+  return YES;
+}
+
+
 - (BOOL)wantsBestResolutionOpenGLSurface
 {
   return YES;
