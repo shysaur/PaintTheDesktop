@@ -249,11 +249,16 @@
 }
 
 
+- (BOOL)menuHasKeyEquivalent:(NSMenu *)menu forEvent:(NSEvent *)event target:(id _Nullable __autoreleasing *)target action:(SEL _Nullable *)action
+{
+  assert(menu == self.paintingsMenu);
+  return NO;
+}
+
+
 - (void)menuNeedsUpdate:(NSMenu *)menu
 {
-  if (menu != self.paintingsMenu)
-    return;
-  
+  assert(menu == self.paintingsMenu);
   [menu removeAllItems];
   [self appendPaintingListToMenu:menu];
 }
@@ -274,14 +279,20 @@
 - (void)appendPaintingListToMenu:(NSMenu *)res
 {
   for (PTDAbstractPaintWindowController *paintw in _paintWindowControllers) {
-    NSString *title = [NSString stringWithFormat:@"%@", paintw.displayName];
-    NSMenuItem *mi = [NSMenuItem ptd_menuItemWithLabel:title thumbnail:paintw.thumbnail thumbnailArea:0];
+    NSMenuItem *mi = [self menuItemForPainting:paintw];
     [res addItem:mi];
-    
-    NSMenu *submenu = [paintw windowMenu];
-    if (submenu)
-      mi.submenu = submenu;
   }
+}
+
+
+- (NSMenuItem *)menuItemForPainting:(PTDAbstractPaintWindowController *)paintw
+{
+  NSString *title = [NSString stringWithFormat:@"%@", paintw.displayName];
+  NSMenuItem *mi = [NSMenuItem ptd_menuItemWithLabel:title thumbnail:paintw.thumbnail thumbnailArea:0];
+  NSMenu *submenu = [paintw windowMenu];
+  if (submenu)
+    mi.submenu = submenu;
+  return mi;
 }
 
 
