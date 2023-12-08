@@ -56,9 +56,9 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 
 @property (nonatomic) PTDPaintViewActivityStatus activityStatus;
 
-@property (nonatomic) BOOL mouseInView;
+@property (nonatomic) BOOL mouseInViewOrDragging;
 @property (nonatomic) BOOL mouseIsDragging;
-@property (nonatomic) NSPoint lastMousePosition;
+@property (nonatomic) NSPoint lastMousePositionInDrag;
 
 @property (nonatomic) BOOL systemCursorVisibility;
 
@@ -69,7 +69,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 
 @implementation PTDPaintViewController {
   __weak PTDDrawingSurface *_lastDrawingSurface;
-  NSPoint _firstMousePosition;
+  NSPoint _firstMousePositionInDrag;
   BOOL _isResizing;
 }
 
@@ -89,7 +89,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
   
   NSTrackingAreaOptions options = NSTrackingActiveAlways |
     NSTrackingInVisibleRect | NSTrackingMouseEnteredAndExited |
-    NSTrackingMouseMoved;
+    NSTrackingMouseMoved | NSTrackingEnabledDuringMouseDrag;
   NSTrackingArea *area = [[NSTrackingArea alloc]
     initWithRect:self.view.bounds
     options:options owner:self userInfo:nil];
@@ -155,17 +155,17 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 
 - (void)mouseDown:(NSEvent *)event
 {
-  self.mouseInView = YES;
+  self.mouseInViewOrDragging = YES;
   if (!self.effectivelyActive)
     return;
   
   self.mouseIsDragging = YES;
-  self.lastMousePosition = _firstMousePosition = [self locationForEvent:event];
+  self.lastMousePositionInDrag = _firstMousePositionInDrag = [self locationForEvent:event];
   
   @autoreleasepool {
     PTDDrawingSurface *surf = [self drawingSurface];
     PTDTool *tool = [self initializeToolWithSurface:surf];
-    [tool dragDidStartAtPoint:self.lastMousePosition];
+    [tool dragDidStartAtPoint:self.lastMousePositionInDrag];
   }
   [self updateCursorAtPoint:[self locationForEvent:event]];
 }
@@ -173,7 +173,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 
 - (void)mouseDragged:(NSEvent *)event
 {
-  self.mouseInView = YES;
+  self.mouseInViewOrDragging = YES;
   if (!self.effectivelyActive)
     return;
   
@@ -184,29 +184,29 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
       [tool dragDidStartAtPoint:[self locationForEvent:event]];
       self.mouseIsDragging = YES;
     } else {
-      [tool dragDidContinueFromPoint:self.lastMousePosition toPoint:[self locationForEvent:event]];
+      [tool dragDidContinueFromPoint:self.lastMousePositionInDrag toPoint:[self locationForEvent:event]];
     }
   }
   
-  self.lastMousePosition = [self locationForEvent:event];
+  self.lastMousePositionInDrag = [self locationForEvent:event];
   [self updateCursorAtPoint:[self locationForEvent:event]];
 }
 
 
 - (void)mouseUp:(NSEvent *)event
 {
-  self.mouseInView = YES;
+  self.mouseInViewOrDragging = [self isPointInView:NSEvent.mouseLocation];
   if (!self.effectivelyActive)
     return;
   
   NSPoint thisLocation = [self locationForEvent:event];
   CGFloat manhattanDist = 0.0;
   if (self.mouseIsDragging) {
-    manhattanDist = fabs(thisLocation.x - _firstMousePosition.x) + fabs(thisLocation.y - _firstMousePosition.y);
+    manhattanDist = fabs(thisLocation.x - _firstMousePositionInDrag.x) + fabs(thisLocation.y - _firstMousePositionInDrag.y);
     @autoreleasepool {
       PTDDrawingSurface *surf = [self drawingSurface];
       PTDTool *tool = [self initializeToolWithSurface:surf];
-      [tool dragDidContinueFromPoint:self.lastMousePosition toPoint:thisLocation];
+      [tool dragDidContinueFromPoint:self.lastMousePositionInDrag toPoint:thisLocation];
       [tool dragDidEndAtPoint:[self locationForEvent:event]];
     }
   }
@@ -227,7 +227,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 
 - (void)rightMouseDown:(NSEvent *)event
 {
-  self.mouseInView = YES;
+  self.mouseInViewOrDragging = YES;
   if (!self.effectivelyActive)
     return;
   
@@ -236,7 +236,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
     @autoreleasepool {
       PTDDrawingSurface *surf = [self drawingSurface];
       PTDTool *tool = [self initializeToolWithSurface:surf];
-      [tool dragDidEndAtPoint:self.lastMousePosition];
+      [tool dragDidEndAtPoint:self.lastMousePositionInDrag];
     }
     self.mouseIsDragging = NO;
   }
@@ -248,28 +248,28 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 
 - (void)mouseMoved:(NSEvent *)event
 {
-  self.mouseInView = YES;
+  self.mouseInViewOrDragging = YES;
   [self updateCursorAtPoint:[self locationForEvent:event]];
 }
 
 
 - (void)mouseEntered:(NSEvent *)event
 {
-  self.mouseInView = YES;
+  self.mouseInViewOrDragging = YES;
   [self updateCursorAtPoint:[self locationForEvent:event]];
 }
 
 
 - (void)mouseExited:(NSEvent *)event
 {
-  self.mouseInView = NO;
+  self.mouseInViewOrDragging = self.mouseIsDragging;
   [self updateCursorAtPoint:[self locationForEvent:event]];
 }
 
 
 - (void)flagsChanged:(NSEvent *)event
 {
-  if (self.mouseInView && self.mouseIsDragging) {
+  if (self.mouseInViewOrDragging && self.mouseIsDragging) {
     @autoreleasepool {
       PTDDrawingSurface *surf = [self drawingSurface];
       PTDTool *tool = [self initializeToolWithSurface:surf];
@@ -421,13 +421,13 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 {
   self.view.cursorImage = currentCursor.image;
   _currentCursor = currentCursor;
-  [self updateCursorAtPoint:self.lastMousePosition];
+  [self updateCursorAtPoint:self.lastMousePositionInDrag];
 }
 
 
 - (void)updateCursorAtPoint:(NSPoint)point
 {
-  if (self.active && self.mouseInView) {
+  if (self.active && self.mouseInViewOrDragging) {
     NSPoint hotspot = self.currentCursor.hotspot;
     self.view.cursorPosition = NSMakePoint(point.x - hotspot.x, point.y - hotspot.y);
   } else {
@@ -441,9 +441,9 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 }
 
 
-- (void)setMouseInView:(BOOL)mouseInView
+- (void)setMouseInViewOrDragging:(BOOL)mouseInView
 {
-  _mouseInView = mouseInView;
+  _mouseInViewOrDragging = mouseInView;
   self.systemCursorVisibility = [self computeNextCursorVisibility];
 }
 
@@ -493,7 +493,23 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
     return YES;
   if (!self.currentCursor)
     return YES;
-  return !self.mouseInView;
+  if (!self.mouseInViewOrDragging)
+    return YES;
+  return ![self isPointInView:NSEvent.mouseLocation];
+}
+
+
+// Point is in screen coordinates
+- (BOOL)isPointInView:(NSPoint)point
+{
+  NSView *view = self.view;
+  NSWindow *window = view.window;
+  NSRect scrRect = window.screen.visibleFrame;
+  if (!NSPointInRect(point, scrRect))
+    return NO;
+  point = [window convertPointFromScreen:point];
+  point = [view convertPoint:point fromView:nil];
+  return NSPointInRect(point, self.view.bounds);
 }
 
 
