@@ -39,8 +39,6 @@
   self = [super init];
   
   _origPage = origPage;
-  self.rotation = _origPage.rotation;
-  
   _imageData = imageData;
   
   return self;
@@ -55,28 +53,29 @@
 
 - (NSRect)boundsForBox:(PDFDisplayBox)box
 {
-  return [_origPage boundsForBox:box];
+  return [_origPage ptd_rotatedBoundsForBox:box];
 }
 
 
 - (void)drawWithBox:(PDFDisplayBox)box toContext:(CGContextRef)context
 {
+  NSRect thisBox = [self boundsForBox:box];
+  NSInteger angle = -_origPage.rotation;
+
+  CGContextTranslateCTM(context, -thisBox.origin.x, -thisBox.origin.y);
+  
+  CGContextSaveGState(context);
+  CGContextRotateCTM(context, (CGFloat)angle / 180.0 * M_PI);
+  CGContextDrawPDFPage(context, _origPage.pageRef);
+  CGContextRestoreGState(context);
+  
   [NSGraphicsContext saveGraphicsState];
   NSGraphicsContext.currentContext = [NSGraphicsContext graphicsContextWithCGContext:context flipped:NO];
-  
-  [NSGraphicsContext.currentContext saveGraphicsState];
-  [_origPage drawWithBox:box toContext:context];
-  [NSGraphicsContext.currentContext restoreGraphicsState];
-  
-  NSBezierPath *clip = [NSBezierPath bezierPathWithRect:[self boundsForBox:box]];
-  [clip addClip];
-  
   @autoreleasepool {
-    NSRect cropBox = [self boundsForBox:kPDFDisplayBoxCropBox];
+    NSRect cropBox = [self ptd_rotatedCropBox];
     NSBitmapImageRep *image = [[NSBitmapImageRep alloc] initWithData:_imageData];
     [image drawInRect:cropBox];
   }
-  
   [NSGraphicsContext restoreGraphicsState];
 }
 
