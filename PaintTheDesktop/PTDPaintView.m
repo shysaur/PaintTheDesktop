@@ -142,6 +142,7 @@
 {
   [super viewWillStartLiveResize];
   _liveResize = YES;
+  _cursorLayer.hidden = YES;
   if (self.paintViewDelegate && [self.paintViewDelegate respondsToSelector:@selector(viewWillStartLiveResize:)])
     [self.paintViewDelegate viewWillStartLiveResize:self];
 }
@@ -157,6 +158,7 @@
 {
   [super viewDidEndLiveResize];
   _liveResize = NO;
+  _cursorLayer.hidden = NO;
   if (self.paintViewDelegate && [self.paintViewDelegate respondsToSelector:@selector(viewDidEndLiveResize:)])
     [self.paintViewDelegate viewDidEndLiveResize:self];
   [self updateBackingImages];
