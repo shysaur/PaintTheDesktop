@@ -34,7 +34,6 @@
   NSInteger angle = -self.rotation;
   CGAffineTransform xfm = CGAffineTransformMakeRotation((CGFloat)angle / 180.0 * M_PI);
   rect = CGRectApplyAffineTransform(rect, xfm);
-  rect.origin = NSZeroPoint;
   return rect;
 }
 

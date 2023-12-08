@@ -91,16 +91,17 @@
   NSRectFill(destRect);
   
   NSAffineTransform *at = [NSAffineTransform ptd_transformMappingRect:sourceRect toRect:destRect];
+  [at rotateByDegrees:-page.rotation];
   [at concat];
   
-  [page drawWithBox:kPDFDisplayBoxCropBox toContext:NSGraphicsContext.currentContext.CGContext];
+  CGContextDrawPDFPage(NSGraphicsContext.currentContext.CGContext, page.pageRef);
+  
+  [NSGraphicsContext.currentContext restoreGraphicsState];
   
   if (self.borderColor) {
     [self.borderColor set];
-    NSFrameRect(sourceRect);
+    NSFrameRect(destRect);
   }
-  
-  [NSGraphicsContext.currentContext restoreGraphicsState];
 }
 
 
