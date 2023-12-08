@@ -433,7 +433,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
   } else {
     if (self.view.cursorImage) {
       CGFloat outX = NSMaxX(self.view.paintRect) + self.view.cursorImage.size.width + 1;
-      CGFloat outY = NSMaxX(self.view.paintRect) + self.view.cursorImage.size.height + 1;
+      CGFloat outY = NSMaxY(self.view.paintRect) + self.view.cursorImage.size.height + 1;
       self.view.cursorPosition = NSMakePoint(outX, outY);
     }
   }
