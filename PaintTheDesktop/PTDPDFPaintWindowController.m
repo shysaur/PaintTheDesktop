@@ -313,9 +313,10 @@
   [savePanel beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse result) {
     if (result == NSModalResponseCancel)
       return;
-      
-    PDFDocument *doc = [self annotatedPDFDocument];
-    [doc writeToURL:savePanel.URL];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      PDFDocument *doc = [self annotatedPDFDocument];
+      [doc writeToURL:savePanel.URL];
+    });
   }];
 }
 
