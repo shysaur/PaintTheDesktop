@@ -509,7 +509,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
     return NO;
   point = [window convertPointFromScreen:point];
   point = [view convertPoint:point fromView:nil];
-  return NSPointInRect(point, self.view.bounds);
+  return NSPointInRect(point, view.visibleRect);
 }
 
 
