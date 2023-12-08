@@ -273,9 +273,9 @@ NSString * const PTDTextToolOptionTextAlignment = @"textAlignment";
 {
   _textView.insertionPointColor = NSColor.clearColor;
   _textView.selectedRange = NSMakeRange(0, 0);
-  NSRect theRect = _textView.visibleRect;
+  NSRect theRect = _textView.bounds;
   NSBitmapImageRep *tempImage = [_textView bitmapImageRepForCachingDisplayInRect:theRect];
-  [_textView cacheDisplayInRect:_textView.visibleRect toBitmapImageRep:tempImage];
+  [_textView cacheDisplayInRect:_textView.bounds toBitmapImageRep:tempImage];
   
   [self.currentDrawingSurface beginCanvasDrawing];
   NSRect pixRect;
