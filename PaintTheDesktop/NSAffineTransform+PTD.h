@@ -27,6 +27,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+CGAffineTransform PTDTransformMappingRectToRect(CGRect src, CGRect dest);
+
 @interface NSAffineTransform (PTD)
 
 + (NSAffineTransform *)ptd_transformMappingRect:(NSRect)src toRect:(NSRect)dest;

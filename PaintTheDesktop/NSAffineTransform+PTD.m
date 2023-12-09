@@ -26,6 +26,16 @@
 #import "NSAffineTransform+PTD.h"
 
 
+CGAffineTransform PTDTransformMappingRectToRect(CGRect src, CGRect dest)
+{
+  CGAffineTransform res = CGAffineTransformIdentity;
+  res = CGAffineTransformTranslate(res, NSMinX(dest), NSMinY(dest));
+  res = CGAffineTransformScale(res, NSWidth(dest), NSHeight(dest));
+  res = CGAffineTransformScale(res, 1.0/NSWidth(src), 1.0/NSHeight(src));
+  return CGAffineTransformTranslate(res, -NSMinX(src), -NSMinY(src));
+}
+
+
 @implementation NSAffineTransform (PTD)
 
 
