@@ -18,6 +18,8 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string>$(INFOPLIST_KEY_LSApplicationCategoryType)</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>NSHumanReadableCopyright</key>
@@ -30,10 +32,10 @@
 	<false/>
 	<key>NSSupportsSuddenTermination</key>
 	<true/>
-	<key>SUFeedURL</key>
-	<string>https://github.com/shysaur/PaintTheDesktop/raw/master/Updates/paintthedesktop-appcast.xml</string>
 	<key>SUEnableAutomaticChecks</key>
 	<false/>
+	<key>SUFeedURL</key>
+	<string>https://github.com/shysaur/PaintTheDesktop/raw/master/Updates/paintthedesktop-appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>xeftqEhxib28LfWujQPeqzQsOW1N7CbSjna1vfuIqtI=</string>
 </dict>
