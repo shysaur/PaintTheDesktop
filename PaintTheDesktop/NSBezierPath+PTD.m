@@ -31,43 +31,38 @@
 
 - (CGPathRef)ptd_CGPath
 {
-  CGMutablePathRef path = CGPathCreateMutable();
-  
-  BOOL didClosePath = YES;
-  NSInteger numElements = self.elementCount;
-
-  for (NSInteger i = 0; i < numElements; i++) {
-    NSPoint points[3];
-  
-    switch ([self elementAtIndex:i associatedPoints:points]) {
-      case NSMoveToBezierPathElement:
-        CGPathMoveToPoint(path, NULL, points[0].x, points[0].y);
-        break;
-        
-      case NSLineToBezierPathElement:
-        CGPathAddLineToPoint(path, NULL, points[0].x, points[0].y);
-        didClosePath = NO;
-        break;
-        
-      case NSCurveToBezierPathElement:
-        CGPathAddCurveToPoint(path, NULL, points[0].x, points[0].y,
-                              points[1].x, points[1].y,
-                              points[2].x, points[2].y);
-        didClosePath = NO;
-        break;
-        
-      case NSClosePathBezierPathElement:
-        CGPathCloseSubpath(path);
-        didClosePath = YES;
-        break;
+  if (@available(macOS 14.0, *)) {
+    return self.CGPath;
+  } else {
+    // A classic, from https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/CocoaDrawingGuide/Paths/Paths.html#//apple_ref/doc/uid/TP40003290-CH206-SW2
+    CGMutablePathRef path = CGPathCreateMutable();
+    NSInteger numElements = self.elementCount;
+    for (NSInteger i = 0; i < numElements; i++) {
+      NSPoint points[3];
+      switch ([self elementAtIndex:i associatedPoints:points]) {
+        case NSMoveToBezierPathElement:
+          CGPathMoveToPoint(path, NULL, points[0].x, points[0].y);
+          break;
+        case NSLineToBezierPathElement:
+          CGPathAddLineToPoint(path, NULL, points[0].x, points[0].y);
+          break;
+        case NSCurveToBezierPathElement:
+          CGPathAddCurveToPoint(path, NULL, points[0].x, points[0].y,
+                                points[1].x, points[1].y,
+                                points[2].x, points[2].y);
+          break;
+        case NSBezierPathElementQuadraticCurveTo:
+          CGPathAddQuadCurveToPoint(path, NULL, points[0].x, points[0].y,
+                                    points[1].x, points[1].y);
+          break;
+        case NSClosePathBezierPathElement:
+          CGPathCloseSubpath(path);
+          break;
+      }
     }
+    CFAutorelease(path);
+    return path;
   }
-  
-  if (!didClosePath)
-    CGPathCloseSubpath(path);
-  
-  CFAutorelease(path);
-  return path;
 }
 
 
