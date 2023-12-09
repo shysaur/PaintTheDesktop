@@ -71,6 +71,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
   __weak PTDDrawingSurface *_lastDrawingSurface;
   NSPoint _firstMousePositionInDrag;
   BOOL _isResizing;
+  BOOL _toolIsActive;
 }
 
 @dynamic view;
@@ -153,12 +154,26 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 }
 
 
+- (void)abortLastDrag
+{
+  if (self.mouseIsDragging) {
+    @autoreleasepool {
+      PTDDrawingSurface *surf = [self drawingSurface];
+      PTDTool *tool = [self initializeToolWithSurface:surf];
+      [tool dragDidEndAtPoint:self.lastMousePositionInDrag];
+    }
+    self.mouseIsDragging = NO;
+  }
+}
+
+
 - (void)mouseDown:(NSEvent *)event
 {
   self.mouseInViewOrDragging = YES;
-  if (!self.effectivelyActive)
+  if (!self.effectivelyActive || !_toolIsActive)
     return;
   
+  [self abortLastDrag];
   self.mouseIsDragging = YES;
   self.lastMousePositionInDrag = _firstMousePositionInDrag = [self locationForEvent:event];
   
@@ -174,7 +189,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 - (void)mouseDragged:(NSEvent *)event
 {
   self.mouseInViewOrDragging = YES;
-  if (!self.effectivelyActive)
+  if (!self.effectivelyActive || !_toolIsActive)
     return;
   
   @autoreleasepool {
@@ -196,8 +211,10 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 - (void)mouseUp:(NSEvent *)event
 {
   self.mouseInViewOrDragging = [self isPointInView:NSEvent.mouseLocation];
-  if (!self.effectivelyActive)
+  if (!self.effectivelyActive || !_toolIsActive) {
+    [self abortLastDrag];
     return;
+  }
   
   NSPoint thisLocation = [self locationForEvent:event];
   CGFloat manhattanDist = 0.0;
@@ -209,6 +226,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
       [tool dragDidContinueFromPoint:self.lastMousePositionInDrag toPoint:thisLocation];
       [tool dragDidEndAtPoint:[self locationForEvent:event]];
     }
+    self.mouseIsDragging = NO;
   }
   
   if (event.clickCount == 1 && manhattanDist < 3.0) {
@@ -220,8 +238,6 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
   }
   
   [self updateCursorAtPoint:[self locationForEvent:event]];
-  
-  self.mouseIsDragging = NO;
 }
 
 
@@ -231,15 +247,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
   if (!self.effectivelyActive)
     return;
   
-  /* Cancel last drag */
-  if (self.mouseIsDragging) {
-    @autoreleasepool {
-      PTDDrawingSurface *surf = [self drawingSurface];
-      PTDTool *tool = [self initializeToolWithSurface:surf];
-      [tool dragDidEndAtPoint:self.lastMousePositionInDrag];
-    }
-    self.mouseIsDragging = NO;
-  }
+  [self abortLastDrag];
   [self updateCursorAtPoint:[self locationForEvent:event]];
   
   [self openContextMenuWithEvent:event];
@@ -269,7 +277,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 
 - (void)flagsChanged:(NSEvent *)event
 {
-  if (self.mouseInViewOrDragging && self.mouseIsDragging) {
+  if (self.mouseInViewOrDragging) {
     @autoreleasepool {
       PTDDrawingSurface *surf = [self drawingSurface];
       PTDTool *tool = [self initializeToolWithSurface:surf];
@@ -281,6 +289,8 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 
 - (void)viewWillResize:(PTDPaintView *)view
 {
+  if (self.mouseIsDragging)
+    NSLog(@"warning: -viewWillResize: while dragging");
   if (!self.view.inLiveResize && !_isResizing) {
     _isResizing = YES;
     self.activityStatus = self.activityStatus | PTDPaintViewActivityStatusInResize;
@@ -290,6 +300,8 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
 
 - (void)viewWillStartLiveResize:(PTDPaintView *)view
 {
+  if (self.mouseIsDragging)
+    NSLog(@"warning: -viewWillStartLiveResize: while dragging");
   if (!_isResizing) {
     _isResizing = YES;
     self.activityStatus = self.activityStatus | PTDPaintViewActivityStatusInResize;
@@ -392,16 +404,21 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
     PTDTool *tool = [self initializeToolWithSurface:surf];
     [tool activate];
   }
+  _toolIsActive = YES;
 }
 
 
 - (void)deactivateTool
 {
+  if (self.mouseIsDragging)
+    NSLog(@"warning: deactivateTool while dragging");
+  [self abortLastDrag];
   @autoreleasepool {
     PTDDrawingSurface *surf = [self drawingSurface];
     PTDTool *tool = [self initializeToolWithSurface:surf];
     [tool deactivate];
   }
+  _toolIsActive = NO;
 }
 
 
