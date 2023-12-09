@@ -31,10 +31,12 @@
 
 @interface PTDPDFPageRendererRequest: NSObject
 
+@property (nonatomic) PDFPage *page;
 @property (nonatomic) NSRect src; // in page coordinates
 @property (nonatomic) NSRect dest; // in view coordinates
 @property (nonatomic) NSSize backingSize; // in backing coordinates
 @property (nonatomic) NSColorSpace *colorSpace;
+
 @property (nonatomic) CGImageRef bitmap;
 
 @end
@@ -60,38 +62,23 @@
 
 @interface PTDPDFPageRenderer: NSObject
 
-- (instancetype)initWithPage:(PDFPage *)page;
-- (void)requestRenderPageArea:(NSRect)src toRect:(NSRect)dest backingSize:(NSSize)backing colorSpace:(NSColorSpace *)colorSpace;
+- (void)requestRender:(PTDPDFPageRendererRequest *)request;
 
-@property (nonatomic, copy) void (^readyCallback)(CGImageRef bmp, NSRect src, NSRect dest);
+@property (nonatomic, copy) void (^readyCallback)(PTDPDFPageRendererRequest *request);
 
 @end
 
 
 @implementation PTDPDFPageRenderer {
-  PDFPage *_page;
   BOOL _working;
   PTDPDFPageRendererRequest *_lastRequest;
   PTDPDFPageRendererRequest *_nextRequest;
 }
 
 
-- (instancetype)initWithPage:(PDFPage *)page
+- (void)requestRender:(PTDPDFPageRendererRequest *)request
 {
-  self = [super init];
-  _page = page;
-  return self;
-}
-
-
-- (void)requestRenderPageArea:(NSRect)src toRect:(NSRect)dest backingSize:(NSSize)backing colorSpace:(NSColorSpace *)colorSpace
-{
-  PTDPDFPageRendererRequest *next = [[PTDPDFPageRendererRequest alloc] init];
-  next.src = src;
-  next.dest = dest;
-  next.backingSize = NSMakeSize(round(backing.width), round(backing.height));
-  next.colorSpace = colorSpace;
-  _nextRequest = next;
+  _nextRequest = request;
   [self startWorkingIfIdle];
 }
 
@@ -106,34 +93,24 @@
   PTDPDFPageRendererRequest *curRequest = _nextRequest;
   _nextRequest = nil;
   
-  if (NSEqualRects(_lastRequest.src, curRequest.src) &&
+  if ([_lastRequest.page isEqual:curRequest.page] &&
+      NSEqualRects(_lastRequest.src, curRequest.src) &&
       NSEqualSizes(_lastRequest.backingSize, curRequest.backingSize) &&
       [_lastRequest.colorSpace isEqual:curRequest.colorSpace]) {
     curRequest.bitmap = _lastRequest.bitmap;
-    [self workEndedWithResult:curRequest];
+    [self renderingEnded:curRequest];
   } else {
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-      [self workRenderingWithRequest:curRequest];
+      [self renderRequest:curRequest];
       dispatch_async(dispatch_get_main_queue(), ^{
-        [self workEndedWithResult:curRequest];
+        [self renderingEnded:curRequest];
       });
     });
   }
 }
 
 
-- (void)workEndedWithResult:(PTDPDFPageRendererRequest *)result
-{
-  _lastRequest = result;
-  _working = NO;
-  if (_readyCallback) {
-    _readyCallback(result.bitmap, result.src, result.dest);
-  }
-  [self startWorkingIfIdle];
-}
-
-
-- (void)workRenderingWithRequest:(PTDPDFPageRendererRequest *)request
+- (void)renderRequest:(PTDPDFPageRendererRequest *)request
 {
   NSInteger width = round(request.backingSize.width);
   NSInteger height = round(request.backingSize.height);
@@ -152,10 +129,10 @@
     NSRectFill(destRect);
     
     NSAffineTransform *at = [NSAffineTransform ptd_transformMappingRect:sourceRect toRect:destRect];
-    [at rotateByDegrees:-_page.rotation];
+    [at rotateByDegrees:-request.page.rotation];
     [at concat];
     
-    CGContextDrawPDFPage(NSGraphicsContext.currentContext.CGContext, _page.pageRef);
+    CGContextDrawPDFPage(NSGraphicsContext.currentContext.CGContext, request.page.pageRef);
     [ctx flushGraphics];
     NSGraphicsContext.currentContext = nil;
   }
@@ -166,21 +143,40 @@
 }
 
 
+- (void)renderingEnded:(PTDPDFPageRendererRequest *)result
+{
+  _lastRequest = result;
+  _working = NO;
+  if (_readyCallback) {
+    _readyCallback(result);
+  }
+  [self startWorkingIfIdle];
+}
+
+
 @end
 
 
 @implementation PTDPDFPageView {
-  PTDPDFPageRenderer *_renderer;
   CALayer *_bgLayer;
+  CALayer *_borderLayer;
+  
+  PTDPDFPageRenderer *_renderer;
+  PDFPage *_contentLayerPage;
   NSRect _contentLayerVisBox;
   CALayer *_contentLayer;
-  CALayer *_borderLayer;
 }
 
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
   self = [super initWithCoder:coder];
+  
+  _renderer = [[PTDPDFPageRenderer alloc] init];
+  __weak PTDPDFPageView *weakSelf = self;
+  [_renderer setReadyCallback:^(PTDPDFPageRendererRequest *request) {
+    [weakSelf renderingRequestReady:request];
+  }];
   
   self.layer = [self makeBackingLayer];
   _bgLayer = [[PTDNoAnimeCALayer alloc] init];
@@ -203,23 +199,16 @@
 
 - (void)setPdfPage:(PDFPage *)pdfPage
 {
+  BOOL moreThanOnePageBehind = _pdfPage != _contentLayerPage;
   NSRect oldPageBox = [_pdfPage ptd_rotatedCropBox];
   _pdfPage = pdfPage;
   
   if (_pdfPage) {
     NSRect newPageBox = [_pdfPage ptd_rotatedCropBox];
-    if (!NSEqualRects(oldPageBox, newPageBox)) {
+    if (!NSEqualRects(oldPageBox, newPageBox) || moreThanOnePageBehind) {
       _contentLayerVisBox = NSMakeRect(0, 0, 0, 0);
       _contentLayer.contents = nil;
     }
-    
-    _renderer = [[PTDPDFPageRenderer alloc] initWithPage:pdfPage];
-    __weak PTDPDFPageView *weakSelf = self;
-    [_renderer setReadyCallback:^(CGImageRef bmp, NSRect src, NSRect dest) {
-      [weakSelf renderingReadyWithBitmap:bmp source:src destination:dest];
-    }];
-  } else {
-    _renderer = nil;
   }
   
   [self setNeedsLayout:YES];
@@ -245,11 +234,15 @@
 }
 
 
-- (void)renderingReadyWithBitmap:(CGImageRef)bmp source:(NSRect)src destination:(NSRect)dest
+- (void)renderingRequestReady:(PTDPDFPageRendererRequest *)request
 {
-  _contentLayer.contents = (__bridge id _Nullable)(bmp);
-  _contentLayerVisBox = src;
+  if (request.page != self.pdfPage)
+    return;
+  _contentLayerPage = request.page;
+  _contentLayer.contents = (__bridge id _Nullable)(request.bitmap);
+  _contentLayerVisBox = request.src;
   _contentLayer.frame = [self recomputeContentLayerFrame];
+  _contentLayer.opacity = 1.0;
 }
 
 
@@ -264,6 +257,8 @@
 
 - (void)requestNewRenderingInRect:(NSRect)visRect
 {
+  PTDPDFPageRendererRequest *request = [[PTDPDFPageRendererRequest alloc] init];
+  
   NSRect pageFrame = [self pageFrame];
   NSRect box = [self.pdfPage ptd_rotatedCropBox];
   CGAffineTransform xfm = PTDTransformMappingRectToRect(pageFrame, box);
@@ -273,9 +268,13 @@
   NSRect visBox = CGRectApplyAffineTransform(visPageFrame, xfm);
   NSRect backing = [self convertRectToBacking:visPageFrame];
   
-  NSColorSpace *cs = self.window.screen.colorSpace;
+  request.page = self.pdfPage;
+  request.src = visBox;
+  request.dest = visPageFrame;
+  request.backingSize = NSMakeSize(round(backing.size.width), round(backing.size.height));
+  request.colorSpace = self.window.screen.colorSpace;
   
-  [_renderer requestRenderPageArea:visBox toRect:visPageFrame backingSize:backing.size colorSpace:cs];
+  [_renderer requestRender:request];
 }
 
 
@@ -297,10 +296,11 @@
   }
   _bgLayer.opacity = 1.0;
   _borderLayer.opacity = 1.0;
-  _contentLayer.opacity = 1.0;
   NSRect pageFrame = [self pageFrame];
   _bgLayer.frame = pageFrame;
   _borderLayer.frame = pageFrame;
+  
+  _contentLayer.opacity = 1.0;
   _contentLayer.frame = [self recomputeContentLayerFrame];
   [self requestNewRenderingInRect:self.visibleRect];
 }
