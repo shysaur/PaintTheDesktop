@@ -28,12 +28,127 @@
 #import "NSAffineTransform+PTD.h"
 
 
-@implementation PTDPDFPageView
+@interface PTDPDFPageRenderer: NSObject
+
+- (instancetype)initWithPage:(PDFPage *)page;
+- (void)requestRenderWithBackingSize:(NSSize)size;
+
+@property (nonatomic, readonly) NSBitmapImageRep *lastRender;
+@property (nonatomic, copy) void (^readyCallback)(void);
+
+@end
+
+
+@implementation PTDPDFPageRenderer {
+  PDFPage *_page;
+  BOOL _working;
+  NSSize _size;
+  BOOL _pendingWork;
+  NSSize _pendingSize;
+}
+
+
+- (instancetype)initWithPage:(PDFPage *)page
+{
+  self = [super init];
+  _page = page;
+  return self;
+}
+
+
+- (void)requestRenderWithBackingSize:(NSSize)size
+{
+  
+  _pendingWork = YES;
+  _pendingSize = size;
+  [self startWorkingIfIdle];
+}
+
+
+- (void)startWorkingIfIdle
+{
+  if (_working)
+    return;
+  if (!_pendingWork)
+    return;
+  _working = YES;
+  _pendingWork = NO;
+  NSSize workSize = _pendingSize;
+  
+  if (NSEqualSizes(workSize, _size)) {
+    [self workEndedWithResult:_lastRender ofSize:_size];
+  } else {
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+      NSBitmapImageRep *bmp = [self workRenderingWithSize:workSize];
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [self workEndedWithResult:bmp ofSize:workSize];
+      });
+    });
+  }
+}
+
+
+- (void)workEndedWithResult:(NSBitmapImageRep *)bmp ofSize:(NSSize)size
+{
+  self->_lastRender = bmp;
+  self->_size = size;
+  
+  self->_working = NO;
+  if (self->_readyCallback)
+    self->_readyCallback();
+  [self startWorkingIfIdle];
+}
+
+
+- (NSBitmapImageRep *)workRenderingWithSize:(NSSize)size
+{
+  NSInteger width = round(size.width);
+  NSInteger height = round(size.height);
+  NSBitmapImageRep *bmp = [[NSBitmapImageRep alloc]
+                           initWithBitmapDataPlanes:NULL
+                           pixelsWide:width
+                           pixelsHigh:height
+                           bitsPerSample:8
+                           samplesPerPixel:3
+                           hasAlpha:NO
+                           isPlanar:NO
+                           colorSpaceName:NSCalibratedRGBColorSpace
+                           bytesPerRow:0
+                           bitsPerPixel:32];
+  @autoreleasepool {
+    NSGraphicsContext *ctx = [NSGraphicsContext graphicsContextWithBitmapImageRep:bmp];
+    NSGraphicsContext.currentContext = ctx;
+    
+    NSRect sourceRect = [_page ptd_rotatedCropBox];
+    NSRect destRect = (NSRect){{0, 0}, {width, height}};
+    [[NSColor whiteColor] setFill];
+    NSRectFill(destRect);
+    
+    NSAffineTransform *at = [NSAffineTransform ptd_transformMappingRect:sourceRect toRect:destRect];
+    [at rotateByDegrees:-_page.rotation];
+    [at concat];
+    
+    CGContextDrawPDFPage(NSGraphicsContext.currentContext.CGContext, _page.pageRef);
+    [ctx flushGraphics];
+    NSGraphicsContext.currentContext = nil;
+  }
+  NSLog(@"Finished rendering PDF page %@ at size %@", _page.label, NSStringFromSize(size));
+  return bmp;
+}
+
+
+@end
+
+
+@implementation PTDPDFPageView {
+  PTDPDFPageRenderer *_renderer;
+}
 
 
 - (void)setFrameSize:(NSSize)newSize
 {
   [super setFrameSize:newSize];
+  [self requestNewRendering];
   [self setNeedsLayout:YES];
 }
 
@@ -74,6 +189,12 @@
 }
 
 
+- (NSRect)backingAlignedPageFrame
+{
+  return [self backingAlignedRect:[self pageFrame] options:NSAlignAllEdgesNearest];
+}
+
+/*
 - (void)drawRect:(NSRect)dirtyRect
 {
   [super drawRect:dirtyRect];
@@ -103,11 +224,52 @@
     NSFrameRect(destRect);
   }
 }
+*/
+
+
+- (void)drawRect:(NSRect)dirtyRect
+{
+  [NSBezierPath clipRect:dirtyRect];
+  NSBitmapImageRep *bmp = [_renderer lastRender];
+  NSRect destRect = [self backingAlignedPageFrame];
+  [bmp drawInRect:destRect];
+  if (self.borderColor) {
+    [self.borderColor set];
+    NSFrameRect(destRect);
+  }
+}
+
+
+- (void)renderingReady
+{
+  [self setNeedsDisplay:YES];
+}
+
+
+- (void)requestNewRendering
+{
+  if (!_renderer) {
+    NSLog(@"warning: %@ requested a rendering but renderer is not set", self);
+    return;
+  }
+  NSRect frame = [self backingAlignedPageFrame];
+  NSRect backingFrame = [self convertRectToBacking:frame];
+  [_renderer requestRenderWithBackingSize:backingFrame.size];
+}
 
 
 - (void)setPdfPage:(PDFPage *)pdfPage
 {
   _pdfPage = pdfPage;
+  
+  _renderer = [[PTDPDFPageRenderer alloc] initWithPage:pdfPage];
+  __weak PTDPDFPageView *weakSelf = self;
+  [_renderer setReadyCallback:^{
+    __strong PTDPDFPageView *strongSelf = weakSelf;
+    [strongSelf renderingReady];
+  }];
+  [self requestNewRendering];
+  
   [self setNeedsLayout:YES];
   [self setNeedsDisplay:YES];
 }
