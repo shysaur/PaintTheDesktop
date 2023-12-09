@@ -216,6 +216,13 @@
 }
 
 
+- (void)makeMovable:(id)sender
+{
+  self.window.movable = YES;
+  self.window.styleMask = self.window.styleMask | NSWindowStyleMaskTitled;
+}
+
+
 - (NSMenu *)windowMenu
 {
   NSMenu *submenu = [[NSMenu alloc] init];
@@ -245,6 +252,12 @@
   if (!CGDisplayIsActive(self.display)) {
     tmp.enabled = NO;
     tmp2.enabled = NO;
+  }
+  
+  if ([NSEvent modifierFlags] & NSEventModifierFlagOption) {
+    [submenu addItem:[NSMenuItem separatorItem]];
+    tmp = [submenu addItemWithTitle:NSLocalizedString(@"Make Window Movable", @"Menu item for making a display window movable") action:@selector(makeMovable:) keyEquivalent:@""];
+    tmp.target = self;
   }
   
   return submenu;
