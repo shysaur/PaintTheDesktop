@@ -60,7 +60,7 @@
 {
   [super setTheDocument:theDocument];
   [self updateContentViewSize];
-  [self scrollToTop];
+  [self setFirstPageScrolling];
 }
 
 
@@ -147,12 +147,24 @@
 }
 
 
-- (void)scrollToTop
+- (void)setFirstPageScrolling
 {
   NSPoint pageTopLeft = NSMakePoint(NSMinX(self.pageView.frame), NSMaxY(self.pageView.frame));
   NSRect visRect = self.scrollView.contentView.bounds;
   NSPoint newBoundsOrigin = NSMakePoint(pageTopLeft.x, pageTopLeft.y - visRect.size.height);
   [self.scrollView.contentView scrollToPoint:newBoundsOrigin];
+  [self.scrollView reflectScrolledClipView:self.scrollView.contentView];
+}
+
+
+- (void)scrollToTop
+{
+  NSPoint pageTopLeft = NSMakePoint(NSMinX(self.pageView.frame), NSMaxY(self.pageView.frame));
+  NSRect visRect = self.scrollView.contentView.bounds;
+  NSRect bounds = self.scrollView.contentView.bounds;
+  CGFloat minY = pageTopLeft.y - visRect.size.height;
+  bounds.origin.y = MAX(minY, bounds.origin.y);
+  [self.scrollView.contentView scrollToPoint:bounds.origin];
   [self.scrollView reflectScrolledClipView:self.scrollView.contentView];
 }
 

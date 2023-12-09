@@ -163,7 +163,6 @@
   request.bitmap = img;
   CFRelease(img);
   CGContextRelease(bmpCtx);
-  sleep(1);
 }
 
 
