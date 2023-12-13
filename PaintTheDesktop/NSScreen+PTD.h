@@ -30,6 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface NSScreen (PTD)
 
 @property (nonatomic, readonly) CGDirectDisplayID ptd_displayID;
+@property (nonatomic, readonly) NSString *ptd_name;
 
 @end
 

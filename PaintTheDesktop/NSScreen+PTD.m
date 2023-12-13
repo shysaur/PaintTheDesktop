@@ -35,4 +35,20 @@
 }
 
 
+- (NSString *)ptd_name
+{
+  if (@available(macOS 10.15, *)) {
+    return self.localizedName;
+  } else {
+    CGDirectDisplayID display = [self ptd_displayID];
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    io_service_t dispSvc = CGDisplayIOServicePort(display);
+    #pragma clang diagnostic pop
+    NSDictionary *properties = CFBridgingRelease(IODisplayCreateInfoDictionary(dispSvc, kIODisplayOnlyPreferredName));
+    return [[properties[@kDisplayProductName] allValues] firstObject];
+  }
+}
+
+
 @end

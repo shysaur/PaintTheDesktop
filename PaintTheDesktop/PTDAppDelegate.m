@@ -372,7 +372,8 @@
     }
     
     if (!alreadyHandled) {
-      PTDScreenPaintWindowController *thisWindow = [[PTDScreenPaintWindowController alloc] initWithDisplay:dispId];
+      NSString *name = screen.ptd_name;
+      PTDScreenPaintWindowController *thisWindow = [[PTDScreenPaintWindowController alloc] initWithDisplay:dispId localizedName:name];
       [self.paintWindowControllers addObject:thisWindow];
       thisWindow.delegate = self;
       if (self.active)

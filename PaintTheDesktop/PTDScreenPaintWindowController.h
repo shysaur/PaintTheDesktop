@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PTDScreenPaintWindowController : PTDSimpleAbstractPaintWindowController
 
-- (instancetype)initWithDisplay:(CGDirectDisplayID)display;
+- (instancetype)initWithDisplay:(CGDirectDisplayID)display localizedName:(NSString *)name;
 
 @property (nonatomic) CGDirectDisplayID display;
 

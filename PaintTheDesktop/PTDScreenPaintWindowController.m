@@ -66,17 +66,12 @@
 }
 
 
-- (instancetype)initWithDisplay:(CGDirectDisplayID)display;
+- (instancetype)initWithDisplay:(CGDirectDisplayID)display localizedName:(NSString *)name
 {
   self = [super init];
   
   _display = display;
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-  io_service_t dispSvc = CGDisplayIOServicePort(display);
-  #pragma clang diagnostic pop
-  NSDictionary *properties = CFBridgingRelease(IODisplayCreateInfoDictionary(dispSvc, kIODisplayOnlyPreferredName));
-  _displayProductName = [[properties[@kDisplayProductName] allValues] firstObject];
+  _displayProductName = name;
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenConfigurationDidChange:) name:NSApplicationDidChangeScreenParametersNotification object:nil];
   
