@@ -91,4 +91,28 @@
 }
 
 
+- (void)windowDidBecomeMain:(NSNotification *)notification
+{
+  self.paintViewController.active = (self.window.attachedSheet == nil);
+}
+
+
+- (void)windowDidResignMain:(NSNotification *)notification
+{
+  self.paintViewController.active = NO;
+}
+
+
+- (void)windowWillBeginSheet:(NSNotification *)notification
+{
+  self.paintViewController.active = NO;
+}
+
+
+- (void)windowDidEndSheet:(NSNotification *)notification
+{
+  self.paintViewController.active = self.window.isMainWindow;
+}
+
+
 @end

@@ -102,7 +102,7 @@ NS_INLINE BOOL PTDPaintViewActiveFromStatus(PTDPaintViewActivityStatus status)
   _isResizing = NO;
   self.view.paintViewDelegate = self;
   
-  self.active = YES;
+  self.active = NO;
 }
 
 

@@ -186,6 +186,16 @@
 }
 
 
+- (void)windowDidBecomeMain:(NSNotification *)notification
+{
+}
+
+
+- (void)windowDidResignMain:(NSNotification *)notification
+{
+}
+
+
 - (void)applicationDidEnableDrawing
 {
   self.active = YES;
