@@ -178,15 +178,17 @@
     [weakSelf renderingRequestReady:request];
   }];
   
-  self.layer = [self makeBackingLayer];
+  CALayer *root = [self makeBackingLayer];
+  self.layer = root;
+  
   _bgLayer = [[PTDNoAnimeCALayer alloc] init];
-  _bgLayer.backgroundColor = CGColorCreateGenericGray(1.0, 1.0);
-  [self.layer addSublayer:_bgLayer];
+  _bgLayer.backgroundColor = CGColorGetConstantColor(kCGColorWhite);
+  [root addSublayer:_bgLayer];
   _contentLayer = [[PTDNoAnimeCALayer alloc] init];
-  [self.layer addSublayer:_contentLayer];
+  [root addSublayer:_contentLayer];
   _borderLayer = [[PTDNoAnimeCALayer alloc] init];
-  [self.layer addSublayer:_borderLayer];
-    
+  [root addSublayer:_borderLayer];
+  
   return self;
 }
 
