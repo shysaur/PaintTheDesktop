@@ -31,28 +31,28 @@
 - (void)scrollToPoint:(NSPoint)newOrigin
 {
   [super scrollToPoint:newOrigin];
-  [self.documentView setNeedsDisplay:YES];
+  [self.documentView.subviews[0] setNeedsDisplay:YES];
 }
 
 
 - (void)setBoundsOrigin:(NSPoint)newOrigin
 {
   [super setBoundsOrigin:newOrigin];
-  [self.documentView setNeedsDisplay:YES];
+  [self.documentView.subviews[0] setNeedsDisplay:YES];
 }
 
 
 - (void)setBoundsSize:(NSSize)newSize
 {
   [super setBoundsSize:newSize];
-  [self.documentView setNeedsDisplay:YES];
+  [self.documentView.subviews[0] setNeedsDisplay:YES];
 }
 
 
 - (void)setBounds:(NSRect)bounds
 {
   [super setBounds:bounds];
-  [self.documentView setNeedsDisplay:YES];
+  [self.documentView.subviews[0] setNeedsDisplay:YES];
 }
 
 
