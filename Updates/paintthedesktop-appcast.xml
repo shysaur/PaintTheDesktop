@@ -7,6 +7,37 @@
         <language>en</language>
         
         <item>
+            <title>Release 2.0.0</title>
+            <description><![CDATA[
+<b>New features:</b>
+<ul>
+  <li>Selection tool with Cut/Copy/Paste</li>
+  <li>Line tool</li>
+  <li>Text tool</li>
+  <li>Path smoothing for pencil tool</li>
+  <li>Tool options (palettes, brush sizes...) can now be customized</li>
+  <li>New kinds of drawing surfaces:</li>
+  <ul>
+    <li>PDF presentations</li>
+    <li>PDF reader</li>
+    <li>Blank canvas</li>
+  </ul>
+  <li>Improved cursors when drawing</li>
+  <li>Better support for macOS 11 and greater, and Apple Silicon</li>
+</ul>
+]]>
+            </description>
+            <pubDate>Thu, 04 January 2024 21:33:35 +0100</pubDate>
+            <enclosure url="https://github.com/shysaur/PaintTheDesktop/releases/download/release_2.0.0/PaintTheDesktop-2.0.0.zip" 
+              sparkle:version="300" 
+              sparkle:shortVersionString="2.0.0"
+              sparkle:edSignature="zlqlK3SvfyI65JfM4Eb2nYIa/0o502Me0KA1Ex8Kli7PXs0x26z5pA7FSBB22p/foJt+IFvA65POv414CJPgDQ=="
+              length="1743262"
+              type="application/octet-stream"/>
+            <sparkle:minimumSystemVersion>10.13.4</sparkle:minimumSystemVersion>
+        </item>
+        
+        <item>
             <title>Release 1.0.0</title>
             <description><![CDATA[ 
               <ul>
