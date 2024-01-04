@@ -1,6 +1,6 @@
 # PaintTheDesktop
 
-<img src="PaintTheDesktop/Assets.xcassets/AppIcon.appiconset/AppIcon_2_512.png" width=256>
+<img src="PaintTheDesktop/Assets.xcassets/AppIcon.appiconset/AppIcon_3_512.png" width=256>
 
 ### **[Download Here](https://github.com/shysaur/PaintTheDesktop/releases)**
 
@@ -16,7 +16,7 @@ as a tool for use during remote teaching. In that context, it was used to draw n
 and graphs while writing code with a graphics tablet. Of course PaintTheDesktop can be used
 however you want.
 
-PaintTheDesktop works on macOS 10.13 High Sierra up to macOS 10.15 Catalina -- and potentially
+PaintTheDesktop works on macOS 10.13 High Sierra up to macOS 14 Sonoma -- and potentially
 other future macOS releases.
 
 ## How to use it
