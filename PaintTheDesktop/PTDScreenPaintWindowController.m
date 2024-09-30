@@ -230,14 +230,19 @@
 
 - (NSMenu *)windowMenu
 {
+  NSRect dispFrame = [self displayRect];
+  BOOL displayInactive = NSIsEmptyRect(dispFrame);
+    
   NSMenu *submenu = [[NSMenu alloc] init];
+  submenu.autoenablesItems = NO;
+  
   NSMenuItem *tmp, *tmp2;
   tmp = [submenu addItemWithTitle:NSLocalizedString(@"Save As...", @"Menu item for saving a drawing to file") action:@selector(saveImageAs:) keyEquivalent:@""];
   tmp.target = self;
   tmp = [submenu addItemWithTitle:NSLocalizedString(@"Restore...", @"Menu item for loading a drawing from file") action:@selector(openImage:) keyEquivalent:@""];
   tmp.target = self;
   
-  if (!CGDisplayIsActive(self.display)) {
+  if (displayInactive) {
     [submenu addItem:[NSMenuItem separatorItem]];
     tmp = [submenu addItemWithTitle:NSLocalizedString(@"Delete...", @"Menu item for deleting a screen painting") action:@selector(performClose:) keyEquivalent:@""];
     tmp.target = self;
@@ -250,11 +255,12 @@
   tmp2.target = self;
   tmp2.alternate = YES;
   tmp2.keyEquivalentModifierMask = NSEventModifierFlagOption;
-  if (CGDisplayIsMain(self.display)) {
-    tmp.state = NSControlStateValueOn;
-    tmp2.state = NSControlStateValueOn;
-  }
-  if (!CGDisplayIsActive(self.display)) {
+  if (!displayInactive) {
+    if (CGDisplayIsMain(self.display)) {
+      tmp.state = NSControlStateValueOn;
+      tmp2.state = NSControlStateValueOn;
+    }
+  } else {
     tmp.enabled = NO;
     tmp2.enabled = NO;
   }
